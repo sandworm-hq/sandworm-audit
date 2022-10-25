@@ -1,0 +1,101 @@
+version: 2.1
+orbs: 
+  node: circleci/node@5.0.2
+jobs:
+  setup:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - deps-{{ checksum "yarn.lock" }}
+            - deps-
+      - node/install-packages:
+          pkg-manager: yarn
+      - save_cache:
+          key: deps-{{ checksum "yarn.lock" }}
+          paths: 
+            - node_modules
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '*'
+  lint:
+    executor:
+      name: node/default
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Lint code
+          command: yarn lint
+  release-pr:
+    executor: node/default
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install release-please
+          command: yarn global add release-please
+      - run:
+          name: Create or update release PR
+          command: release-please release-pr --token=${GH_TOKEN} --repo-url=sandworm-hq/sinkchart
+  github-release:
+    executor: node/default
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install release-please
+          command: yarn global add release-please
+      - run:
+          name: Create release
+          command: release-please github-release --token=${GH_TOKEN} --repo-url=sandworm-hq/sinkchart
+  publish-npm:
+    executor: node/default
+    steps:
+      - attach_workspace:
+          at: .
+      - run: 
+          name: Auth With NPM
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+      - run:
+          name: Publish to NPM
+          command: npm publish
+        
+workflows:
+  test:
+    jobs:
+      - setup
+      - lint:
+          requires:
+            - setup
+      - github-release:
+          requires:
+            - lint
+          filters:
+            branches:
+              only: main
+      - release-pr:
+          requires:
+            - github-release
+          filters:
+            branches:
+              only: main
+  publish:
+    jobs:
+      - setup:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^sinkchart-v.*/
+      - publish-npm:
+          requires:
+            - setup
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^sinkchart-v.*/

@@ -1,0 +1,42 @@
+{
+  "name": "sinkchart",
+  "version": "1.0.0",
+  "description": "Beautiful Visualizations For Your App's Dependencies 🪱",
+  "main": "src/index.js",
+  "bin": "src/cli.js",
+  "scripts": {
+    "lint": "yarn eslint ./src/",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sandworm-hq/sinkchart-js.git"
+  },
+  "keywords": [
+    "security",
+    "audit",
+    "dependencies"
+  ],
+  "author": "Sandworm <dev@sandworm.dev>",
+  "license": "MIT",
+  "homepage": "https://sandworm.dev",
+  "dependencies": {
+    "d3-node": "3.0.0",
+    "follow-redirects": "1.15.2",
+    "npm-registry-fetch": "13.3.1",
+    "ora": "6.1.2",
+    "sandworm-utils": "1.8.1",
+    "yargs": "17.6.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
+    "eslint": "^8.24.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.0",
+    "prettier": "^2.7.1"
+  }
+}
