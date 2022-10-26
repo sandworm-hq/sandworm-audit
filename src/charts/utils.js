@@ -72,29 +72,16 @@ const addSandwormLogo = (svg, x, y, width) => {
     .attr('opacity', 0.8);
 };
 
-const resolveVulnerability = (vulnerabilities) => (via) => {
-  if (typeof via === 'string') {
-    return vulnerabilities[via].via.map(resolveVulnerability(vulnerabilities));
-  }
-
-  return via;
-};
-
 const addVulnerabilities = (node, vulnerabilities) =>
   node
     .filter((d) => vulnerabilities[d.data.name])
     .append('vulnerabilities')
     .selectAll('vulnerability')
-    .data((d) => {
-      const {via} = vulnerabilities[d.data.name];
-      const resolvedVulnerabilities = via.map(resolveVulnerability(vulnerabilities)).flat(Infinity);
-      return [...new Map(resolvedVulnerabilities.map((item) => [item.url, item])).values()];
-    })
+    .data((d) => vulnerabilities[d.data.name])
     .join('vulnerability')
     .attr('title', (d) => d.title)
     .attr('url', (d) => d.url)
     .attr('via', (d) => (typeof d === 'string' ? d : undefined));
-
 
 module.exports = {
   getModuleName,

@@ -15,7 +15,7 @@ const getVulnerabilitiesAndTrackProgress = async ({appPath, packageManager, onPr
   onProgress({type: 'end', stage: 'vulnerabilities'});
 
   return vulnerabilities;
-}
+};
 
 const getTreeSVG = async ({
   appPath,

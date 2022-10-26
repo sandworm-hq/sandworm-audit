@@ -63,7 +63,7 @@ function buildTreemap(
   const nodeColor = (d) => {
     const vulnerability = vulnerabilities[d.data.name];
     if (vulnerability) {
-      if (vulnerability.via[0].source) {
+      if (!vulnerability[0].via) {
         return 'red';
       }
       return 'purple';
@@ -78,7 +78,7 @@ function buildTreemap(
   };
   const nodeFillOpacity = (d) => {
     const vulnerability = vulnerabilities[d.data.name];
-    if (vulnerability && vulnerability.via[0].source) {
+    if (vulnerability && !vulnerability[0].via) {
       return 1;
     }
     return getModuleCallCount(d) > 1 ? 0.2 : 0.4;

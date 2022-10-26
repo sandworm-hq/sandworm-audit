@@ -42,7 +42,7 @@ const buildTree = (
   const textColor = (d) => {
     const vulnerability = vulnerabilities[d.data.name];
     if (vulnerability) {
-      if (vulnerability.via[0].source) {
+      if (!vulnerability[0].via) {
         return 'red';
       }
       return 'purple';
