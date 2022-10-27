@@ -94,7 +94,7 @@ require('yargs')
           alias: 'max-depth',
           demandOption: false,
           describe: 'Max depth to represent',
-          type: 'boolean',
+          type: 'integer',
         });
     },
     async (argv) => {
