@@ -49,7 +49,7 @@ Options:
 * Node colors represent the dependency depth;
 * Node surface represents the size of the corresponding directory under `node_modules`;
 * A dotted pattern in a node background means the package is a shared dependency, required by multiple packages, and present multiple times in the chart;
-* Shared dependency sizes are added to every dependend package, to properly represent the independent size structure; hence, the displayed size might be larger than the actual size on disk;
+* Shared dependency sizes are added to every dependent package, to represent the independent size structure properly; hence, the displayed size might be larger than the actual size on disk;
 * A red package background means the package has direct vulnerabilities;
 * A purple package background means the package depends on other vulnerable packages;
 * Click on a node to make the tooltip persist; click outside to close it;
@@ -62,7 +62,7 @@ Options:
 * Red text in a package name means the package has direct vulnerabilities;
 * Purple text in a package name means the package depends on other vulnerable packages;
 * Click on a node to make the tooltip persist; click outside to close it;
-* By default, the tree chart has a maximum depth of 7 - only dependencies up to the seventh depth level will be represented, to keep thing readable; you can override this using the `--md` option.
+* By default, the tree chart has a maximum depth of 7, meaning only seven levels of dependencies will be represented, to keep the output readable; you can override this using the `--md` option.
 
 ![Sinkchart Tree Chart](https://sandworm-assets.s3.us-east-1.amazonaws.com/sinkchart/demos/sinkchart-tree.png)
 
