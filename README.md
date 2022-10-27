@@ -10,16 +10,22 @@
 
 Beautiful Visualizations For Your App's Dependencies 🪱
 
-> Made by the team behind [Sandworm](https://sandworm.dev/) - Easy auditing & sandboxing for your JavaScript dependencies.
+* Outputs SVGs
+* Powered by D3
+* Overlays security vulnerabilities
+* Works with npm & yarn
+* Made by the team behind [Sandworm](https://sandworm.dev/) - Easy auditing & sandboxing for your JavaScript dependencies
+
+![Sinkchart Tooltips](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/sinkchart-tooltip.png)
+
+> **Warning**
+> Sinkchart does NOT currently work with [pnpm](https://pnpm.io/).
 
 ## Install
 
 ```bash
 yarn global add sinkchart # or npm install -g sinkchart
 ```
-
-> **Warning**
-> Does NOT currently work with [pnpm](https://pnpm.io/).
 
 ## Options
 
