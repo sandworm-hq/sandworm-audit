@@ -19,7 +19,7 @@ Beautiful Visualizations For Your App's Dependencies 🪱
 ![Sinkchart Tooltips](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/sinkchart-tooltip.png)
 
 > **Warning**
-> Sinkchart does NOT currently work with [pnpm](https://pnpm.io/).
+> Sinkchart does NOT currently work with [pnpm](https://pnpm.io/) or with workspaces.
 
 ## Install
 
@@ -33,14 +33,13 @@ yarn global add sinkchart # or npm install -g sinkchart
 Options:
       --version          Show version number                           [boolean]
       --help             Show help                                     [boolean]
-  -o, --output           The name of the output SVG file                [string]
+  -o, --output           The name of the output directory, relative to the
+                         application path       [string] [default: ".sinkchart"]
   -d, --dev              Include dev dependencies     [boolean] [default: false]
   -v, --show-versions    Show package versions        [boolean] [default: false]
-  -t, --type             Visualization type
-                         [string] [choices: "tree", "treemap"] [default: "tree"]
-  -p, --path             The application path
-                   [string] [default: "/Users/user/projects/Sandworm/sinkchart"]
-      --md, --max-depth  Max depth to represent                        [integer]
+  -t, --type             Visualization type[string] [choices: "tree", "treemap"]
+  -p, --path             The application path    [string] [default: current dir]
+      --md, --max-depth  Max depth to represent                         [number]
 ```
 
 ## Chart Types

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs/promises');
 const path = require('path');
-const {getTreeSVG, getTreemapSVG} = require('.');
+const {getChartsSVG} = require('.');
 
 const logger = console;
 let currentSpinner;
@@ -11,9 +11,11 @@ const getStartMessage = (stage) => {
     case 'sizes':
       return 'Getting sizes...';
     case 'vulnerabilities':
-      return 'Getting vulnerability list';
-    case 'chart':
-      return 'Plotting chart';
+      return 'Getting vulnerability list...';
+    case 'tree':
+      return 'Drawing tree chart...';
+    case 'treemap':
+      return 'Drawing treemap chart...';
     default:
       return '';
   }
@@ -25,28 +27,32 @@ const getEndMessage = (stage) => {
       return 'Computed package sizes';
     case 'vulnerabilities':
       return 'Got vulnerabilities';
-    case 'chart':
-      return 'Plotted chart';
+    case 'tree':
+      return 'Tree chart done';
+    case 'treemap':
+      return 'Treemap chart done';
     default:
       return '';
   }
 };
 
-const onProgress = (ora) => ({type, stage, message}) => {
-  switch (type) {
-    case 'start':
-      currentSpinner = ora().start(getStartMessage(stage));
-      break;
-    case 'end':
-      currentSpinner.succeed(getEndMessage(stage));
-      break;
-    case 'update':
-      currentSpinner.text = message;
-      break;
-    default:
-      break;
-  }
-};
+const onProgress =
+  (ora) =>
+  ({type, stage, message}) => {
+    switch (type) {
+      case 'start':
+        currentSpinner = ora().start(getStartMessage(stage));
+        break;
+      case 'end':
+        currentSpinner.succeed(getEndMessage(stage));
+        break;
+      case 'update':
+        currentSpinner.text = message;
+        break;
+      default:
+        break;
+    }
+  };
 
 require('yargs')
   .scriptName('Sinkchart')
@@ -58,7 +64,8 @@ require('yargs')
         .option('o', {
           alias: 'output',
           demandOption: false,
-          describe: 'The name of the output SVG file',
+          default: '.sinkchart',
+          describe: 'The name of the output directory, relative to the application path',
           type: 'string',
         })
         .option('d', {
@@ -78,7 +85,6 @@ require('yargs')
         .option('t', {
           alias: 'type',
           demandOption: false,
-          default: 'tree',
           describe: 'Visualization type',
           type: 'string',
           choices: ['tree', 'treemap'],
@@ -94,38 +100,31 @@ require('yargs')
           alias: 'max-depth',
           demandOption: false,
           describe: 'Max depth to represent',
-          type: 'integer',
+          type: 'number',
         });
     },
     async (argv) => {
-      let svgData;
       logger.log('\x1b[36m%s\x1b[0m', `Sinkchart 🧭`);
       const {default: ora} = await import('ora');
 
-      const options = {
+      const {svgs, name, version} = await getChartsSVG({
+        types: argv.t ? [argv.t] : undefined,
         appPath: argv.p,
         includeDev: argv.d,
         showVersions: argv.v,
         maxDepth: argv.md,
         onProgress: onProgress(ora),
-      };
+      });
 
-      if (argv.t === 'tree') {
-        logger.log('Generating Tree');
-        svgData = await getTreeSVG(options);
-      } else {
-        logger.log('Generating Treemap');
-        svgData = await getTreemapSVG(options);
-      }
+      currentSpinner = ora('Writing Output File').start();
+      await Object.keys(svgs).reduce(async (agg, chartType) => {
+        await agg;
 
-      if (svgData) {
-        const defaultOutputFilename = `dependency-${argv.t}.svg`;
-        const outputPath = argv.o || path.join(argv.p, defaultOutputFilename);
-        currentSpinner = ora('Writing Output File').start();
+        const outputPath = path.join(argv.p, argv.o, `${name}@${version}-${chartType}.svg`);
         await fs.mkdir(path.dirname(outputPath), {recursive: true});
-        await fs.writeFile(outputPath, svgData);
-        currentSpinner.stopAndPersist({symbol: '✨', text: 'Done'});
-      }
+        await fs.writeFile(outputPath, svgs[chartType]);
+      }, Promise.resolve());
+      currentSpinner.stopAndPersist({symbol: '✨', text: 'Done'});
     },
   )
   .help()
