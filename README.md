@@ -21,6 +21,14 @@ Beautiful Visualizations For Your App's Dependencies 🪱
 > **Warning**
 > Sinkchart does NOT currently work with [pnpm](https://pnpm.io/) or with workspaces.
 
+### Get Involved
+
+* Have a support question? [Post it here](https://github.com/sandworm-hq/sinkchart/discussions/categories/q-a).
+* Have a feature request? [Post it here](https://github.com/sandworm-hq/sinkchart/discussions/categories/ideas).
+* Did you find a security issue? [See SECURITY.md](SECURITY.md).
+* Did you find a bug? [Post an issue](https://github.com/sandworm-hq/sinkchart/issues/new/choose).
+* Want to write some code? See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Install
 
 ```bash
