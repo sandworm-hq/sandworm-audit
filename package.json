@@ -22,10 +22,8 @@
   "homepage": "https://sandworm.dev",
   "dependencies": {
     "d3-node": "3.0.0",
-    "follow-redirects": "1.15.2",
-    "npm-registry-fetch": "13.3.1",
     "ora": "6.1.2",
-    "sandworm-utils": "1.8.1",
+    "sandworm-utils": "1.9.0",
     "yargs": "17.6.0"
   },
   "devDependencies": {
