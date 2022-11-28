@@ -1,8 +1,6 @@
 const {exec} = require('child_process');
 const {join} = require('path');
-const {
-  files: {loadDependencies},
-} = require('sandworm-utils');
+const {graph} = require('sandworm-utils');
 
 const logger = console;
 const packageSizeCache = {};
@@ -31,7 +29,7 @@ const getFolderSize = (folderPath) =>
   });
 
 const getPackageSizes = async ({appPath, includeDev = false, onProgress = () => {}}) => {
-  const {packageTree} = await loadDependencies(appPath, includeDev);
+  const packageTree = (await graph(appPath, includeDev)).root;
   const decorateWithSize = async (modules = {}, path = []) =>
     Object.values(modules).reduce(async (acc, module) => {
       await acc;

@@ -1,6 +1,4 @@
-const {
-  files: {loadDependencies},
-} = require('sandworm-utils');
+const {graph} = require('sandworm-utils');
 const {getVulnerabilities} = require('./vulnerabilities');
 const {buildTree, buildTreemap} = require('./charts');
 const {getPackageSizes} = require('./package');
@@ -26,7 +24,7 @@ const getChartsSVG = async ({
     });
     onProgress({type: 'end', stage: 'sizes'});
   } else {
-    packageTree = (await loadDependencies(appPath, includeDev)).packageTree;
+    packageTree = (await graph(appPath)).root;
   }
 
   onProgress({type: 'start', stage: 'vulnerabilities'});
