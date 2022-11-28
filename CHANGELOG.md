@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.1.0...sinkchart-v1.2.0) (2022-11-28)
+
+
+### Features
+
+* build all charts by default ([a1db19a](https://github.com/sandworm-hq/sinkchart/commit/a1db19ad97b747989c078be109643eefc1f1e889))
+* support all js package managers ([bc2c2e2](https://github.com/sandworm-hq/sinkchart/commit/bc2c2e2e1f7b3306314184eee8a9c77c05099f6a))
+
 ## [1.1.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.0.0...sinkchart-v1.1.0) (2022-10-27)
 
 
