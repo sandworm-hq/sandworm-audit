@@ -1,6 +1,12 @@
 const D3Node = require('d3-node');
 const addTooltips = require('./tooltip');
-const {getModuleName, addSandwormLogo, getAncestors, addVulnerabilities} = require('./utils');
+const {
+  getModuleName,
+  addSandwormLogo,
+  getAncestors,
+  addVulnerabilities,
+  processGraph,
+} = require('./utils');
 
 const d3n = new D3Node();
 const {d3} = d3n;
@@ -17,21 +23,10 @@ const buildTree = (
     width = 1000,
     vulnerabilities = {},
     maxDepth = Infinity,
+    includeDev = false,
   } = {},
 ) => {
-  const processData = (node, depth) => {
-    const dependencies =
-      depth >= maxDepth
-        ? []
-        : Object.values(node.dependencies || {}).map((n) => processData(n, depth + 1));
-
-    return {
-      ...node,
-      children: dependencies,
-    };
-  };
-
-  const root = d3.hierarchy(processData(data, 0));
+  const root = d3.hierarchy(processGraph(data, {maxDepth, includeDev}));
 
   // Construct an ordinal color scale
   const color = d3.scaleOrdinal(

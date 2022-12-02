@@ -83,6 +83,29 @@ const addVulnerabilities = (node, vulnerabilities) =>
     .attr('url', (d) => d.url)
     .attr('via', (d) => (typeof d === 'string' ? d : undefined));
 
+const aggregateDependencies = (node, includeDev = false) => [
+  ...Object.values(node.dependencies || {}),
+  ...Object.values(node.optionalDependencies || {}),
+  ...Object.values(node.peerDependencies || {}),
+  ...Object.values(node.bundledDependencies || {}),
+  ...(includeDev ? Object.values(node.devDependencies || {}) : []),
+];
+
+const processGraph = (node, options = {}, depth = 0, history = []) => {
+  const {maxDepth = Infinity, includeDev = false, postprocess = (n) => n} = options;
+  const dependencies =
+    depth >= maxDepth
+      ? []
+      : aggregateDependencies(node, includeDev)
+          .filter((n) => !history.includes(n))
+          .map((n) => processGraph(n, options, depth + 1, [...history, node]));
+
+  return postprocess({
+    ...node,
+    children: dependencies,
+  });
+};
+
 module.exports = {
   getModuleName,
   getUid,
@@ -91,4 +114,6 @@ module.exports = {
   groupByDepth,
   addSandwormLogo,
   addVulnerabilities,
+  aggregateDependencies,
+  processGraph,
 };
