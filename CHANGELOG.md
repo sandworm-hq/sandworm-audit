@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.2.0...sinkchart-v1.2.1) (2022-12-02)
+
+
+### Bug Fixes
+
+* represent non-prod dependencies ([5e04c15](https://github.com/sandworm-hq/sinkchart/commit/5e04c1598f98e28f7db6d56f5e79c22bffee8f20))
+
 ## [1.2.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.1.0...sinkchart-v1.2.0) (2022-11-28)
 
 
