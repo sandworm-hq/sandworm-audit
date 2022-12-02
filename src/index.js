@@ -18,7 +18,6 @@ const getChartsSVG = async ({
     onProgress({type: 'start', stage: 'sizes'});
     packageTree = await getPackageSizes({
       appPath,
-      includeDev,
       onProgress: ({name, version}) =>
         onProgress({type: 'update', stage: 'sizes', message: `${name}@${version}`}),
     });
@@ -40,6 +39,7 @@ const getChartsSVG = async ({
     width,
     maxDepth,
     vulnerabilities,
+    includeDev,
     onProgress: (message) => onProgress({type: 'update', stage: 'chart', message}),
   };
 

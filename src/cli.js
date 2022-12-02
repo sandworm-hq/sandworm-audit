@@ -69,7 +69,7 @@ require('yargs')
           type: 'string',
         })
         .option('d', {
-          alias: 'dev',
+          alias: 'include-dev',
           demandOption: false,
           default: false,
           describe: 'Include dev dependencies',

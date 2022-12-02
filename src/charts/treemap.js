@@ -8,30 +8,11 @@ const {
   humanFileSize,
   addSandwormLogo,
   addVulnerabilities,
+  processGraph,
 } = require('./utils');
 
 const d3n = new D3Node();
 const {d3} = d3n;
-
-const processData = (node) => {
-  const dependencies = Object.values(node.dependencies || {}).map(processData);
-
-  return {
-    ...node,
-    size: dependencies.length > 0 ? 0 : node.size,
-    children:
-      dependencies.length > 0
-        ? [
-            ...dependencies,
-            {
-              ...node,
-              dependencies: undefined,
-              children: [],
-            },
-          ]
-        : [],
-  };
-};
 
 // Modified from the original source below
 // Copyright 2021 Observable, Inc.
@@ -44,6 +25,7 @@ function buildTreemap(
     width = 1000, // outer width, in pixels
     vulnerabilities = {},
     maxDepth = Infinity,
+    includeDev = false,
   } = {},
 ) {
   const moduleCallCounts = [];
@@ -57,7 +39,25 @@ function buildTreemap(
     return currentCallCount;
   };
 
-  const root = d3.hierarchy(processData(data));
+  const root = d3.hierarchy(
+    processGraph(data, {
+      maxDepth,
+      includeDev,
+      postprocess: (node) => {
+        if (node.children.length > 0) {
+          // eslint-disable-next-line no-param-reassign
+          node.size = 0;
+          node.children.push({
+            ...node,
+            dependencies: undefined,
+            children: [],
+          });
+        }
+
+        return node;
+      },
+    }),
+  );
 
   const color = d3.scaleSequential([0, root.height], d3.interpolateBrBG);
   const nodeColor = (d) => {

@@ -43,7 +43,7 @@ Options:
       --help             Show help                                     [boolean]
   -o, --output           The name of the output directory, relative to the
                          application path       [string] [default: ".sinkchart"]
-  -d, --dev              Include dev dependencies     [boolean] [default: false]
+  -d, --include-dev      Include dev dependencies     [boolean] [default: false]
   -v, --show-versions    Show package versions        [boolean] [default: false]
   -t, --type             Visualization type[string] [choices: "tree", "treemap"]
   -p, --path             The application path    [string] [default: current dir]

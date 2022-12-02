@@ -28,8 +28,8 @@ const getFolderSize = (folderPath) =>
     }
   });
 
-const getPackageSizes = async ({appPath, includeDev = false, onProgress = () => {}}) => {
-  const packageTree = (await graph(appPath, includeDev)).root;
+const getPackageSizes = async ({appPath, onProgress = () => {}}) => {
+  const packageTree = (await graph(appPath)).root;
   const decorateWithSize = async (modules = {}, path = []) =>
     Object.values(modules).reduce(async (acc, module) => {
       await acc;
