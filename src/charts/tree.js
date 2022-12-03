@@ -6,6 +6,8 @@ const {
   getAncestors,
   addVulnerabilities,
   processGraph,
+  addLicenseData,
+  getIssueLevel,
 } = require('./utils');
 
 const d3n = new D3Node();
@@ -24,6 +26,7 @@ const buildTree = (
     vulnerabilities = {},
     maxDepth = Infinity,
     includeDev = false,
+    showLicenseInfo = false,
   } = {},
 ) => {
   const root = d3.hierarchy(processGraph(data, {maxDepth, includeDev}));
@@ -35,30 +38,26 @@ const buildTree = (
   );
   const nodeColor = (d) => color(getModuleName(d.ancestors().reverse()[1] || d));
   const textColor = (d) => {
-    const vulnerability = vulnerabilities[d.data.name];
-    if (vulnerability) {
-      if (!vulnerability[0].via) {
-        return 'red';
-      }
+    const issueLevel = getIssueLevel(d, vulnerabilities, showLicenseInfo);
+    if (issueLevel === 'direct') {
+      return 'red';
+    }
+    if (issueLevel === 'indirect') {
       return 'purple';
     }
-
     return '#333';
   };
   const textFontWeight = (d) => {
-    const vulnerability = vulnerabilities[d.data.name];
-    if (vulnerability) {
-      return 'bold';
+    if (getIssueLevel(d, vulnerabilities, showLicenseInfo) === 'none') {
+      return 'normal';
     }
-    return 'normal';
+    return 'bold';
   };
   const strokeColor = (d) => {
-    const vulnerability = vulnerabilities[d.data.name];
-    if (vulnerability) {
-      return '#fff7c4';
+    if (getIssueLevel(d, vulnerabilities, showLicenseInfo) === 'none') {
+      return 'white';
     }
-
-    return 'white';
+    return '#fff7c4';
   };
   const lineColor = (d1, d2) => {
     const vulnerability = vulnerabilities[d2.data.name];
@@ -134,6 +133,7 @@ const buildTree = (
   node.append('ancestry').attr('data', (d) => getAncestors(d).join('>'));
 
   addVulnerabilities(node, vulnerabilities);
+  addLicenseData(node);
 
   node
     .append('text')
@@ -147,7 +147,7 @@ const buildTree = (
     .attr('stroke', strokeColor)
     .text((d) => (showVersions ? getModuleName(d) : d.data.name));
 
-  addTooltips(svg);
+  addTooltips(svg, {showLicenseInfo});
 
   return d3n.svgString();
 };

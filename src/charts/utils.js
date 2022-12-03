@@ -83,6 +83,12 @@ const addVulnerabilities = (node, vulnerabilities) =>
     .attr('url', (d) => d.url)
     .attr('via', (d) => (typeof d === 'string' ? d : undefined));
 
+const addLicenseData = (node) =>
+  node
+    .filter((d) => d.data.license)
+    .append('license')
+    .attr('name', (d) => d.data.license);
+
 const aggregateDependencies = (node, includeDev = false) => [
   ...Object.values(node.dependencies || {}),
   ...Object.values(node.optionalDependencies || {}),
@@ -106,6 +112,22 @@ const processGraph = (node, options = {}, depth = 0, history = []) => {
   });
 };
 
+const getIssueLevel = (d, vulnerabilities, includeLicenseIssues = false) => {
+  const vulnerability = vulnerabilities[d.data.name];
+  if (vulnerability) {
+    if (!vulnerability[0].via) {
+      return 'direct';
+    }
+    return 'indirect';
+  }
+
+  if (includeLicenseIssues && !d.data.license) {
+    return 'direct';
+  }
+
+  return 'none';
+};
+
 module.exports = {
   getModuleName,
   getUid,
@@ -114,6 +136,8 @@ module.exports = {
   groupByDepth,
   addSandwormLogo,
   addVulnerabilities,
+  addLicenseData,
   aggregateDependencies,
   processGraph,
+  getIssueLevel,
 };
