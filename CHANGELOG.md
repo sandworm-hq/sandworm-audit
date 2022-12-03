@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.2.1...sinkchart-v1.3.0) (2022-12-03)
+
+
+### Features
+
+* add license info to tooltip, when available ([291991c](https://github.com/sandworm-hq/sinkchart/commit/291991cb5cfaf0bc4441211a4d5f7df4412d197d))
+
 ## [1.2.1](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.2.0...sinkchart-v1.2.1) (2022-12-02)
 
 
