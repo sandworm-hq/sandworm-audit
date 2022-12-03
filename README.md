@@ -13,6 +13,7 @@ Beautiful Visualizations For Your App's Dependencies 🪱
 * Outputs SVGs
 * Powered by D3
 * Overlays security vulnerabilities
+* Overlays package license info
 * Works with npm, yarn, and pnpm
 * Made by the team behind [Sandworm](https://sandworm.dev/) - Easy auditing & sandboxing for your JavaScript dependencies
 
@@ -20,6 +21,9 @@ Beautiful Visualizations For Your App's Dependencies 🪱
 
 > **Warning**
 > Sinkchart does NOT currently support [workspaces](https://docs.npmjs.com/cli/v9/using-npm/workspaces).
+
+> **Warning**
+> License info is currently only available when using npm - but we're working on universal support.
 
 ### Get Involved
 
