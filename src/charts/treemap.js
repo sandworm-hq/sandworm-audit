@@ -9,6 +9,8 @@ const {
   addSandwormLogo,
   addVulnerabilities,
   processGraph,
+  addLicenseData,
+  getIssueLevel,
 } = require('./utils');
 
 const d3n = new D3Node();
@@ -26,6 +28,7 @@ function buildTreemap(
     vulnerabilities = {},
     maxDepth = Infinity,
     includeDev = false,
+    showLicenseInfo = false,
   } = {},
 ) {
   const moduleCallCounts = [];
@@ -61,24 +64,25 @@ function buildTreemap(
 
   const color = d3.scaleSequential([0, root.height], d3.interpolateBrBG);
   const nodeColor = (d) => {
-    const vulnerability = vulnerabilities[d.data.name];
-    if (vulnerability) {
-      if (!vulnerability[0].via) {
-        return 'red';
-      }
+    const issueLevel = getIssueLevel(d, vulnerabilities, showLicenseInfo);
+    if (issueLevel === 'direct') {
+      return 'red';
+    }
+    if (issueLevel === 'indirect') {
       return 'purple';
     }
     return getModuleCallCount(d) > 0 ? `url(#p-dots-0) ${color(d.height)}` : color(d.height);
   };
   const nodeStroke = (d) => {
-    if (vulnerabilities[d.data.name]) {
+    const issueLevel = getIssueLevel(d, vulnerabilities, showLicenseInfo);
+    if (issueLevel !== 'none') {
       return 'red';
     }
     return undefined;
   };
   const nodeFillOpacity = (d) => {
-    const vulnerability = vulnerabilities[d.data.name];
-    if (vulnerability && !vulnerability[0].via) {
+    const issueLevel = getIssueLevel(d, vulnerabilities, showLicenseInfo);
+    if (issueLevel === 'direct') {
       return 1;
     }
     return getModuleCallCount(d) > 1 ? 0.2 : 0.4;
@@ -149,6 +153,7 @@ function buildTreemap(
   node.append('ancestry').attr('data', (d) => `${getAncestors(d).join('>')}`);
 
   addVulnerabilities(node, vulnerabilities);
+  addLicenseData(node);
 
   node
     .append('clipPath')
@@ -179,7 +184,7 @@ function buildTreemap(
     .attr('x', 3)
     .attr('y', (d, i, nodes) => `${(i === nodes.length - 1) * 0.3 + 1.1 + i * 0.9}em`);
 
-  addTooltips(svg);
+  addTooltips(svg, {showLicenseInfo});
 
   return d3n.svgString();
 }
