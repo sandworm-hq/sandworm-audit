@@ -1,3 +1,4 @@
+.sinkchart
 .husky/commit-msg
 .husky/pre-commit
 .circleci
