@@ -10,6 +10,7 @@ const getChartsSVG = async ({
   showVersions = false,
   width = 1500,
   maxDepth = 7,
+  showLicenseInfo = true,
   onProgress = () => {},
 }) => {
   let packageTree;
@@ -40,8 +41,7 @@ const getChartsSVG = async ({
     maxDepth,
     vulnerabilities,
     includeDev,
-    // Only npm produces license info for now
-    showLicenseInfo: packageTree.meta.packageManager === 'npm',
+    showLicenseInfo,
     onProgress: (message) => onProgress({type: 'update', stage: 'chart', message}),
   };
 

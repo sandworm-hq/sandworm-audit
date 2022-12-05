@@ -121,8 +121,10 @@ const getIssueLevel = (d, vulnerabilities, includeLicenseIssues = false) => {
     return 'indirect';
   }
 
-  if (includeLicenseIssues && !d.data.license) {
-    return 'direct';
+  if (includeLicenseIssues) {
+    if (!d.data.license || d.data.license.toUpperCase() === 'UNLICENSED') {
+      return 'direct';
+    }
   }
 
   return 'none';

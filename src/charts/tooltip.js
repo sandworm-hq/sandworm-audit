@@ -30,7 +30,14 @@ const setupTooltips = (options) => {
     if (licenseName !== false) {
       html +=
         '<div style="padding: 2px; background: #777; color: white; margin: 2px 0;">License</div>';
-      html += `<div>${licenseName || '🔴 UNKNOWN'}</div>`;
+      if (!licenseName) {
+        html += '<div>🔴 UNKNOWN</div>';
+      } else if (licenseName.toUpperCase() === 'UNLICENSED') {
+        html += '<div>🔴 COMMERCIAL</div>';
+      } else {
+        html += `<div>${licenseName}</div>`;
+      }
+      
     }
 
     return html;
