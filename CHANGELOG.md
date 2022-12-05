@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.3.0...sinkchart-v1.4.0) (2022-12-05)
+
+
+### Features
+
+* universal support for license info ([6b8817f](https://github.com/sandworm-hq/sinkchart/commit/6b8817f44ba2a0b50bf743aad12b71a21c3b85cd))
+
 ## [1.3.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.2.1...sinkchart-v1.3.0) (2022-12-03)
 
 
