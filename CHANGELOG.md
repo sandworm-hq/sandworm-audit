@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.4.0...sinkchart-v1.5.0) (2022-12-22)
+
+
+### Features
+
+* remove svg width and height attributes ([b9e3d45](https://github.com/sandworm-hq/sinkchart/commit/b9e3d45020996ed91a8cdc9d81c71d28ca2b91f0))
+
 ## [1.4.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.3.0...sinkchart-v1.4.0) (2022-12-05)
 
 
