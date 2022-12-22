@@ -107,7 +107,7 @@ function buildTreemap(
   const groupedData = groupByDepth(root, maxDepth);
 
   const svg = d3n
-    .createSVG(width, width + 40)
+    .createSVG()
     .attr('viewBox', [0, -40, width, width + 40])
     .attr('style', 'max-width: 100%; height: auto; height: intrinsic;')
     .attr('font-family', 'sans-serif')

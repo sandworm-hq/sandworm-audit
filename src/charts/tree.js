@@ -87,7 +87,7 @@ const buildTree = (
   const offsetY = Math.floor(x0 - dx) - 50;
 
   const svg = d3n
-    .createSVG(width, height + 60)
+    .createSVG()
     .attr('viewBox', [offsetX, offsetY, width, height + 60])
     .attr('style', 'max-width: 100%; height: auto; height: intrinsic;')
     .attr('font-family', 'sans-serif')
