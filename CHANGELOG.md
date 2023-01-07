@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.5.0...sinkchart-v1.6.0) (2023-01-07)
+
+
+### Features
+
+* include vulnerabilities in exported data ([2528072](https://github.com/sandworm-hq/sinkchart/commit/2528072c04d329cc9647c305d3f4f1f008e2cf32))
+
 ## [1.5.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.4.0...sinkchart-v1.5.0) (2022-12-22)
 
 
