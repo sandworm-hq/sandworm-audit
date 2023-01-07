@@ -14,7 +14,7 @@ const getChartsSVG = async ({
   onProgress = () => {},
 }) => {
   let packageTree;
-  
+
   if (types.includes('treemap')) {
     onProgress({type: 'start', stage: 'sizes'});
     packageTree = await getPackageSizes({
@@ -64,6 +64,7 @@ const getChartsSVG = async ({
   }, Promise.resolve({}));
 
   return {
+    vulnerabilities,
     svgs,
     name: packageTree.name,
     version: packageTree.version,

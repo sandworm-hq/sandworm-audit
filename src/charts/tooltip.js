@@ -37,7 +37,7 @@ const setupTooltips = (options) => {
       } else {
         html += `<div>${licenseName}</div>`;
       }
-      
+
     }
 
     return html;

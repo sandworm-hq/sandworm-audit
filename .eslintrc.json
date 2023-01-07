@@ -8,5 +8,8 @@
   },
   "plugins": [
     "prettier"
-  ]
+  ],
+  "rules": {
+    "no-trailing-spaces": "error"
+  }
 }
