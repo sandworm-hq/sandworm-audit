@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.2](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.6.1...sinkchart-v1.6.2) (2023-01-10)
+
+
+### Bug Fixes
+
+* parsing vulnerabilities from empty response ([813ceba](https://github.com/sandworm-hq/sinkchart/commit/813ceba51c7786e662d73e8c7dd91f20d9905488))
+
 ## [1.6.1](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.6.0...sinkchart-v1.6.1) (2023-01-10)
 
 
