@@ -99,7 +99,7 @@ const fromYarnOrPnpm = (appPath, usePnpm = false) =>
         } else {
           try {
             const report = {};
-            const {advisories} = JSON.parse(stdout);
+            const {advisories} = JSON.parse(stdout || '{"advisories": {}}');
             Object.values(advisories).forEach((advisory) => {
               const {findings} = advisory;
               findings.forEach(({paths, version}) => {
