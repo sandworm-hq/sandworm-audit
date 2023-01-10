@@ -1,6 +1,6 @@
 {
   "name": "sinkchart",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Beautiful Visualizations For Your App's Dependencies 🪱",
   "main": "src/index.js",
   "bin": "src/cli.js",
