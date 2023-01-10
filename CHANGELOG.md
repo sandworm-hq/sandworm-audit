@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.6.0...sinkchart-v1.6.1) (2023-01-10)
+
+
+### Bug Fixes
+
+* crash when using pnpm with no dependencies ([dc4696b](https://github.com/sandworm-hq/sinkchart/commit/dc4696bcf9bea203c2b2f71cf1108a04cee6c117))
+
 ## [1.6.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.5.0...sinkchart-v1.6.0) (2023-01-07)
 
 
