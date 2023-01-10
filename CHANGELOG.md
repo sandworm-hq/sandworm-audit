@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.3](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.6.2...sinkchart-v1.6.3) (2023-01-10)
+
+
+### Bug Fixes
+
+* crash when post-processing empty graphs ([9bddc17](https://github.com/sandworm-hq/sinkchart/commit/9bddc170e8678b51a50618bf7481464e91c9361a))
+
 ## [1.6.2](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.6.1...sinkchart-v1.6.2) (2023-01-10)
 
 
