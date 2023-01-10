@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.4](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.6.3...sinkchart-v1.6.4) (2023-01-10)
+
+
+### Bug Fixes
+
+* crash when audit returns empty ([996c5b8](https://github.com/sandworm-hq/sinkchart/commit/996c5b8004deb66f8e8e4965db2ce9e54f33cd64))
+
 ## [1.6.3](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.6.2...sinkchart-v1.6.3) (2023-01-10)
 
 
