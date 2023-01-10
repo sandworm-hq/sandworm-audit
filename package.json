@@ -23,7 +23,7 @@
   "dependencies": {
     "d3-node": "3.0.0",
     "ora": "6.1.2",
-    "sandworm-utils": "1.10.3",
+    "sandworm-utils": "1.10.4",
     "yargs": "17.6.0"
   },
   "devDependencies": {
