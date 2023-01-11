@@ -1,7 +1,7 @@
 const {graph} = require('sandworm-utils');
 const {getVulnerabilities} = require('./vulnerabilities');
 const {buildTree, buildTreemap} = require('./charts');
-const {getPackageSizes} = require('./package');
+const {decorateWithSize} = require('./package');
 
 const getChartsSVG = async ({
   types = ['tree', 'treemap'],
@@ -12,19 +12,20 @@ const getChartsSVG = async ({
   maxDepth = 7,
   showLicenseInfo = true,
   onProgress = () => {},
+  packageSizes = null,
 }) => {
-  let packageTree;
+  const packageTree = (await graph(appPath)).root;
 
   if (types.includes('treemap')) {
     onProgress({type: 'start', stage: 'sizes'});
-    packageTree = await getPackageSizes({
-      appPath,
-      onProgress: ({name, version}) =>
-        onProgress({type: 'update', stage: 'sizes', message: `${name}@${version}`}),
-    });
+    if (!packageSizes) {
+      await decorateWithSize({
+        modules: packageTree.dependencies,
+        onProgress,
+        appPath
+      });
+    }
     onProgress({type: 'end', stage: 'sizes'});
-  } else {
-    packageTree = (await graph(appPath)).root;
   }
 
   onProgress({type: 'start', stage: 'vulnerabilities'});

@@ -1,6 +1,5 @@
 const {exec} = require('child_process');
 const {join} = require('path');
-const {graph} = require('sandworm-utils');
 
 const logger = console;
 const packageSizeCache = {};
@@ -28,34 +27,28 @@ const getFolderSize = (folderPath) =>
     }
   });
 
-const getPackageSizes = async ({appPath, onProgress = () => {}}) => {
-  const packageTree = (await graph(appPath)).root;
-  const decorateWithSize = async (modules = {}, path = []) =>
-    Object.values(modules).reduce(async (acc, module) => {
-      await acc;
-      onProgress(module);
-      const pathToPackage = join(appPath, 'node_modules', module.name);
-      let size = 0;
-      try {
-        size = await getFolderSize(pathToPackage);
-      } catch (error) {
-        logger.error(`\nCould not get size for directory: ${pathToPackage}`);
-      }
-      const ancestors = module.ancestors || [];
-      const currentPath = [...path, `${module.name}@${module.version}`];
-      ancestors.push(currentPath);
-      Object.assign(module, {
-        size,
-        ancestors,
-      });
+const decorateWithSize = async ({modules = {}, path = [], onProgress = () => {}, appPath}) =>
+  Object.values(modules).reduce(async (acc, module) => {
+    await acc;
+    onProgress(module);
+    const pathToPackage = join(appPath, 'node_modules', module.name);
+    let size = 0;
+    try {
+      size = await getFolderSize(pathToPackage);
+    } catch (error) {
+      logger.error(`\nCould not get size for directory: ${pathToPackage}`);
+    }
+    const ancestors = module.ancestors || [];
+    const currentPath = [...path, `${module.name}@${module.version}`];
+    ancestors.push(currentPath);
+    Object.assign(module, {
+      size,
+      ancestors,
+    });
 
-      return decorateWithSize(module.dependencies, currentPath);
-    }, Promise.resolve());
-  await decorateWithSize(packageTree.dependencies, []);
-
-  return packageTree;
-};
+    return decorateWithSize({modules: module.dependencies, path: currentPath, onProgress, appPath});
+  }, Promise.resolve());
 
 module.exports = {
-  getPackageSizes,
+  decorateWithSize,
 };
