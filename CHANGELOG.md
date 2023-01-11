@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.6.4...sinkchart-v1.7.0) (2023-01-11)
+
+
+### Features
+
+* add config to disable size scanning ([88dda72](https://github.com/sandworm-hq/sinkchart/commit/88dda724d6296ca6c7ca9aed49389750bd3f751d))
+
 ## [1.6.4](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.6.3...sinkchart-v1.6.4) (2023-01-10)
 
 
