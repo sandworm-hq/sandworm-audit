@@ -10,9 +10,6 @@ const {
   getIssueLevel,
 } = require('./utils');
 
-const d3n = new D3Node();
-const {d3} = d3n;
-
 // Modified from the original source below
 // Copyright 2021 Observable, Inc.
 // Released under the ISC license.
@@ -20,7 +17,7 @@ const {d3} = d3n;
 const buildTree = (
   data,
   {
-    tree = d3.tree, // layout algorithm (typically d3.tree or d3.cluster)
+    tree,
     showVersions = false,
     width = 1000,
     vulnerabilities = {},
@@ -29,6 +26,8 @@ const buildTree = (
     showLicenseInfo = false,
   } = {},
 ) => {
+  const d3n = new D3Node();
+  const {d3} = d3n;
   const root = d3.hierarchy(processGraph(data, {maxDepth, includeDev}));
 
   // Construct an ordinal color scale
@@ -71,7 +70,7 @@ const buildTree = (
   const padding = 1;
   const dx = 10;
   const dy = width / (root.height + padding);
-  tree().nodeSize([dx, dy])(root);
+  (tree || d3.tree)().nodeSize([dx, dy])(root);
 
   // Center the tree.
   let x0 = Infinity;

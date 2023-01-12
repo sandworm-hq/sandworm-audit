@@ -13,9 +13,6 @@ const {
   getIssueLevel,
 } = require('./utils');
 
-const d3n = new D3Node();
-const {d3} = d3n;
-
 // Modified from the original source below
 // Copyright 2021 Observable, Inc.
 // Released under the ISC license.
@@ -23,7 +20,7 @@ const {d3} = d3n;
 function buildTreemap(
   data,
   {
-    tile = d3.treemapBinary, // treemap strategy
+    tile,
     width = 1000, // outer width, in pixels
     vulnerabilities = {},
     maxDepth = Infinity,
@@ -31,6 +28,8 @@ function buildTreemap(
     showLicenseInfo = false,
   } = {},
 ) {
+  const d3n = new D3Node();
+  const {d3} = d3n;
   const moduleCallCounts = [];
   const getModuleCallCount = (d) => {
     if (d.data.size === 0) {
@@ -95,7 +94,7 @@ function buildTreemap(
 
   d3
     .treemap()
-    .tile(tile)
+    .tile(tile || d3.treemapBinary)
     .size([width, width])
     .paddingInner(1)
     .paddingTop(19)
