@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.7.0...sinkchart-v1.7.1) (2023-01-12)
+
+
+### Bug Fixes
+
+* generate multiple charts in the same session ([552f446](https://github.com/sandworm-hq/sinkchart/commit/552f446fd6c70217b8c53acffa0d99526727bd0e))
+
 ## [1.7.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.6.4...sinkchart-v1.7.0) (2023-01-11)
 
 
