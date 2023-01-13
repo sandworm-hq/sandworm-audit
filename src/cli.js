@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 const fs = require('fs/promises');
 const path = require('path');
-const {getChartsSVG} = require('.');
+const {getReport} = require('.');
 
 const logger = console;
 let currentSpinner;
 
 const getStartMessage = (stage) => {
   switch (stage) {
-    case 'sizes':
-      return 'Getting sizes...';
+    case 'graph':
+      return 'Building dependency graph...';
     case 'vulnerabilities':
       return 'Getting vulnerability list...';
     case 'tree':
@@ -23,8 +23,8 @@ const getStartMessage = (stage) => {
 
 const getEndMessage = (stage) => {
   switch (stage) {
-    case 'sizes':
-      return 'Computed package sizes';
+    case 'graph':
+      return 'Built dependency graph';
     case 'vulnerabilities':
       return 'Got vulnerabilities';
     case 'tree':
@@ -107,7 +107,7 @@ require('yargs')
       logger.log('\x1b[36m%s\x1b[0m', `Sinkchart 🧭`);
       const {default: ora} = await import('ora');
 
-      const {svgs, name, version} = await getChartsSVG({
+      const {svgs, name, version} = await getReport({
         types: argv.t ? [argv.t] : undefined,
         appPath: argv.p,
         includeDev: argv.d,
