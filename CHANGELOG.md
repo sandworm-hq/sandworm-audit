@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.7.1...sinkchart-v1.8.0) (2023-01-13)
+
+
+### Features
+
+* allow providing custom dep graphs ([e3b4a77](https://github.com/sandworm-hq/sinkchart/commit/e3b4a77a048b6828e64462b7555d8f975c23635c))
+
 ## [1.7.1](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.7.0...sinkchart-v1.7.1) (2023-01-12)
 
 
