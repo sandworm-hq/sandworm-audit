@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.8.0...sinkchart-v1.9.0) (2023-01-21)
+
+
+### Features
+
+* better vulnerability reporting ([976dad6](https://github.com/sandworm-hq/sinkchart/commit/976dad6486bdb75587715b433bd8f4bcbd12ff06))
+
 ## [1.8.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.7.1...sinkchart-v1.8.0) (2023-01-13)
 
 
