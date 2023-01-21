@@ -1,6 +1,7 @@
 const {getDependencyGraph, addDependencyGraphData} = require('sandworm-utils');
-const {getVulnerabilities} = require('./vulnerabilities');
+const {getDependencyVulnerabilities} = require('./vulnerabilities/dependencies');
 const {buildTree, buildTreemap} = require('./charts');
+const {getReports} = require('./vulnerabilities/utils');
 
 const getReport = async ({
   types = ['tree', 'treemap'],
@@ -14,24 +15,26 @@ const getReport = async ({
   dependencyGraph,
 }) => {
   onProgress({type: 'start', stage: 'graph'});
-  const packageTree = (
+  const packageGraph = (
     dependencyGraph || (await getDependencyGraph(appPath, {loadDataFromDisk: true}))
   ).root;
   onProgress({type: 'end', stage: 'graph'});
 
   onProgress({type: 'start', stage: 'vulnerabilities'});
-  const vulnerabilities = await getVulnerabilities({
+  const dependencyVulnerabilities = await getDependencyVulnerabilities({
     appPath,
-    packageManager: packageTree.meta.packageManager,
+    packageManager: packageGraph.meta.packageManager,
+    packageGraph,
     onProgress: (message) => onProgress({type: 'update', stage: 'vulnerabilities', message}),
   });
+  const rootVulnerabilities = await getReports(packageGraph.name, packageGraph.version, packageGraph);
   onProgress({type: 'end', stage: 'vulnerabilities'});
 
   const options = {
     showVersions,
     width,
     maxDepth,
-    vulnerabilities,
+    vulnerabilities: dependencyVulnerabilities,
     includeDev,
     showLicenseInfo,
     onProgress: (message) => onProgress({type: 'update', stage: 'chart', message}),
@@ -47,7 +50,7 @@ const getReport = async ({
     const method = methods[type];
 
     onProgress({type: 'start', stage: type});
-    const chart = await method.call(method, packageTree, options);
+    const chart = await method.call(method, packageGraph, options);
     onProgress({type: 'end', stage: type});
 
     current[type] = chart;
@@ -56,10 +59,11 @@ const getReport = async ({
   }, Promise.resolve({}));
 
   return {
-    vulnerabilities,
+    dependencyVulnerabilities,
+    rootVulnerabilities,
     svgs,
-    name: packageTree.name,
-    version: packageTree.version,
+    name: packageGraph.name,
+    version: packageGraph.version,
   };
 };
 

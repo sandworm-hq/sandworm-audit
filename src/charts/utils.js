@@ -72,17 +72,6 @@ const addSandwormLogo = (svg, x, y, width) => {
     .attr('opacity', 0.8);
 };
 
-const addVulnerabilities = (node, vulnerabilities) =>
-  node
-    .filter((d) => vulnerabilities[d.data.name])
-    .append('vulnerabilities')
-    .selectAll('vulnerability')
-    .data((d) => vulnerabilities[d.data.name])
-    .join('vulnerability')
-    .attr('title', (d) => d.title)
-    .attr('url', (d) => d.url)
-    .attr('via', (d) => (typeof d === 'string' ? d : undefined));
-
 const addLicenseData = (node) =>
   node
     .filter((d) => d.data.license)
@@ -112,23 +101,39 @@ const processGraph = (node, options = {}, depth = 0, history = []) => {
   });
 };
 
-const getIssueLevel = (d, vulnerabilities, includeLicenseIssues = false) => {
-  const vulnerability = vulnerabilities[d.data.name];
-  if (vulnerability) {
-    if (!vulnerability[0].via) {
-      return 'direct';
-    }
-    return 'indirect';
-  }
+const getVulnerabilityReports = (d, vulnerabilities) =>
+  vulnerabilities.filter(({findings}) =>
+    findings.affects.find(({name, version}) => d.data.name === name && d.data.version === version),
+  );
 
+const getIssueLevel = (d, vulnerabilities, includeLicenseIssues = false) => {
   if (includeLicenseIssues) {
     if (!d.data.license || d.data.license.toUpperCase() === 'UNLICENSED') {
       return 'direct';
     }
   }
 
+  const reports = getVulnerabilityReports(d, vulnerabilities);
+  if (reports.length) {
+    if (reports.find(({name}) => d.data.name === name)) {
+      return 'direct';
+    }
+    return 'indirect';
+  }
+
   return 'none';
 };
+
+const addVulnerabilities = (node, vulnerabilities) =>
+  node
+    .filter((d) => getVulnerabilityReports(d, vulnerabilities))
+    .append('vulnerabilities')
+    .selectAll('vulnerability')
+    .data((d) => getVulnerabilityReports(d, vulnerabilities))
+    .join('vulnerability')
+    .attr('title', (d) => d.title)
+    .attr('url', (d) => d.url);
+// .attr('via', (d) => (typeof d === 'string' ? d : undefined));
 
 module.exports = {
   getModuleName,
@@ -141,5 +146,6 @@ module.exports = {
   addLicenseData,
   aggregateDependencies,
   processGraph,
+  getVulnerabilityReports,
   getIssueLevel,
 };

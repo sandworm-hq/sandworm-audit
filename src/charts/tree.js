@@ -8,6 +8,7 @@ const {
   processGraph,
   addLicenseData,
   getIssueLevel,
+  getVulnerabilityReports,
 } = require('./utils');
 
 // Modified from the original source below
@@ -20,7 +21,7 @@ const buildTree = (
     tree,
     showVersions = false,
     width = 1000,
-    vulnerabilities = {},
+    vulnerabilities = [],
     maxDepth = Infinity,
     includeDev = false,
     showLicenseInfo = false,
@@ -59,8 +60,8 @@ const buildTree = (
     return '#fff7c4';
   };
   const lineColor = (d1, d2) => {
-    const vulnerability = vulnerabilities[d2.data.name];
-    if (vulnerability) {
+    const destinationVulnerabilities = getVulnerabilityReports(d2, vulnerabilities);
+    if (destinationVulnerabilities.length) {
       return 'red';
     }
     return 'black';

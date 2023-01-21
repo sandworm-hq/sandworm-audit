@@ -22,7 +22,7 @@ function buildTreemap(
   {
     tile,
     width = 1000, // outer width, in pixels
-    vulnerabilities = {},
+    vulnerabilities = [],
     maxDepth = Infinity,
     includeDev = false,
     showLicenseInfo = false,
