@@ -14,6 +14,7 @@ const getReport = async ({
   onProgress = () => {},
   dependencyGraph,
 }) => {
+  const errors = [];
   onProgress({type: 'start', stage: 'graph'});
   const packageGraph = (
     dependencyGraph || (await getDependencyGraph(appPath, {loadDataFromDisk: true}))
@@ -21,13 +22,25 @@ const getReport = async ({
   onProgress({type: 'end', stage: 'graph'});
 
   onProgress({type: 'start', stage: 'vulnerabilities'});
-  const dependencyVulnerabilities = await getDependencyVulnerabilities({
-    appPath,
-    packageManager: packageGraph.meta.packageManager,
-    packageGraph,
-    onProgress: (message) => onProgress({type: 'update', stage: 'vulnerabilities', message}),
-  });
-  const rootVulnerabilities = await getReports(packageGraph.name, packageGraph.version, packageGraph);
+  let dependencyVulnerabilities;
+  let rootVulnerabilities;
+
+  try {
+    dependencyVulnerabilities = await getDependencyVulnerabilities({
+      appPath,
+      packageManager: packageGraph.meta.packageManager,
+      packageGraph,
+      onProgress: (message) => onProgress({type: 'update', stage: 'vulnerabilities', message}),
+    });
+  } catch (error) {
+    errors.push(error);
+  }
+
+  try {
+    rootVulnerabilities = await getReports(packageGraph.name, packageGraph.version, packageGraph)
+  } catch (error) {
+    errors.push(error);
+  }
   onProgress({type: 'end', stage: 'vulnerabilities'});
 
   const options = {
@@ -59,11 +72,12 @@ const getReport = async ({
   }, Promise.resolve({}));
 
   return {
-    dependencyVulnerabilities,
-    rootVulnerabilities,
+    dependencyVulnerabilities: dependencyVulnerabilities.filter(({findings: {affects}}) => affects.length),
+    rootVulnerabilities: rootVulnerabilities.filter(({findings: {affects}}) => affects.length),
     svgs,
     name: packageGraph.name,
     version: packageGraph.version,
+    errors,
   };
 };
 
