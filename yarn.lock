@@ -2780,10 +2780,10 @@ safe-regex-test@^1.0.0:
   resolved "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-sandworm-utils@1.11.0:
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/sandworm-utils/-/sandworm-utils-1.11.0.tgz#3189917538c1d3f108886cf1ba37be1c9ea7b9f9"
-  integrity sha512-f/IYDxo1LN218AAu4JonEZddTtjXgVo9AluqtKypw0M5HFLrSRQT+3SXTerS7r8/WsqDQ8xn6wJF86SYY1u8pg==
+sandworm-utils@1.11.1:
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/sandworm-utils/-/sandworm-utils-1.11.1.tgz#29f8e83da28f2b12dbb39e8f6b202b9bfde3ae18"
+  integrity sha512-hoMj5+rrm24nwzRdNDVpQxu1H4YBJul6O2CR9VMdsNVR2zxdTVeDnXTLmyHcb+2VHvf/A4nRm8WXNwZ7nhvSmA==
   dependencies:
     "@pnpm/lockfile-file" "6.0.2"
     "@pnpm/logger" "5.0.0"
@@ -2818,7 +2818,7 @@ semver@7.3.7:
   dependencies:
     lru-cache "^6.0.0"
 
-semver@7.3.8, semver@^7.3.4:
+semver@7.3.8, semver@^7.3.4, semver@^7.3.8:
   version "7.3.8"
   resolved "https://registry.npmjs.org/semver/-/semver-7.3.8.tgz"
   integrity sha512-NB1ctGL5rlHrPJtFDVIVzTyQylMLu9N9VICA6HSFJo8MCGVTMW6gfpicwKmmK/dAjTOrqu5l63JJOpDSrAis3A==
@@ -2829,13 +2829,6 @@ semver@^6.3.0:
   version "6.3.0"
   resolved "https://registry.npmjs.org/semver/-/semver-6.3.0.tgz"
   integrity sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==
-
-semver@^7.3.8:
-  version "7.3.8"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-7.3.8.tgz#07a78feafb3f7b32347d725e33de7e2a2df67798"
-  integrity sha512-NB1ctGL5rlHrPJtFDVIVzTyQylMLu9N9VICA6HSFJo8MCGVTMW6gfpicwKmmK/dAjTOrqu5l63JJOpDSrAis3A==
-  dependencies:
-    lru-cache "^6.0.0"
 
 shebang-command@^2.0.0:
   version "2.0.0"
