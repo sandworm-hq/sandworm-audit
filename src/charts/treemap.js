@@ -47,13 +47,13 @@ function buildTreemap(
       includeDev,
       postprocess: (node) => {
         if (node.children.length > 0) {
-          // eslint-disable-next-line no-param-reassign
-          node.size = 0;
           node.children.push({
             ...node,
             dependencies: undefined,
             children: [],
           });
+          // eslint-disable-next-line no-param-reassign
+          node.size = 0;
         }
 
         return node;
@@ -88,7 +88,7 @@ function buildTreemap(
   };
 
   // Compute the values of internal nodes by aggregating from the leaves.
-  root.sum((d) => Math.max(0, d.size));
+  root.sum((d) => Math.max(0, d.size || 1));
   // Sort the leaves (typically by descending value for a pleasing layout).
   root.sort((a, b) => d3.descending(a.value, b.value));
 
