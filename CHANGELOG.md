@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.10.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.9.0...sinkchart-v1.10.0) (2023-01-22)
+
+
+### Features
+
+* better package size estimation ([c98752f](https://github.com/sandworm-hq/sinkchart/commit/c98752f5b7ae5ce0fcb0fb05532b37664cda1974))
+* better treemap package labeling ([3bfadd7](https://github.com/sandworm-hq/sinkchart/commit/3bfadd7a0a17e7950009985c06b8f66216fae4e4))
+* better vulnerability reporting ([e33941e](https://github.com/sandworm-hq/sinkchart/commit/e33941eb27276c9a780489e5672e123f55459cd2))
+
+
+### Bug Fixes
+
+* root vulnerabilities access ([1c39fab](https://github.com/sandworm-hq/sinkchart/commit/1c39fab1863c5d7bad8955bf4202aa147af7983c))
+* treemap now represents root module sizes ([958e7b0](https://github.com/sandworm-hq/sinkchart/commit/958e7b07809e38b8d1240584b3e46760b65df475))
+
 ## [1.9.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.8.0...sinkchart-v1.9.0) (2023-01-21)
 
 
