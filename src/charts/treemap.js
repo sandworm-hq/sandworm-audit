@@ -166,7 +166,11 @@ function buildTreemap(
     .append('text')
     .attr('clip-path', (d) => d.clipUid.href)
     .selectAll('tspan')
-    .data((d) => `${d.data.name}\n${humanFileSize(d.value)}`.split(/\n/g))
+    .data((d) =>
+      `${d.data.name}${d.children?.length ? ' + deps' : ''}\n${humanFileSize(d.value)}`.split(
+        /\n/g,
+      ),
+    )
     .join('tspan')
     .attr('fill-opacity', (d, i, D) => (i === D.length - 1 ? 0.7 : null))
     .text((d) => d);
