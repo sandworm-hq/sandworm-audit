@@ -73,7 +73,7 @@ const getReport = async ({
 
   return {
     dependencyVulnerabilities: dependencyVulnerabilities.filter(({findings: {affects}}) => affects.length),
-    rootVulnerabilities: rootVulnerabilities.filter(({findings: {affects}}) => affects.length),
+    rootVulnerabilities,
     svgs,
     name: packageGraph.name,
     version: packageGraph.version,
