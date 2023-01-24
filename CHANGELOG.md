@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.10.0...sinkchart-v1.11.0) (2023-01-24)
+
+
+### Features
+
+* output all dependency data as csv ([eb92647](https://github.com/sandworm-hq/sinkchart/commit/eb9264766631ef3c17a8c64cbde72b7ca66b8b90))
+
 ## [1.10.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.9.0...sinkchart-v1.10.0) (2023-01-22)
 
 
