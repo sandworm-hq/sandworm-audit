@@ -2,6 +2,7 @@ const {getDependencyGraph, addDependencyGraphData} = require('sandworm-utils');
 const {getDependencyVulnerabilities} = require('./vulnerabilities/dependencies');
 const {buildTree, buildTreemap} = require('./charts');
 const {getReports} = require('./vulnerabilities/utils');
+const csv = require('./charts/csv');
 
 const getReport = async ({
   types = ['tree', 'treemap'],
@@ -16,9 +17,8 @@ const getReport = async ({
 }) => {
   const errors = [];
   onProgress({type: 'start', stage: 'graph'});
-  const packageGraph = (
-    dependencyGraph || (await getDependencyGraph(appPath, {loadDataFromDisk: true}))
-  ).root;
+  const dGraph = dependencyGraph || (await getDependencyGraph(appPath, {loadDataFromDisk: true}));
+  const packageGraph = dGraph.root;
   onProgress({type: 'end', stage: 'graph'});
 
   onProgress({type: 'start', stage: 'vulnerabilities'});
@@ -71,10 +71,21 @@ const getReport = async ({
     return current;
   }, Promise.resolve({}));
 
+  onProgress({type: 'start', stage: 'csv'});
+  let csvData;
+  try {
+    csvData = csv(dGraph.all);
+  } catch (error) {
+    errors.push(error);
+  }
+  onProgress({type: 'end', stage: 'csv'});
+
   return {
+    dependencyGraph: dGraph,
     dependencyVulnerabilities: dependencyVulnerabilities.filter(({findings: {affects}}) => affects.length),
     rootVulnerabilities,
     svgs,
+    csv: csvData,
     name: packageGraph.name,
     version: packageGraph.version,
     errors,

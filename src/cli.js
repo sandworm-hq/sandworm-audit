@@ -16,6 +16,8 @@ const getStartMessage = (stage) => {
       return 'Drawing tree chart...';
     case 'treemap':
       return 'Drawing treemap chart...';
+    case 'csv':
+      return 'Building CSV...';
     default:
       return '';
   }
@@ -31,6 +33,8 @@ const getEndMessage = (stage) => {
       return 'Tree chart done';
     case 'treemap':
       return 'Treemap chart done';
+    case 'csv':
+      return 'CSV done';
     default:
       return '';
   }
@@ -107,7 +111,7 @@ require('yargs')
       logger.log('\x1b[36m%s\x1b[0m', `Sinkchart 🧭`);
       const {default: ora} = await import('ora');
 
-      const {svgs, name, version} = await getReport({
+      const {svgs, csv, name, version} = await getReport({
         types: argv.t ? [argv.t] : undefined,
         appPath: argv.p,
         includeDev: argv.d,
@@ -124,6 +128,8 @@ require('yargs')
         await fs.mkdir(path.dirname(outputPath), {recursive: true});
         await fs.writeFile(outputPath, svgs[chartType]);
       }, Promise.resolve());
+      const csvOutputPath = path.join(argv.p, argv.o, `${name}@${version}-dependencies.csv`);
+      await fs.writeFile(csvOutputPath, csv);
       currentSpinner.stopAndPersist({symbol: '✨', text: 'Done'});
     },
   )
