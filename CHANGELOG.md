@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.11.0...sinkchart-v1.12.0) (2023-01-25)
+
+
+### Features
+
+* expose array with processed dependency data ([557cfe4](https://github.com/sandworm-hq/sinkchart/commit/557cfe41710e9c651fe0489dc3785a8e2572c0da))
+
 ## [1.11.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.10.0...sinkchart-v1.11.0) (2023-01-24)
 
 
