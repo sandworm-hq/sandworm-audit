@@ -32,5 +32,8 @@ module.exports = (dependencies) => {
     }),
   );
 
-  return jsonToCsv(processedDependencies);
+  return {
+    csvData: jsonToCsv(processedDependencies),
+    jsonData: processedDependencies,
+  };
 };

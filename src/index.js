@@ -73,8 +73,9 @@ const getReport = async ({
 
   onProgress({type: 'start', stage: 'csv'});
   let csvData;
+  let jsonData;
   try {
-    csvData = csv(dGraph.all);
+    ({csvData, jsonData} = csv(dGraph.all));
   } catch (error) {
     errors.push(error);
   }
@@ -86,6 +87,7 @@ const getReport = async ({
     rootVulnerabilities,
     svgs,
     csv: csvData,
+    allDependencies: jsonData,
     name: packageGraph.name,
     version: packageGraph.version,
     errors,
