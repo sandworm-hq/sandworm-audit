@@ -2780,10 +2780,10 @@ safe-regex-test@^1.0.0:
   resolved "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-sandworm-utils@1.12.0:
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/sandworm-utils/-/sandworm-utils-1.12.0.tgz#54bacf13dec36e055b3b6d9cac080ea6794967e6"
-  integrity sha512-rE1DgB40j6+w6551hDXQ+22fHRA5csOFXT1ODzVmw65bu3jM5ZtL78tAfzfxAbAk6llOwo0A+REwHwaRPglUWQ==
+sandworm-utils@1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/sandworm-utils/-/sandworm-utils-1.12.1.tgz#54d3661f0e3a27d39e6ffe820444ee45fcb1aec1"
+  integrity sha512-lbguynjEZSa4EaWnqwDxOpFQBnt1feEN75JW6+tVV3lxLFI/qlmPwCpVf7j5yIm/d1cGBfRijCtCN9A1wieugA==
   dependencies:
     "@pnpm/lockfile-file" "6.0.2"
     "@pnpm/logger" "5.0.0"
