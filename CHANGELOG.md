@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.1](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.13.0...sinkchart-v1.13.1) (2023-01-27)
+
+
+### Bug Fixes
+
+* json license data parsing ([c625d06](https://github.com/sandworm-hq/sinkchart/commit/c625d06942ff59464e519e73244a8f0fdd66cb81))
+
 ## [1.13.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.12.0...sinkchart-v1.13.0) (2023-01-27)
 
 
