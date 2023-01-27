@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.12.0...sinkchart-v1.13.0) (2023-01-27)
+
+
+### Features
+
+* support json stringified licence data ([fff0585](https://github.com/sandworm-hq/sinkchart/commit/fff0585592943978036310791177d2f47d514901))
+
 ## [1.12.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.11.0...sinkchart-v1.12.0) (2023-01-25)
 
 
