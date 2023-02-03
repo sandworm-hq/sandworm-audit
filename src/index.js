@@ -1,7 +1,8 @@
 const {getDependencyGraph, addDependencyGraphData} = require('sandworm-utils');
-const {getDependencyVulnerabilities} = require('./vulnerabilities/dependencies');
+const {getDependencyVulnerabilities} = require('./issues/vulnerabilities');
+const { getLicenseIssues, getLicenseUsage } = require('./issues/license');
 const {buildTree, buildTreemap} = require('./charts');
-const {getReports} = require('./vulnerabilities/utils');
+const {getReports} = require('./issues/utils');
 const csv = require('./charts/csv');
 
 const getReport = async ({
@@ -24,6 +25,8 @@ const getReport = async ({
   onProgress({type: 'start', stage: 'vulnerabilities'});
   let dependencyVulnerabilities;
   let rootVulnerabilities;
+  let licenseUsage;
+  let licenseIssues;
 
   try {
     dependencyVulnerabilities = await getDependencyVulnerabilities({
@@ -41,6 +44,14 @@ const getReport = async ({
   } catch (error) {
     errors.push(error);
   }
+
+  try {
+    licenseUsage = await getLicenseUsage({dependencies: dGraph.prodDependencies});
+    licenseIssues = await getLicenseIssues({licenseUsage, packageGraph});
+  } catch (error) {
+    errors.push(error);
+  }
+
   onProgress({type: 'end', stage: 'vulnerabilities'});
 
   const options = {
@@ -85,6 +96,8 @@ const getReport = async ({
     dependencyGraph: dGraph,
     dependencyVulnerabilities: dependencyVulnerabilities.filter(({findings: {affects}}) => affects.length),
     rootVulnerabilities,
+    licenseUsage,
+    licenseIssues,
     svgs,
     csv: csvData,
     allDependencies: jsonData,
