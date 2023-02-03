@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.13.1...sinkchart-v1.14.0) (2023-02-03)
+
+
+### Features
+
+* output license usage and issues ([99aa988](https://github.com/sandworm-hq/sinkchart/commit/99aa988001b22c64313fd5f28231a1401c539a90))
+
 ## [1.13.1](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.13.0...sinkchart-v1.13.1) (2023-01-27)
 
 
