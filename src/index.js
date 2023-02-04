@@ -16,11 +16,14 @@ const getReport = async ({
   dependencyGraph,
 }) => {
   const errors = [];
+
+  // Generate the dependency graph
   onProgress({type: 'start', stage: 'graph'});
   const dGraph = dependencyGraph || (await getDependencyGraph(appPath, {loadDataFromDisk: true}));
   const packageGraph = dGraph.root;
   onProgress({type: 'end', stage: 'graph'});
 
+  // Get vulnerabilities
   onProgress({type: 'start', stage: 'vulnerabilities'});
   let dependencyVulnerabilities;
   let rootVulnerabilities;
@@ -43,16 +46,19 @@ const getReport = async ({
   } catch (error) {
     errors.push(error);
   }
+  onProgress({type: 'end', stage: 'vulnerabilities'});
 
+  // Get license info and issues
+  onProgress({type: 'start', stage: 'licenses'});
   try {
     licenseUsage = await getLicenseUsage({dependencies: dGraph.prodDependencies});
     licenseIssues = await getLicenseIssues({licenseUsage, packageGraph});
   } catch (error) {
     errors.push(error);
   }
+  onProgress({type: 'end', stage: 'licenses'});
 
-  onProgress({type: 'end', stage: 'vulnerabilities'});
-
+  // Generate charts
   const options = {
     showVersions,
     width,
@@ -82,6 +88,7 @@ const getReport = async ({
     return current;
   }, Promise.resolve({}));
 
+  // Generate CSV
   onProgress({type: 'start', stage: 'csv'});
   let csvData;
   let jsonData;

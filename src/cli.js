@@ -12,6 +12,8 @@ const getStartMessage = (stage) => {
       return 'Building dependency graph...';
     case 'vulnerabilities':
       return 'Getting vulnerability list...';
+    case 'licenses':
+      return 'Scanning licenses...';
     case 'tree':
       return 'Drawing tree chart...';
     case 'treemap':
@@ -29,6 +31,8 @@ const getEndMessage = (stage) => {
       return 'Built dependency graph';
     case 'vulnerabilities':
       return 'Got vulnerabilities';
+    case 'licenses':
+      return 'Scanned licenses';
     case 'tree':
       return 'Tree chart done';
     case 'treemap':
