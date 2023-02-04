@@ -2,8 +2,7 @@
 
 const getBody = (string) => string.substring(string.indexOf('{') + 1, string.lastIndexOf('}'));
 
-const setupTooltips = (options) => {
-  const {showLicenseInfo} = options;
+const setupTooltips = () => {
   let tooltipLock = false;
   const tooltip = document.getElementById('tooltip');
   const tooltipContainer = document.getElementById('tooltip-container');
@@ -14,30 +13,23 @@ const setupTooltips = (options) => {
   const [offsetX, offsetY, viewBoxWidth, viewBoxHeight] = viewBox.split(',').map(parseFloat);
   const maxX = offsetX + viewBoxWidth;
   const maxY = offsetY + viewBoxHeight;
-  const getHTML = (ancestry, vulnerabilities, licenseName) => {
+  const getHTML = (ancestry, issues, licenseName) => {
     let html =
       '<div style="padding: 2px; background: #777; color: white; margin-bottom: 2px;">Path</div>';
     html += `<div>${ancestry.join('<br/>')}</div>`;
 
-    if (vulnerabilities.length) {
-      html +=
-        '<div style="padding: 2px; background: #777; color: white; margin: 2px 0;">Vulnerabilities</div>';
-      vulnerabilities.forEach(({title, url}) => {
-        html += `<div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">🔴 <a href="${url}" target="_blank">${title}</a></div>`;
-      });
-    }
-
-    if (licenseName !== false) {
-      html +=
+    html +=
         '<div style="padding: 2px; background: #777; color: white; margin: 2px 0;">License</div>';
-      if (!licenseName) {
-        html += '<div>🔴 UNKNOWN</div>';
-      } else if (licenseName.toUpperCase() === 'UNLICENSED') {
-        html += '<div>🔴 COMMERCIAL</div>';
-      } else {
-        html += `<div>${licenseName}</div>`;
-      }
+    html += `<div>${licenseName || 'N/A'}</div>`;
 
+    if (issues.length) {
+      html +=
+        '<div style="padding: 2px; background: #777; color: white; margin: 2px 0;">Issues</div>';
+        issues.forEach(({title, url}) => {
+        html += `<div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+          🔴 ${url ? `<a href="${url}" target="_blank">` : ''}${title}${url ? '</a>' : ''}
+        </div>`;
+      });
     }
 
     return html;
@@ -56,11 +48,11 @@ const setupTooltips = (options) => {
       !a.classList.contains('depth-group')
     ) {
       const ancestry = a.getElementsByTagName('ancestry')[0].getAttribute('data').split('>');
-      const vulnerabilities = Array.prototype.slice
-        .call((a.getElementsByTagName('vulnerabilities')[0] || {}).children || [])
-        .map((vulnerability) => ({
-          title: vulnerability.getAttribute('title'),
-          url: vulnerability.getAttribute('url'),
+      const issues = Array.prototype.slice
+        .call((a.getElementsByTagName('issues')[0] || {}).children || [])
+        .map((issue) => ({
+          title: issue.getAttribute('title'),
+          url: issue.getAttribute('url'),
         }));
       const target = a.getElementsByTagName('text')[0];
       let licenseName = null;
@@ -72,8 +64,8 @@ const setupTooltips = (options) => {
         if (!tooltipLock) {
           tooltipContent.innerHTML = getHTML(
             ancestry,
-            vulnerabilities,
-            showLicenseInfo ? licenseName : false,
+            issues,
+            licenseName,
           );
           const {width: currentWidth} = document.documentElement.getBoundingClientRect();
           const scale = currentWidth / viewBoxWidth;
@@ -81,17 +73,15 @@ const setupTooltips = (options) => {
             10 + // top/bottom padding
             18 + // path header
             ancestry.length * 11.5 + // path section height
-            (vulnerabilities.length ? 20 : 0) + // vulnerabilities header
-            vulnerabilities.length * 15 + // vulnerabilities
-            (showLicenseInfo
-              ? 20 + // license header
-                15 // license body
-              : 0);
+            (issues.length ? 20 : 0) + // vulnerabilities header
+            issues.length * 15 + // vulnerabilities
+            20 + // license header
+            15; // license body
           const maxAncestorNameLength = ancestry.reduce(
             (length, name) => (name.length > length ? name.length : length),
             0,
           );
-          const width = vulnerabilities.length ? 180 : maxAncestorNameLength * 6 + 10;
+          const width = issues.length ? 180 : maxAncestorNameLength * 6 + 10;
           const source = event.composedPath().find((e) => e.nodeName === 'g');
           const rect = source.getBoundingClientRect();
           const defaultPositionX = offsetX + (rect.left + window.scrollX) / scale;
@@ -131,7 +121,7 @@ const setupTooltips = (options) => {
   });
 };
 
-const addTooltips = (svg, {showLicenseInfo = false}) => {
+const addTooltips = (svg) => {
   const tooltip = svg.append('g').attr('id', 'tooltip').attr('visibility', 'hidden');
 
   tooltip
@@ -159,7 +149,6 @@ const addTooltips = (svg, {showLicenseInfo = false}) => {
 
   svg.append('script').text(`
   //<![CDATA[
-    const options = {showLicenseInfo: ${showLicenseInfo.toString()}};
     ${getBody(setupTooltips.toString())}
   //]]>
   `);

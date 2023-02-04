@@ -7,7 +7,7 @@ const {
   getUid,
   humanFileSize,
   addSandwormLogo,
-  addVulnerabilities,
+  addIssues,
   processGraph,
   addLicenseData,
   getIssueLevel,
@@ -22,10 +22,9 @@ function buildTreemap(
   {
     tile,
     width = 1000, // outer width, in pixels
-    vulnerabilities = [],
+    issues = [],
     maxDepth = Infinity,
     includeDev = false,
-    showLicenseInfo = false,
   } = {},
 ) {
   const d3n = new D3Node();
@@ -63,7 +62,7 @@ function buildTreemap(
 
   const color = d3.scaleSequential([0, root.height], d3.interpolateBrBG);
   const nodeColor = (d) => {
-    const issueLevel = getIssueLevel(d, vulnerabilities, showLicenseInfo);
+    const issueLevel = getIssueLevel(d, issues);
     if (issueLevel === 'direct') {
       return 'red';
     }
@@ -73,14 +72,14 @@ function buildTreemap(
     return getModuleCallCount(d) > 0 ? `url(#p-dots-0) ${color(d.height)}` : color(d.height);
   };
   const nodeStroke = (d) => {
-    const issueLevel = getIssueLevel(d, vulnerabilities, showLicenseInfo);
+    const issueLevel = getIssueLevel(d, issues);
     if (issueLevel !== 'none') {
       return 'red';
     }
     return undefined;
   };
   const nodeFillOpacity = (d) => {
-    const issueLevel = getIssueLevel(d, vulnerabilities, showLicenseInfo);
+    const issueLevel = getIssueLevel(d, issues);
     if (issueLevel === 'direct') {
       return 1;
     }
@@ -151,7 +150,7 @@ function buildTreemap(
 
   node.append('ancestry').attr('data', (d) => `${getAncestors(d).join('>')}`);
 
-  addVulnerabilities(node, vulnerabilities);
+  addIssues(node, issues);
   addLicenseData(node);
 
   node
@@ -187,7 +186,7 @@ function buildTreemap(
     .attr('x', 3)
     .attr('y', (d, i, nodes) => `${(i === nodes.length - 1) * 0.3 + 1.1 + i * 0.9}em`);
 
-  addTooltips(svg, {showLicenseInfo});
+  addTooltips(svg);
 
   return d3n.svgString();
 }

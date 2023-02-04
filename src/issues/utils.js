@@ -26,11 +26,20 @@ const getAllPackagesFromPaths = (paths) =>
 const getRootPackagesFromPaths = (paths) =>
   paths.reduce((agg, path) => (includesPackage(agg, path[0]) ? agg : [...agg, path[0]]), []);
 
+const getTargetPackagesFromPaths = (paths) =>
+  paths.reduce(
+    (agg, path) =>
+      includesPackage(agg, path[path.length - 1]) ? agg : [...agg, path[path.length - 1]],
+    [],
+  );
+
 const getDisplayPaths = (paths) => paths.map((path) => path.map(({name}) => name).join('>'));
 
-const getFindings = (packageGraph, packageName, range) => {
+const getFindings = ({packageGraph, packageName, range, allPathsAffected = true}) => {
   const allPaths = getPathsForPackage(packageGraph, packageName, range);
-  const affects = getAllPackagesFromPaths(allPaths);
+  const affects = allPathsAffected
+    ? getAllPackagesFromPaths(allPaths)
+    : getTargetPackagesFromPaths(allPaths);
   const rootDependencies = getRootPackagesFromPaths(allPaths);
   const paths = getDisplayPaths(allPaths);
 
@@ -43,7 +52,11 @@ const getFindings = (packageGraph, packageName, range) => {
 
 const reportFromAdvisory = (advisory, packageGraph) => ({
   ...advisory,
-  findings: getFindings(packageGraph, advisory.module_name, advisory.vulnerable_versions),
+  findings: getFindings({
+    packageGraph,
+    packageName: advisory.module_name,
+    range: advisory.vulnerable_versions,
+  }),
   name: advisory.module_name,
   range: advisory.vulnerable_versions,
 });

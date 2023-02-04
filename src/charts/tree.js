@@ -4,11 +4,11 @@ const {
   getModuleName,
   addSandwormLogo,
   getAncestors,
-  addVulnerabilities,
+  addIssues,
   processGraph,
   addLicenseData,
   getIssueLevel,
-  getVulnerabilityReports,
+  getReportsForNode,
 } = require('./utils');
 
 // Modified from the original source below
@@ -21,10 +21,9 @@ const buildTree = (
     tree,
     showVersions = false,
     width = 1000,
-    vulnerabilities = [],
+    issues = [],
     maxDepth = Infinity,
     includeDev = false,
-    showLicenseInfo = false,
   } = {},
 ) => {
   const d3n = new D3Node();
@@ -38,7 +37,7 @@ const buildTree = (
   );
   const nodeColor = (d) => color(getModuleName(d.ancestors().reverse()[1] || d));
   const textColor = (d) => {
-    const issueLevel = getIssueLevel(d, vulnerabilities, showLicenseInfo);
+    const issueLevel = getIssueLevel(d, issues);
     if (issueLevel === 'direct') {
       return 'red';
     }
@@ -48,19 +47,19 @@ const buildTree = (
     return '#333';
   };
   const textFontWeight = (d) => {
-    if (getIssueLevel(d, vulnerabilities, showLicenseInfo) === 'none') {
+    if (getIssueLevel(d, issues) === 'none') {
       return 'normal';
     }
     return 'bold';
   };
   const strokeColor = (d) => {
-    if (getIssueLevel(d, vulnerabilities, showLicenseInfo) === 'none') {
+    if (getIssueLevel(d, issues) === 'none') {
       return 'white';
     }
     return '#fff7c4';
   };
   const lineColor = (d1, d2) => {
-    const destinationVulnerabilities = getVulnerabilityReports(d2, vulnerabilities);
+    const destinationVulnerabilities = getReportsForNode(d2, issues);
     if (destinationVulnerabilities.length) {
       return 'red';
     }
@@ -132,7 +131,7 @@ const buildTree = (
 
   node.append('ancestry').attr('data', (d) => getAncestors(d).join('>'));
 
-  addVulnerabilities(node, vulnerabilities);
+  addIssues(node, issues);
   addLicenseData(node);
 
   node
@@ -147,7 +146,7 @@ const buildTree = (
     .attr('stroke', strokeColor)
     .text((d) => (showVersions ? getModuleName(d) : d.data.name));
 
-  addTooltips(svg, {showLicenseInfo});
+  addTooltips(svg);
 
   return d3n.svgString();
 };

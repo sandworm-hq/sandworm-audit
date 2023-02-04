@@ -87,24 +87,37 @@ module.exports = {
 
   getLicenseIssues: ({licenseUsage, packageGraph}) => {
     const issues = [];
-    const allLicenses = Object.keys(licenseUsage);
-
-    if (allLicenses.includes('N/A')) {
-      issues.push({
-        severity: 'critical',
-        title: 'Dependencies have no specified license',
-        dependencies: licenseUsage['N/A'].dependencies,
-      });
-    }
 
     Object.entries(licenseUsage).forEach(([licenseName, {meta, dependencies}]) => {
       const licenseType = meta?.type;
-
-      if (!licenseName.includes(' ') && !['Expression', 'N/A'].includes(licenseType)) {
+      if (licenseName === 'N/A') {
+        issues.push({
+          severity: 'critical',
+          title: 'Dependency has no specified license',
+          shortTitle: 'No license specified',
+          dependencies,
+        });
+      } else if (licenseName === 'UNLICENSED') {
+        issues.push({
+          severity: 'critical',
+          title: 'Dependency is explicitly not available for use under any terms',
+          shortTitle: 'Not licensed for use',
+          dependencies,
+        });
+      } else if (!licenseName.includes(' ')) {
         if (!licenseGroups.osiApproved.includes(licenseName)) {
           issues.push({
             severity: 'low',
-            title: `Dependencies use a license that is not OSI approved: ${licenseName}`,
+            title: `Dependency uses a license that is not OSI approved: ${licenseName}`,
+            shortTitle: 'License not OSI approved',
+            dependencies,
+          });
+        }
+        if (licenseGroups.deprecated.includes(licenseName)) {
+          issues.push({
+            severity: 'low',
+            title: `Dependency uses a deprecated license: ${licenseName}`,
+            shortTitle: 'License is deprecated',
             dependencies,
           });
         }
@@ -113,19 +126,22 @@ module.exports = {
       if (!licenseType || licenseType === 'Uncategorized') {
         issues.push({
           severity: 'high',
-          title: `Dependencies use an atypical license: ${licenseName}`,
+          title: `Dependency uses an atypical license: ${licenseName}`,
+          shortTitle: 'Atypical license',
           dependencies,
         });
       } else if (licenseType === 'Invalid') {
         issues.push({
           severity: 'high',
-          title: `Dependencies use an invalid SPDX license: ${licenseName}`,
+          title: `Dependency uses an invalid SPDX license: ${licenseName}`,
+          shortTitle: 'Invalid SPDX license',
           dependencies,
         });
       } else if (licenseType === 'Expression') {
         issues.push({
           severity: 'high',
-          title: `Dependencies use a custom license expression: ${licenseName}`,
+          title: `Dependency uses a custom license expression: ${licenseName}`,
+          shortTitle: 'Custom license expression',
           dependencies,
         });
       }
@@ -134,13 +150,15 @@ module.exports = {
         if (includes.includes(licenseName)) {
           issues.push({
             severity,
-            title: `Dependencies use potentially problematic license: ${licenseName}`,
+            title: `Dependency uses a problematic license: ${licenseName}`,
+            shortTitle: 'Problematic license',
             dependencies,
           });
         } else if (includes.includes(`cat:${licenseType}`)) {
           issues.push({
             severity,
-            title: `Dependencies use ${licenseType} license: ${licenseName}`,
+            title: `Dependency uses a problematic ${licenseType} license: ${licenseName}`,
+            shortTitle: 'Problematic license',
             dependencies,
           });
         }
@@ -148,14 +166,20 @@ module.exports = {
     });
 
     return issues.reduce(
-      (agg, {severity, title, dependencies}) =>
+      (agg, {severity, title, shortTitle, dependencies}) =>
         agg.concat(
           dependencies.map(({name, version}) => ({
             severity,
             title,
+            shortTitle,
             name,
             version,
-            findings: getFindings(packageGraph, name, version),
+            findings: getFindings({
+              packageGraph,
+              packageName: name,
+              range: version,
+              allPathsAffected: false,
+            }),
           })),
         ),
       [],

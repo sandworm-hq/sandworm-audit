@@ -1,5 +1,5 @@
 const {exec} = require('child_process');
-const { getFindings, reportFromAdvisory } = require('./utils');
+const {getFindings, reportFromAdvisory} = require('./utils');
 
 const fromNpm = (appPath, packageGraph) =>
   new Promise((resolve, reject) => {
@@ -19,11 +19,11 @@ const fromNpm = (appPath, packageGraph) =>
               .filter((v) => typeof v !== 'string')
               .forEach((v) => {
                 const report = {
-                  findings: getFindings(packageGraph, v.name, v.range),
+                  findings: getFindings({packageGraph, packageName: v.name, range: v.range}),
                   id: v.source,
                   name: v.name,
                   title: v.title,
-                  // overview: advisory.overview,
+                  // overview missing here,
                   url: v.url,
                   severity: v.severity,
                   range: v.range,

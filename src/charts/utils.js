@@ -101,19 +101,13 @@ const processGraph = (node, options = {}, depth = 0, history = []) => {
   });
 };
 
-const getVulnerabilityReports = (d, vulnerabilities) =>
-  vulnerabilities.filter(({findings}) =>
+const getReportsForNode = (d, issues) =>
+  issues.filter(({findings}) =>
     findings.affects.find(({name, version}) => d.data.name === name && d.data.version === version),
   );
 
-const getIssueLevel = (d, vulnerabilities, includeLicenseIssues = false) => {
-  if (includeLicenseIssues) {
-    if (!d.data.license || d.data.license.toUpperCase() === 'UNLICENSED') {
-      return 'direct';
-    }
-  }
-
-  const reports = getVulnerabilityReports(d, vulnerabilities);
+const getIssueLevel = (d, issues) => {
+  const reports = getReportsForNode(d, issues);
   if (reports.length) {
     if (reports.find(({name}) => d.data.name === name)) {
       return 'direct';
@@ -124,16 +118,15 @@ const getIssueLevel = (d, vulnerabilities, includeLicenseIssues = false) => {
   return 'none';
 };
 
-const addVulnerabilities = (node, vulnerabilities) =>
+const addIssues = (node, issues) =>
   node
-    .filter((d) => getVulnerabilityReports(d, vulnerabilities))
-    .append('vulnerabilities')
-    .selectAll('vulnerability')
-    .data((d) => getVulnerabilityReports(d, vulnerabilities))
-    .join('vulnerability')
-    .attr('title', (d) => d.title)
+    .filter((d) => getReportsForNode(d, issues))
+    .append('issues')
+    .selectAll('issue')
+    .data((d) => getReportsForNode(d, issues))
+    .join('issue')
+    .attr('title', (d) => d.shortTitle || d.title)
     .attr('url', (d) => d.url);
-// .attr('via', (d) => (typeof d === 'string' ? d : undefined));
 
 module.exports = {
   getModuleName,
@@ -142,10 +135,10 @@ module.exports = {
   getAncestors,
   groupByDepth,
   addSandwormLogo,
-  addVulnerabilities,
+  addIssues,
   addLicenseData,
   aggregateDependencies,
   processGraph,
-  getVulnerabilityReports,
+  getReportsForNode,
   getIssueLevel,
 };
