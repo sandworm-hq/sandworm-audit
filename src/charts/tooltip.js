@@ -3,6 +3,13 @@
 const getBody = (string) => string.substring(string.indexOf('{') + 1, string.lastIndexOf('}'));
 
 const setupTooltips = () => {
+  const SEVERITIES = ['critical', 'high', 'moderate', 'low'];
+  const SEVERITY_ICONS = {
+    critical: '🔴',
+    high: '🟠',
+    moderate: '🟡',
+    low: '⚪',
+  };
   let tooltipLock = false;
   const tooltip = document.getElementById('tooltip');
   const tooltipContainer = document.getElementById('tooltip-container');
@@ -13,21 +20,24 @@ const setupTooltips = () => {
   const [offsetX, offsetY, viewBoxWidth, viewBoxHeight] = viewBox.split(',').map(parseFloat);
   const maxX = offsetX + viewBoxWidth;
   const maxY = offsetY + viewBoxHeight;
+  const sortBySeverity = (a, b) => SEVERITIES.indexOf(a.severity) - SEVERITIES.indexOf(b.severity);
   const getHTML = (ancestry, issues, licenseName) => {
     let html =
       '<div style="padding: 2px; background: #777; color: white; margin-bottom: 2px;">Path</div>';
     html += `<div>${ancestry.join('<br/>')}</div>`;
 
     html +=
-        '<div style="padding: 2px; background: #777; color: white; margin: 2px 0;">License</div>';
+      '<div style="padding: 2px; background: #777; color: white; margin: 2px 0;">License</div>';
     html += `<div>${licenseName || 'N/A'}</div>`;
 
     if (issues.length) {
       html +=
         '<div style="padding: 2px; background: #777; color: white; margin: 2px 0;">Issues</div>';
-        issues.forEach(({title, url}) => {
+      issues.sort(sortBySeverity).forEach(({title, url, severity = 'critical'}) => {
         html += `<div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-          🔴 ${url ? `<a href="${url}" target="_blank">` : ''}${title}${url ? '</a>' : ''}
+          ${SEVERITY_ICONS[severity]} ${url ? `<a href="${url}" target="_blank">` : ''}${title}${
+          url ? '</a>' : ''
+        }
         </div>`;
       });
     }
@@ -53,6 +63,7 @@ const setupTooltips = () => {
         .map((issue) => ({
           title: issue.getAttribute('title'),
           url: issue.getAttribute('url'),
+          severity: issue.getAttribute('severity'),
         }));
       const target = a.getElementsByTagName('text')[0];
       let licenseName = null;
@@ -62,11 +73,7 @@ const setupTooltips = () => {
       }
       target.addEventListener('mouseover', (event) => {
         if (!tooltipLock) {
-          tooltipContent.innerHTML = getHTML(
-            ancestry,
-            issues,
-            licenseName,
-          );
+          tooltipContent.innerHTML = getHTML(ancestry, issues, licenseName);
           const {width: currentWidth} = document.documentElement.getBoundingClientRect();
           const scale = currentWidth / viewBoxWidth;
           const height =

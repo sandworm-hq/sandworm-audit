@@ -126,7 +126,8 @@ const addIssues = (node, issues) =>
     .data((d) => getReportsForNode(d, issues))
     .join('issue')
     .attr('title', (d) => d.shortTitle || d.title)
-    .attr('url', (d) => d.url);
+    .attr('url', (d) => d.url)
+    .attr('severity', (d) => d.severity);
 
 module.exports = {
   getModuleName,
