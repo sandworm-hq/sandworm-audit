@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.15.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.14.0...sinkchart-v1.15.0) (2023-02-05)
+
+
+### Features
+
+* charts now display license issues ([9b38f08](https://github.com/sandworm-hq/sinkchart/commit/9b38f089b624faf9dad4869a4b39d13501edb797))
+* cli now displays licence scanning phase ([b5467f8](https://github.com/sandworm-hq/sinkchart/commit/b5467f8ab633fdee45f32d81db798943e8a1b113))
+* configurable min severity level for charts ([2950408](https://github.com/sandworm-hq/sinkchart/commit/2950408da998eb294e6a37d105cc1d1d7bb79ddc))
+* icon now represents severity in node tooltip ([8ccfb97](https://github.com/sandworm-hq/sinkchart/commit/8ccfb97e99c69ec2c622850b7d4c0101a0c1fb64))
+
+
+### Bug Fixes
+
+* long license strings now truncated in tooltip ([50b0403](https://github.com/sandworm-hq/sinkchart/commit/50b0403976f433630e9a9f96698522da5a21450b))
+
 ## [1.14.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.13.1...sinkchart-v1.14.0) (2023-02-03)
 
 
