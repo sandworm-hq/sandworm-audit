@@ -26,7 +26,7 @@ const setupTooltips = () => {
 
     html +=
       '<div style="padding: 2px; background: #777; color: white; margin: 2px 0;">License</div>';
-    html += `<div>${licenseName || 'N/A'}</div>`;
+    html += `<div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${licenseName || 'N/A'}</div>`;
 
     if (issues.length) {
       html +=
