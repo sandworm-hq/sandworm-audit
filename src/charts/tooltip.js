@@ -3,7 +3,6 @@
 const getBody = (string) => string.substring(string.indexOf('{') + 1, string.lastIndexOf('}'));
 
 const setupTooltips = () => {
-  const SEVERITIES = ['critical', 'high', 'moderate', 'low'];
   const SEVERITY_ICONS = {
     critical: '🔴',
     high: '🟠',
@@ -20,7 +19,6 @@ const setupTooltips = () => {
   const [offsetX, offsetY, viewBoxWidth, viewBoxHeight] = viewBox.split(',').map(parseFloat);
   const maxX = offsetX + viewBoxWidth;
   const maxY = offsetY + viewBoxHeight;
-  const sortBySeverity = (a, b) => SEVERITIES.indexOf(a.severity) - SEVERITIES.indexOf(b.severity);
   const getHTML = (ancestry, issues, licenseName) => {
     let html =
       '<div style="padding: 2px; background: #777; color: white; margin-bottom: 2px;">Path</div>';
@@ -33,7 +31,7 @@ const setupTooltips = () => {
     if (issues.length) {
       html +=
         '<div style="padding: 2px; background: #777; color: white; margin: 2px 0;">Issues</div>';
-      issues.sort(sortBySeverity).forEach(({title, url, severity = 'critical'}) => {
+      issues.forEach(({title, url, severity = 'critical'}) => {
         html += `<div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
           ${SEVERITY_ICONS[severity]} ${url ? `<a href="${url}" target="_blank">` : ''}${title}${
           url ? '</a>' : ''

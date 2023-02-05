@@ -6,14 +6,15 @@ const {getReports} = require('./issues/utils');
 const csv = require('./charts/csv');
 
 const getReport = async ({
-  types = ['tree', 'treemap'],
   appPath,
+  dependencyGraph,
   includeDev = false,
   showVersions = false,
+  minDisplayedSeverity = 'high',
   width = 1500,
   maxDepth = 7,
+  types = ['tree', 'treemap'],
   onProgress = () => {},
-  dependencyGraph,
 }) => {
   const errors = [];
 
@@ -51,7 +52,9 @@ const getReport = async ({
   // Get license info and issues
   onProgress({type: 'start', stage: 'licenses'});
   try {
-    licenseUsage = await getLicenseUsage({dependencies: dGraph.prodDependencies});
+    licenseUsage = await getLicenseUsage({
+      dependencies: includeDev ? dGraph.all : dGraph.prodDependencies,
+    });
     licenseIssues = await getLicenseIssues({licenseUsage, packageGraph});
   } catch (error) {
     errors.push(error);
@@ -59,13 +62,21 @@ const getReport = async ({
   onProgress({type: 'end', stage: 'licenses'});
 
   // Generate charts
+  const SEVERITIES = ['critical', 'high', 'moderate', 'low'];
+  const sortBySeverity = (a, b) => SEVERITIES.indexOf(a.severity) - SEVERITIES.indexOf(b.severity);
+  const filteredIssues = (dependencyVulnerabilities || [])
+    .concat(rootVulnerabilities || [])
+    .concat(licenseIssues || [])
+    .filter(
+      ({severity}) => SEVERITIES.indexOf(severity) <= SEVERITIES.indexOf(minDisplayedSeverity),
+    )
+    .sort(sortBySeverity);
+
   const options = {
     showVersions,
     width,
     maxDepth,
-    issues: (dependencyVulnerabilities || [])
-      .concat(rootVulnerabilities || [])
-      .concat(licenseIssues || []),
+    issues: filteredIssues,
     includeDev,
     onProgress: (message) => onProgress({type: 'update', stage: 'chart', message}),
   };
