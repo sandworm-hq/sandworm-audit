@@ -16,11 +16,19 @@ const DEFAULT_POLICY = {
   moderate: ['cat:Weakly Protective'],
 };
 
+const isSpdxExpression = (license) => {
+  if (!license || license === 'N/A') {
+    return false;
+  }
+
+  return !!(license.match(/ or /i) || license.match(/ and /i) || license.match(/ with /i));
+};
+
 const typeForLicense = (license) => {
   if (!license || license === 'N/A') {
     return 'N/A';
   }
-  if (license.includes(' ')) {
+  if (isSpdxExpression(license)) {
     // Parse simple AND/OR SPDX expressions
     if ((license.match(/\s/g) || []).length === 2) {
       let expressionLicenses;
@@ -69,54 +77,63 @@ module.exports = {
   typeForLicense,
   getLicenseUsage: ({dependencies = []}) => {
     const licenseUsage = dependencies.reduce((agg, {name, version, license}) => {
-      const licenseName = license || 'N/A';
+      const licenseString = license || 'N/A';
 
-      return {
-        ...agg,
-        [licenseName]: {
-          meta: {
-            type: typeForLicense(licenseName),
+      const licenseData = agg.find(({string}) => string === licenseString);
+
+      if (!licenseData) {
+        return [
+          ...agg,
+          {
+            string: licenseString,
+            meta: {
+              type: typeForLicense(licenseString),
+              isSpdxExpression: isSpdxExpression(licenseString),
+            },
+            dependencies: [{name, version}],
           },
-          dependencies: (agg[licenseName]?.dependencies || []).concat([{name, version}]),
-        },
-      };
-    }, {});
+        ];
+      }
 
-    return licenseUsage;
+      licenseData.dependencies.push({name, version});
+      return agg;
+    }, []);
+
+    return licenseUsage.sort((a, b) => b.dependencies.length - a.dependencies.length);
   },
 
   getLicenseIssues: ({licenseUsage, packageGraph}) => {
     const issues = [];
 
-    Object.entries(licenseUsage).forEach(([licenseName, {meta, dependencies}]) => {
+    licenseUsage.forEach(({string, meta, dependencies}) => {
       const licenseType = meta?.type;
-      if (licenseName === 'N/A') {
+      if (string === 'N/A') {
         issues.push({
           severity: 'critical',
           title: 'Dependency has no specified license',
           shortTitle: 'No license specified',
           dependencies,
         });
-      } else if (licenseName === 'UNLICENSED') {
+      } else if (string === 'UNLICENSED') {
         issues.push({
           severity: 'critical',
           title: 'Dependency is explicitly not available for use under any terms',
           shortTitle: 'Not licensed for use',
           dependencies,
         });
-      } else if (!licenseName.includes(' ')) {
-        if (!licenseGroups.osiApproved.includes(licenseName)) {
+      } else if (!isSpdxExpression(string)) {
+        if (!licenseGroups.osiApproved.includes(string)) {
           issues.push({
             severity: 'low',
-            title: `Dependency uses a license that is not OSI approved: ${licenseName}`,
+            title: `Dependency uses a license that is not OSI approved: ${string}`,
             shortTitle: 'License not OSI approved',
             dependencies,
           });
         }
-        if (licenseGroups.deprecated.includes(licenseName)) {
+        if (licenseGroups.deprecated.includes(string)) {
           issues.push({
             severity: 'low',
-            title: `Dependency uses a deprecated license: ${licenseName}`,
+            title: `Dependency uses a deprecated license: ${string}`,
             shortTitle: 'License is deprecated',
             dependencies,
           });
@@ -126,38 +143,38 @@ module.exports = {
       if (!licenseType || licenseType === 'Uncategorized') {
         issues.push({
           severity: 'high',
-          title: `Dependency uses an atypical license: ${licenseName}`,
+          title: `Dependency uses an atypical license: ${string}`,
           shortTitle: 'Atypical license',
           dependencies,
         });
       } else if (licenseType === 'Invalid') {
         issues.push({
           severity: 'high',
-          title: `Dependency uses an invalid SPDX license: ${licenseName}`,
+          title: `Dependency uses an invalid SPDX license: ${string}`,
           shortTitle: 'Invalid SPDX license',
           dependencies,
         });
       } else if (licenseType === 'Expression') {
         issues.push({
           severity: 'high',
-          title: `Dependency uses a custom license expression: ${licenseName}`,
+          title: `Dependency uses a custom license expression: ${string}`,
           shortTitle: 'Custom license expression',
           dependencies,
         });
       }
 
       Object.entries(DEFAULT_POLICY).forEach(([severity, includes]) => {
-        if (includes.includes(licenseName)) {
+        if (includes.includes(string)) {
           issues.push({
             severity,
-            title: `Dependency uses a problematic license: ${licenseName}`,
+            title: `Dependency uses a problematic license: ${string}`,
             shortTitle: 'Problematic license',
             dependencies,
           });
         } else if (includes.includes(`cat:${licenseType}`)) {
           issues.push({
             severity,
-            title: `Dependency uses a problematic ${licenseType} license: ${licenseName}`,
+            title: `Dependency uses a problematic ${licenseType} license: ${string}`,
             shortTitle: 'Problematic license',
             dependencies,
           });
