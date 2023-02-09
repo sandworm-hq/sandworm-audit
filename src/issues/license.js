@@ -112,6 +112,7 @@ module.exports = {
           severity: 'critical',
           title: 'Dependency has no specified license',
           shortTitle: 'No license specified',
+          recommendation: 'Check the package code and files for license information',
           dependencies,
         });
       } else if (string === 'UNLICENSED') {
@@ -119,6 +120,7 @@ module.exports = {
           severity: 'critical',
           title: 'Dependency is explicitly not available for use under any terms',
           shortTitle: 'Not licensed for use',
+          recommendation: 'Use another package that is licensed for use',
           dependencies,
         });
       } else if (!isSpdxExpression(string)) {
@@ -127,6 +129,7 @@ module.exports = {
             severity: 'low',
             title: `Dependency uses a license that is not OSI approved: ${string}`,
             shortTitle: 'License not OSI approved',
+            recommendation: 'Read and validate the license terms',
             dependencies,
           });
         }
@@ -145,6 +148,7 @@ module.exports = {
           severity: 'high',
           title: `Dependency uses an atypical license: ${string}`,
           shortTitle: 'Atypical license',
+          recommendation: 'Read and validate the license terms',
           dependencies,
         });
       } else if (licenseType === 'Invalid') {
@@ -152,6 +156,7 @@ module.exports = {
           severity: 'high',
           title: `Dependency uses an invalid SPDX license: ${string}`,
           shortTitle: 'Invalid SPDX license',
+          recommendation: 'Validate that the package complies with your license policy',
           dependencies,
         });
       } else if (licenseType === 'Expression') {
@@ -159,6 +164,7 @@ module.exports = {
           severity: 'high',
           title: `Dependency uses a custom license expression: ${string}`,
           shortTitle: 'Custom license expression',
+          recommendation: 'Validate that the license expression complies with your license policy',
           dependencies,
         });
       }
@@ -169,6 +175,7 @@ module.exports = {
             severity,
             title: `Dependency uses a problematic license: ${string}`,
             shortTitle: 'Problematic license',
+            recommendation: 'Validate that the package complies with your license policy',
             dependencies,
           });
         } else if (includes.includes(`cat:${licenseType}`)) {
@@ -176,6 +183,7 @@ module.exports = {
             severity,
             title: `Dependency uses a problematic ${licenseType} license: ${string}`,
             shortTitle: 'Problematic license',
+            recommendation: 'Validate that the package complies with your license policy',
             dependencies,
           });
         }
