@@ -106,6 +106,7 @@ require('yargs')
     },
     async (argv) => {
       logger.log('\x1b[36m%s\x1b[0m', `Sandworm 🪱`);
+      logger.log('\x1b[2m%s\x1b[0m', `Security and License Compliance Audit:`);
       const {default: ora} = await import('ora');
 
       const {
