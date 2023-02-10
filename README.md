@@ -8,12 +8,17 @@
 <!-- A spacer -->
 <p>&nbsp;</p>
 
-Beautiful Visualizations For Your App's Dependencies 🪱
+Beautiful Security & License Compliance Reports For Your App's Dependencies 🪱
 
-* Outputs SVGs
-* Powered by D3
-* Overlays security vulnerabilities
-* Overlays package license info
+* Free & Open Source
+* Scans for vulnerabilities, license, and misc issues
+* Configurable license compliance policy
+* Outputs easy to grok SVG dependency tree & treemap representations
+  * Powered by D3
+  * Overlays security vulnerabilities
+  * Overlays package license info
+* Outputs CSV of all dependencies & license info
+* Outputs all reports in JSON format
 * Works with npm, yarn, and pnpm
 * Made by the team behind [Sandworm](https://sandworm.dev/) - Easy auditing & sandboxing for your JavaScript dependencies
 
@@ -24,10 +29,10 @@ Beautiful Visualizations For Your App's Dependencies 🪱
 
 ### Get Involved
 
-* Have a support question? [Post it here](https://github.com/sandworm-hq/audit/discussions/categories/q-a).
-* Have a feature request? [Post it here](https://github.com/sandworm-hq/audit/discussions/categories/ideas).
+* Have a support question? [Post it here](https://github.com/sandworm-hq/sandworm-audit/discussions/categories/q-a).
+* Have a feature request? [Post it here](https://github.com/sandworm-hq/sandworm-audit/discussions/categories/ideas).
 * Did you find a security issue? [See SECURITY.md](SECURITY.md).
-* Did you find a bug? [Post an issue](https://github.com/sandworm-hq/audit/issues/new/choose).
+* Did you find a bug? [Post an issue](https://github.com/sandworm-hq/sandworm-audit/issues/new/choose).
 * Want to write some code? See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Install
@@ -53,6 +58,7 @@ Options:
 ## Chart Types
 
 ### Treemap
+* [Sample Treemap for Express@4.18.2](https://assets.sandworm.dev/charts/npm/express/4.18.2/treemap.svg)
 * Node colors represent the dependency depth;
 * Node surface represents the size of the corresponding directory under `node_modules`;
 * A dotted pattern in a node background means the package is a shared dependency, required by multiple packages, and present multiple times in the chart;
@@ -62,67 +68,20 @@ Options:
 * Click on a node to make the tooltip persist; click outside to close it;
 * When representing deep dependencies, the surface area of certain packages might reach zero, making them invisible.
 
-![Sandworm Treemap Chart](https://sandworm-assets.s3.us-east-1.amazonaws.com/sinkchart/demos/sinkchart-treemap.png)
-
 ### Tree
+* [Sample Tree for Express@4.18.2](https://assets.sandworm.dev/charts/npm/express/4.18.2/tree.svg)
 * Nodes are grouped by color based on the root dependency that they belong to;
 * Red text in a package name means the package has direct vulnerabilities;
 * Purple text in a package name means the package depends on other vulnerable packages;
 * Click on a node to make the tooltip persist; click outside to close it;
 * By default, the tree chart has a maximum depth of 7, meaning only seven levels of dependencies will be represented, to keep the output readable; you can override this using the `--md` option.
 
-![Sandworm Tree Chart](https://sandworm-assets.s3.us-east-1.amazonaws.com/sinkchart/demos/sinkchart-tree.png)
-
 ## Samples
 
-* Apollo Client 3.7.1
-  * [Tree](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/apollo%403.7.1-tree.svg)
-  * [Treemap](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/apollo%403.7.1-treemap.svg)
-
-* AWS SDK 2.1218.0
-  * [Tree](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/aws-sdk-js%402.1218.0-tree.svg)
-  * [Treemap](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/aws-sdk-js%402.1218.0.svg)
-
-* Express 4.18.1
-  * [Tree](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/express%404.18.1-tree.svg)
-  * [Treemap](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/express%404.18.1-treemap.svg)
-
-* Mocha 10.1.0
-  * [Tree](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/mocha%4010.1.0-tree.svg)
-  * [Treemap](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/mocha%4010.1.0-treemap.svg)
-
-* Mongoose 6.7.0
-  * [Tree](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/mongoose%406.7.0-tree.svg)
-  * [Treemap](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/mongoose%406.7.0-treemap.svg)
-
-* Nest.js 9.1.2
-  * [Tree](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/nest%409.1.2-tree.svg)
-  * [Treemap](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/nest%409.1.2-treemap.svg)
-
-* Redis 4.3.1
-  * [Tree](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/node-redis%404.3.1-tree.svg)
-  * [Treemap](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/node-redis%404.3.1-treemap.svg)
-
-* NPM CLI 9.0.0
-  * [Tree](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/npm%409.0.0-tree.svg)
-  * [Treemap](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/npm%409.0.0-treemap.svg)
-
-* PM2 5.2.2
-  * [Tree](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/pm2%405.2.2-tree.svg)
-  * [Treemap](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/pm2%405.2.2-treemap.svg)
-
-* React Router 6.4.2
-  * [Tree](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/react-router%406.4.2-tree.svg)
-  * [Treemap](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/react-router%406.4.2-treemap.svg)
-
-* Webpack Dev Server 4.11.1
-  * [Tree](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/webpack-dev-server%404.11.1-tree.svg)
-  * [Treemap](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/webpack-dev-server%404.11.1-treemap.svg)
-
-* Webpack 5.74.0
-  * [Tree](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/webpack%405.74.0-tree.svg)
-  * [Treemap](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/webpack%405.74.0-treemap.svg)
-
-* Winston 3.8.2
-  * [Tree](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/winston%403.8.2-tree.svg)
-  * [Treemap](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/winston%403.8.2-treemap.svg)
+* [Apollo Client](https://sandworm.dev/npm/package/apollo-client)
+* [AWS SDK](https://sandworm.dev/npm/package/aws-sdk)
+* [Express](https://sandworm.dev/npm/package/express)
+* [Mocha](https://sandworm.dev/npm/package/mocha)
+* [Mongoose](https://sandworm.dev/npm/package/mongoose)
+* [Nest.js](https://sandworm.dev/npm/package/@nestjs/cli)
+* [Redis](https://sandworm.dev/npm/package/redis)
