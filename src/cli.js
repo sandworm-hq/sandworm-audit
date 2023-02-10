@@ -63,7 +63,7 @@ const onProgress =
   };
 
 require('yargs')
-  .scriptName('Sinkchart')
+  .scriptName('Sandworm')
   .command(
     '*',
     "Better Visualizations For Your App's Dependencies 🪱",
@@ -72,7 +72,7 @@ require('yargs')
         .option('o', {
           alias: 'output',
           demandOption: false,
-          default: '.sinkchart',
+          default: '.sandworm',
           describe: 'The name of the output directory, relative to the application path',
           type: 'string',
         })
@@ -112,7 +112,7 @@ require('yargs')
         });
     },
     async (argv) => {
-      logger.log('\x1b[36m%s\x1b[0m', `Sinkchart 🧭`);
+      logger.log('\x1b[36m%s\x1b[0m', `Sandworm 🪱`);
       const {default: ora} = await import('ora');
 
       const {svgs, csv, name, version} = await getReport({

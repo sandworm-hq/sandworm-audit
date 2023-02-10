@@ -1,6 +1,6 @@
 {
-  "name": "sinkchart",
-  "version": "1.17.2",
+  "name": "sandworm",
+  "version": "1.3.2",
   "description": "Beautiful Visualizations For Your App's Dependencies 🪱",
   "main": "src/index.js",
   "bin": "src/cli.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sandworm-hq/sinkchart-js.git"
+    "url": "git+https://github.com/sandworm-hq/sandworm.git"
   },
   "keywords": [
     "security",

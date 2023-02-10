@@ -40,7 +40,7 @@ jobs:
           command: yarn global add release-please
       - run:
           name: Create or update release PR
-          command: release-please release-pr --token=${GH_TOKEN} --repo-url=sandworm-hq/sinkchart
+          command: release-please release-pr --token=${GH_TOKEN} --repo-url=sandworm-hq/sandworm
   github-release:
     executor: node/default
     steps:
@@ -51,7 +51,7 @@ jobs:
           command: yarn global add release-please
       - run:
           name: Create release
-          command: release-please github-release --token=${GH_TOKEN} --repo-url=sandworm-hq/sinkchart
+          command: release-please github-release --token=${GH_TOKEN} --repo-url=sandworm-hq/sandworm
   publish-npm:
     executor: node/default
     steps:
@@ -90,7 +90,7 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /^sinkchart-v.*/
+              only: /^sandworm-v.*/
       - publish-npm:
           requires:
             - setup
@@ -98,4 +98,4 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /^sinkchart-v.*/
+              only: /^sandworm-v.*/
