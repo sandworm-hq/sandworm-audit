@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.1](https://github.com/sandworm-hq/audit/compare/audit-v1.19.0...audit-v1.19.1) (2023-02-10)
+
+
+### Bug Fixes
+
+* ci pipeline config to trigger deploys ([5b89679](https://github.com/sandworm-hq/audit/commit/5b8967994a273e354118678d11401af618e47ba6))
+
 ## [1.19.0](https://github.com/sandworm-hq/audit/compare/audit-v1.18.0...audit-v1.19.0) (2023-02-10)
 
 
