@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.1](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.17.0...sinkchart-v1.17.1) (2023-02-10)
+
+
+### Bug Fixes
+
+* crash for undefined dependencyVulnerabilities ([1214155](https://github.com/sandworm-hq/sinkchart/commit/1214155f9c499898cccca66c9e663b5d84d7e4aa))
+
 ## [1.17.0](https://github.com/sandworm-hq/sinkchart/compare/sinkchart-v1.16.0...sinkchart-v1.17.0) (2023-02-09)
 
 
