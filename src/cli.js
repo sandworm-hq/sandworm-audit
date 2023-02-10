@@ -66,7 +66,7 @@ require('yargs')
   .scriptName('Sandworm')
   .command(
     '*',
-    "Better Visualizations For Your App's Dependencies 🪱",
+    "Security & License Compliance For Your App's Dependencies 🪱",
     (yargs) => {
       yargs
         .option('o', {
@@ -90,13 +90,6 @@ require('yargs')
           describe: 'Show package versions',
           type: 'boolean',
         })
-        .option('t', {
-          alias: 'type',
-          demandOption: false,
-          describe: 'Visualization type',
-          type: 'string',
-          choices: ['tree', 'treemap'],
-        })
         .option('p', {
           alias: 'path',
           demandOption: false,
@@ -115,8 +108,18 @@ require('yargs')
       logger.log('\x1b[36m%s\x1b[0m', `Sandworm 🪱`);
       const {default: ora} = await import('ora');
 
-      const {svgs, csv, name, version} = await getReport({
-        types: argv.t ? [argv.t] : undefined,
+      const {
+        dependencyGraph,
+        svgs,
+        csv,
+        dependencyVulnerabilities,
+        rootVulnerabilities,
+        licenseUsage,
+        licenseIssues,
+        name,
+        version,
+        errors,
+      } = await getReport({
         appPath: argv.p,
         includeDev: argv.d,
         showVersions: argv.v,
@@ -124,16 +127,35 @@ require('yargs')
         onProgress: onProgress(ora),
       });
 
-      currentSpinner = ora('Writing Output File').start();
+      currentSpinner = ora('Writing Output Files').start();
+
+      const outputPath = path.join(argv.p, argv.o);
+      await fs.mkdir(outputPath, {recursive: true});
+
       await Object.keys(svgs).reduce(async (agg, chartType) => {
         await agg;
 
-        const outputPath = path.join(argv.p, argv.o, `${name}@${version}-${chartType}.svg`);
-        await fs.mkdir(path.dirname(outputPath), {recursive: true});
-        await fs.writeFile(outputPath, svgs[chartType]);
+        const chartPath = path.join(outputPath, `${name}@${version}-${chartType}.svg`);
+        await fs.writeFile(chartPath, svgs[chartType]);
       }, Promise.resolve());
-      const csvOutputPath = path.join(argv.p, argv.o, `${name}@${version}-dependencies.csv`);
+
+      const csvOutputPath = path.join(outputPath, `${name}@${version}-dependencies.csv`);
       await fs.writeFile(csvOutputPath, csv);
+
+      const report = {
+        createdAt: Date.now(),
+        packageManager: dependencyGraph.root.meta?.packageManager,
+        name,
+        version,
+        rootVulnerabilities,
+        dependencyVulnerabilities,
+        licenseUsage,
+        licenseIssues,
+        errors,
+      }
+      const reportOutputPath = path.join(outputPath, `${name}@${version}-report.json`);
+      await fs.writeFile(reportOutputPath, JSON.stringify(report, null, 2));
+
       currentSpinner.stopAndPersist({symbol: '✨', text: 'Done'});
     },
   )

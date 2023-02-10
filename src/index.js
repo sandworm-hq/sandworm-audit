@@ -13,7 +13,6 @@ const getReport = async ({
   minDisplayedSeverity = 'high',
   width = 1500,
   maxDepth = 7,
-  types = ['tree', 'treemap'],
   onProgress = () => {},
 }) => {
   const errors = [];
@@ -86,7 +85,7 @@ const getReport = async ({
     treemap: buildTreemap,
   };
 
-  const svgs = await types.reduce(async (agg, type) => {
+  const svgs = await ['tree', 'treemap'].reduce(async (agg, type) => {
     const current = await agg;
     const method = methods[type];
 
