@@ -1,5 +1,55 @@
 # Changelog
 
+## [1.19.0](https://github.com/sandworm-hq/audit/compare/audit-v1.18.0...audit-v1.19.0) (2023-02-10)
+
+
+### Features
+
+* add config to disable size scanning ([88dda72](https://github.com/sandworm-hq/audit/commit/88dda724d6296ca6c7ca9aed49389750bd3f751d))
+* add license info to tooltip, when available ([291991c](https://github.com/sandworm-hq/audit/commit/291991cb5cfaf0bc4441211a4d5f7df4412d197d))
+* allow providing custom dep graphs ([e3b4a77](https://github.com/sandworm-hq/audit/commit/e3b4a77a048b6828e64462b7555d8f975c23635c))
+* better license usage data structure ([3e373fa](https://github.com/sandworm-hq/audit/commit/3e373fa41b72b2d091865ea0ffa621f2d9ab10ce))
+* better package size estimation ([c98752f](https://github.com/sandworm-hq/audit/commit/c98752f5b7ae5ce0fcb0fb05532b37664cda1974))
+* better treemap package labeling ([3bfadd7](https://github.com/sandworm-hq/audit/commit/3bfadd7a0a17e7950009985c06b8f66216fae4e4))
+* better vulnerability reporting ([e33941e](https://github.com/sandworm-hq/audit/commit/e33941eb27276c9a780489e5672e123f55459cd2))
+* better vulnerability reporting ([976dad6](https://github.com/sandworm-hq/audit/commit/976dad6486bdb75587715b433bd8f4bcbd12ff06))
+* build all charts by default ([a1db19a](https://github.com/sandworm-hq/audit/commit/a1db19ad97b747989c078be109643eefc1f1e889))
+* charts now display license issues ([9b38f08](https://github.com/sandworm-hq/audit/commit/9b38f089b624faf9dad4869a4b39d13501edb797))
+* cli now displays licence scanning phase ([b5467f8](https://github.com/sandworm-hq/audit/commit/b5467f8ab633fdee45f32d81db798943e8a1b113))
+* cli now generates json report in output dir ([d1c5283](https://github.com/sandworm-hq/audit/commit/d1c528398cee197c4de24e0b2d2b0af70a08f88a))
+* configurable min severity level for charts ([2950408](https://github.com/sandworm-hq/audit/commit/2950408da998eb294e6a37d105cc1d1d7bb79ddc))
+* expose array with processed dependency data ([557cfe4](https://github.com/sandworm-hq/audit/commit/557cfe41710e9c651fe0489dc3785a8e2572c0da))
+* icon now represents severity in node tooltip ([8ccfb97](https://github.com/sandworm-hq/audit/commit/8ccfb97e99c69ec2c622850b7d4c0101a0c1fb64))
+* include license issue recommendations ([f2af2f4](https://github.com/sandworm-hq/audit/commit/f2af2f4c950e9739ff0a617d0eb727dfdae53203))
+* include vulnerabilities in exported data ([2528072](https://github.com/sandworm-hq/audit/commit/2528072c04d329cc9647c305d3f4f1f008e2cf32))
+* initial commit ([f46ae74](https://github.com/sandworm-hq/audit/commit/f46ae749dbb3dee41d79099004cb521387e26415))
+* output all dependency data as csv ([eb92647](https://github.com/sandworm-hq/audit/commit/eb9264766631ef3c17a8c64cbde72b7ca66b8b90))
+* output license usage and issues ([99aa988](https://github.com/sandworm-hq/audit/commit/99aa988001b22c64313fd5f28231a1401c539a90))
+* remove svg width and height attributes ([b9e3d45](https://github.com/sandworm-hq/audit/commit/b9e3d45020996ed91a8cdc9d81c71d28ca2b91f0))
+* support all js package managers ([bc2c2e2](https://github.com/sandworm-hq/audit/commit/bc2c2e2e1f7b3306314184eee8a9c77c05099f6a))
+* support json stringified licence data ([fff0585](https://github.com/sandworm-hq/audit/commit/fff0585592943978036310791177d2f47d514901))
+* support yarn audit ([5c701b1](https://github.com/sandworm-hq/audit/commit/5c701b15d69373f81536f1835ef43e02a093e66c))
+* universal support for license info ([6b8817f](https://github.com/sandworm-hq/audit/commit/6b8817f44ba2a0b50bf743aad12b71a21c3b85cd))
+* update max depth arg type ([aac673a](https://github.com/sandworm-hq/audit/commit/aac673ac41d9e6654b055d39ae0c1c1ecbde6ed6))
+* update package name ([baa9281](https://github.com/sandworm-hq/audit/commit/baa9281e37d9fb5169b74886bb94ed95541020d1))
+
+
+### Bug Fixes
+
+* crash for undefined dependencyVulnerabilities ([1214155](https://github.com/sandworm-hq/audit/commit/1214155f9c499898cccca66c9e663b5d84d7e4aa))
+* crash when audit returns empty ([996c5b8](https://github.com/sandworm-hq/audit/commit/996c5b8004deb66f8e8e4965db2ce9e54f33cd64))
+* crash when post-processing empty graphs ([9bddc17](https://github.com/sandworm-hq/audit/commit/9bddc170e8678b51a50618bf7481464e91c9361a))
+* crash when using pnpm with no dependencies ([dc4696b](https://github.com/sandworm-hq/audit/commit/dc4696bcf9bea203c2b2f71cf1108a04cee6c117))
+* generate multiple charts in the same session ([552f446](https://github.com/sandworm-hq/audit/commit/552f446fd6c70217b8c53acffa0d99526727bd0e))
+* include recommendations in license issue output ([c23b5ee](https://github.com/sandworm-hq/audit/commit/c23b5ee8171f6ef6f158f8d5c95b8d5d9e125e3b))
+* json license data parsing ([c625d06](https://github.com/sandworm-hq/audit/commit/c625d06942ff59464e519e73244a8f0fdd66cb81))
+* long license strings now truncated in tooltip ([50b0403](https://github.com/sandworm-hq/audit/commit/50b0403976f433630e9a9f96698522da5a21450b))
+* parsing vulnerabilities from empty response ([813ceba](https://github.com/sandworm-hq/audit/commit/813ceba51c7786e662d73e8c7dd91f20d9905488))
+* remove package lock ([98bbdf5](https://github.com/sandworm-hq/audit/commit/98bbdf526e7ef67f326f4575f515bc6b1ce0d526))
+* represent non-prod dependencies ([5e04c15](https://github.com/sandworm-hq/audit/commit/5e04c1598f98e28f7db6d56f5e79c22bffee8f20))
+* root vulnerabilities access ([1c39fab](https://github.com/sandworm-hq/audit/commit/1c39fab1863c5d7bad8955bf4202aa147af7983c))
+* treemap now represents root module sizes ([958e7b0](https://github.com/sandworm-hq/audit/commit/958e7b07809e38b8d1240584b3e46760b65df475))
+
 ## [1.18.0](https://github.com/sandworm-hq/sandworm/compare/sandworm-v1.17.2...sandworm-v1.18.0) (2023-02-10)
 
 
