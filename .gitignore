@@ -60,3 +60,6 @@ jspm_packages/
 
 # Quick dev tests file
 test.js
+
+# Sandworm audit report output
+.sandworm

@@ -2,7 +2,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="logo-dark.png">
   <source media="(prefers-color-scheme: light)" srcset="logo-light.png">
-  <img alt="Sandworm" src="logo-dark.png" width="478">
+  <img alt="Sandworm Audit" src="logo-dark.png" width="478">
 </picture>
 
 <!-- A spacer -->
@@ -24,16 +24,16 @@ Beautiful Visualizations For Your App's Dependencies 🪱
 
 ### Get Involved
 
-* Have a support question? [Post it here](https://github.com/sandworm-hq/sandworm/discussions/categories/q-a).
-* Have a feature request? [Post it here](https://github.com/sandworm-hq/sandworm/discussions/categories/ideas).
+* Have a support question? [Post it here](https://github.com/sandworm-hq/audit/discussions/categories/q-a).
+* Have a feature request? [Post it here](https://github.com/sandworm-hq/audit/discussions/categories/ideas).
 * Did you find a security issue? [See SECURITY.md](SECURITY.md).
-* Did you find a bug? [Post an issue](https://github.com/sandworm-hq/sandworm/issues/new/choose).
+* Did you find a bug? [Post an issue](https://github.com/sandworm-hq/audit/issues/new/choose).
 * Want to write some code? See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Install
 
 ```bash
-yarn global add sandworm # or npm install -g sandworm
+yarn global add @sandworm/audit # or npm install -g @sandworm/audit
 ```
 
 ## Options
@@ -46,7 +46,6 @@ Options:
                          application path        [string] [default: ".sandworm"]
   -d, --include-dev      Include dev dependencies     [boolean] [default: false]
   -v, --show-versions    Show package versions        [boolean] [default: false]
-  -t, --type             Visualization type[string] [choices: "tree", "treemap"]
   -p, --path             The application path    [string] [default: current dir]
       --md, --max-depth  Max depth to represent                         [number]
 ```

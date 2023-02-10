@@ -40,7 +40,7 @@ jobs:
           command: yarn global add release-please
       - run:
           name: Create or update release PR
-          command: release-please release-pr --token=${GH_TOKEN} --repo-url=sandworm-hq/sandworm
+          command: release-please release-pr --token=${GH_TOKEN} --repo-url=sandworm-hq/audit
   github-release:
     executor: node/default
     steps:
@@ -51,7 +51,7 @@ jobs:
           command: yarn global add release-please
       - run:
           name: Create release
-          command: release-please github-release --token=${GH_TOKEN} --repo-url=sandworm-hq/sandworm
+          command: release-please github-release --token=${GH_TOKEN} --repo-url=sandworm-hq/audit
   publish-npm:
     executor: node/default
     steps:
@@ -62,7 +62,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
       - run:
           name: Publish to NPM
-          command: npm publish
+          command: npm publish --access=public
         
 workflows:
   test:

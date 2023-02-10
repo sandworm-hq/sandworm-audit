@@ -1,9 +1,11 @@
 {
-  "name": "sandworm",
+  "name": "@sandworm/audit",
   "version": "1.18.0",
-  "description": "Beautiful Visualizations For Your App's Dependencies 🪱",
+  "description": "Security & License Compliance For Your App's Dependencies 🪱",
   "main": "src/index.js",
-  "bin": "src/cli.js",
+  "bin": {
+    "sandworm": "src/cli.js"
+  },
   "scripts": {
     "lint": "yarn eslint ./src/",
     "prepare": "husky install"
