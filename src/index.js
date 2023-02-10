@@ -112,7 +112,7 @@ const getReport = async ({
 
   return {
     dependencyGraph: dGraph,
-    dependencyVulnerabilities: dependencyVulnerabilities.filter(
+    dependencyVulnerabilities: (dependencyVulnerabilities || []).filter(
       ({findings: {affects}}) => affects.length,
     ),
     rootVulnerabilities,
