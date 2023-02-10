@@ -132,14 +132,16 @@ require('yargs')
       const outputPath = path.join(argv.p, argv.o);
       await fs.mkdir(outputPath, {recursive: true});
 
+      const prefix = `${name.replace('/', '-')}@${version}`;
+
       await Object.keys(svgs).reduce(async (agg, chartType) => {
         await agg;
 
-        const chartPath = path.join(outputPath, `${name}@${version}-${chartType}.svg`);
+        const chartPath = path.join(outputPath, `${prefix}-${chartType}.svg`);
         await fs.writeFile(chartPath, svgs[chartType]);
       }, Promise.resolve());
 
-      const csvOutputPath = path.join(outputPath, `${name}@${version}-dependencies.csv`);
+      const csvOutputPath = path.join(outputPath, `${prefix}-dependencies.csv`);
       await fs.writeFile(csvOutputPath, csv);
 
       const report = {
@@ -153,7 +155,7 @@ require('yargs')
         licenseIssues,
         errors,
       }
-      const reportOutputPath = path.join(outputPath, `${name}@${version}-report.json`);
+      const reportOutputPath = path.join(outputPath, `${prefix}-report.json`);
       await fs.writeFile(reportOutputPath, JSON.stringify(report, null, 2));
 
       currentSpinner.stopAndPersist({symbol: '✨', text: 'Done'});
