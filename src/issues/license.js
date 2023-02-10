@@ -191,7 +191,7 @@ module.exports = {
     });
 
     return issues.reduce(
-      (agg, {severity, title, shortTitle, dependencies}) =>
+      (agg, {severity, title, shortTitle, dependencies, recommendation}) =>
         agg.concat(
           dependencies.map(({name, version}) => ({
             severity,
@@ -199,6 +199,7 @@ module.exports = {
             shortTitle,
             name,
             version,
+            recommendation,
             findings: getFindings({
               packageGraph,
               packageName: name,
