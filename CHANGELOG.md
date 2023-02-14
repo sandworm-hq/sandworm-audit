@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.2](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.20.1...audit-v1.20.2) (2023-02-14)
+
+
+### Bug Fixes
+
+* infinte recursion when getting dep paths ([e5d2c70](https://github.com/sandworm-hq/sandworm-audit/commit/e5d2c70364f65f19e25404731e6996939d04e164))
+
 ## [1.20.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.20.0...audit-v1.20.1) (2023-02-14)
 
 
