@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.20.0...audit-v1.20.1) (2023-02-14)
+
+
+### Bug Fixes
+
+* ci publish pipeline ([3caa94f](https://github.com/sandworm-hq/sandworm-audit/commit/3caa94f4bd0af1678578870b0bab75cc8759e14e))
+
 ## [1.20.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.19.1...audit-v1.20.0) (2023-02-14)
 
 
