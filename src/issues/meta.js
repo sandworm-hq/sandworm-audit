@@ -14,7 +14,7 @@ module.exports = {
       if (dep.deprecated) {
         issues.push({
           severity: 'high',
-          title: `Deprecated package: ${dep.name}`,
+          title: 'Deprecated package',
           name: dep.name,
           version: dep.version,
         });
@@ -28,7 +28,8 @@ module.exports = {
       if (hasInstallScripts) {
         issues.push({
           severity: 'high',
-          title: `Package uses install scripts: ${dep.name}`,
+          title: 'Package uses install scripts',
+          shortTitle: 'Uses install scripts',
           name: dep.name,
           version: dep.version,
         });
@@ -37,7 +38,8 @@ module.exports = {
       if (!dep.repository || Object.keys(dep.repository).length === 0) {
         issues.push({
           severity: 'moderate',
-          title: `Package has no specified repository: ${dep.name}`,
+          title: 'Package has no specified source code repository',
+          shortTitle: 'Has no repository',
           name: dep.name,
           version: dep.version,
         });
@@ -47,21 +49,24 @@ module.exports = {
         if (depstring.startsWith('http')) {
           issues.push({
             severity: 'critical',
-            title: `Package has HTTP dependency on "${depname}": ${dep.name}`,
+            title: `Package has HTTP dependency for "${depname}"`,
+            shortTitle: 'Has HTTP dependency',
             name: dep.name,
             version: dep.version,
           });
         } else if (depstring.startsWith('git')) {
           issues.push({
             severity: 'critical',
-            title: `Package has GIT dependency on "${depname}": ${dep.name}`,
+            title: `Package has GIT dependency for "${depname}"`,
+            shortTitle: 'Has GIT dependency',
             name: dep.name,
             version: dep.version,
           });
         } else if (depstring.startsWith('file')) {
           issues.push({
             severity: 'moderate',
-            title: `Package has file dependency on "${depname}": ${dep.name}`,
+            title: `Package has file dependency for "${depname}"`,
+            shortTitle: 'Has file dependency',
             name: dep.name,
             version: dep.version,
           });

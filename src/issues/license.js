@@ -195,8 +195,8 @@ module.exports = {
         agg.concat(
           dependencies.map(({name, version}) => ({
             severity,
-            title: `${title}: ${name}`,
-            shortTitle: `${shortTitle}: ${name}`,
+            title,
+            shortTitle,
             name,
             version,
             recommendation,
