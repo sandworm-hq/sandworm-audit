@@ -23,7 +23,7 @@
   "license": "MIT",
   "homepage": "https://sandworm.dev",
   "dependencies": {
-    "@sandworm/utils": "1.14.0",
+    "@sandworm/utils": "1.15.0",
     "d3-node": "3.0.0",
     "ora": "6.1.2",
     "semver": "^7.3.8",
