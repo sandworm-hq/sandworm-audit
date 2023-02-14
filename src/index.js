@@ -1,4 +1,4 @@
-const {getDependencyGraph, addDependencyGraphData} = require('sandworm-utils');
+const {getDependencyGraph, addDependencyGraphData} = require('@sandworm/utils');
 const {getDependencyVulnerabilities} = require('./issues/vulnerabilities');
 const {getLicenseIssues, getLicenseUsage} = require('./issues/license');
 const {buildTree, buildTreemap} = require('./charts');
