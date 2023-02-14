@@ -2,14 +2,18 @@ const https = require('https');
 const semverSatisfies = require('semver/functions/satisfies');
 
 const getPathsForPackage = (packageGraph, packageName, semver) => {
-  const parse = (node, currentPath = [], depth = 0) => {
+  const parse = (node, currentPath = [], depth = 0, seenNodes = []) => {
+    if (seenNodes.includes(node)) {
+      return [];
+    }
+
     const newPath = depth === 0 ? [] : [...currentPath, {name: node.name, version: node.version}];
     if (node.name === packageName && semverSatisfies(node.version, semver)) {
       return [newPath];
     }
 
     return Object.entries(node.dependencies || {}).reduce(
-      (agg, [, subnode]) => agg.concat(parse(subnode, newPath, depth + 1)),
+      (agg, [, subnode]) => agg.concat(parse(subnode, newPath, depth + 1, [...seenNodes, node])),
       [],
     );
   };
