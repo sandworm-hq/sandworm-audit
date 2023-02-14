@@ -59,6 +59,7 @@ const reportFromAdvisory = (advisory, packageGraph) => ({
   }),
   name: advisory.module_name,
   range: advisory.vulnerable_versions,
+  type: 'vulnerability',
 });
 
 const getReports = (packageName, packageVersion, packageGraph) =>

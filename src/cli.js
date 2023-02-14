@@ -14,6 +14,8 @@ const getStartMessage = (stage) => {
       return 'Getting vulnerability list...';
     case 'licenses':
       return 'Scanning licenses...';
+    case 'issues':
+      return 'Scanning issues...';
     case 'tree':
       return 'Drawing tree chart...';
     case 'treemap':
@@ -33,6 +35,8 @@ const getEndMessage = (stage) => {
       return 'Got vulnerabilities';
     case 'licenses':
       return 'Scanned licenses';
+    case 'issues':
+      return 'Scanned issues';
     case 'tree':
       return 'Tree chart done';
     case 'treemap':
@@ -106,7 +110,7 @@ require('yargs')
     },
     async (argv) => {
       logger.log('\x1b[36m%s\x1b[0m', `Sandworm 🪱`);
-      logger.log('\x1b[2m%s\x1b[0m', `Security and License Compliance Audit:`);
+      logger.log('\x1b[2m%s\x1b[0m', `Security and License Compliance Audit`);
       const {default: ora} = await import('ora');
 
       const {
@@ -117,6 +121,7 @@ require('yargs')
         rootVulnerabilities,
         licenseUsage,
         licenseIssues,
+        metaIssues,
         name,
         version,
         errors,
@@ -154,12 +159,18 @@ require('yargs')
         dependencyVulnerabilities,
         licenseUsage,
         licenseIssues,
+        metaIssues,
         errors,
       }
       const reportOutputPath = path.join(outputPath, `${prefix}-report.json`);
       await fs.writeFile(reportOutputPath, JSON.stringify(report, null, 2));
 
-      currentSpinner.stopAndPersist({symbol: '✨', text: 'Done'});
+      if (errors.length === 0) {
+        currentSpinner.stopAndPersist({symbol: '✨', text: 'Done'});
+      } else {
+        currentSpinner.stopAndPersist({symbol: '✨', text: 'Done, but with errors:'});
+        errors.forEach((error) => logger.log('⚠️  \x1b[31m%s\x1b[0m', error));
+      }
     },
   )
   .help()

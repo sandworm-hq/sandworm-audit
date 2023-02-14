@@ -110,7 +110,7 @@ module.exports = {
       if (string === 'N/A') {
         issues.push({
           severity: 'critical',
-          title: 'Dependency has no specified license',
+          title: 'Package has no specified license',
           shortTitle: 'No license specified',
           recommendation: 'Check the package code and files for license information',
           dependencies,
@@ -118,7 +118,7 @@ module.exports = {
       } else if (string === 'UNLICENSED') {
         issues.push({
           severity: 'critical',
-          title: 'Dependency is explicitly not available for use under any terms',
+          title: 'Package is explicitly not available for use under any terms',
           shortTitle: 'Not licensed for use',
           recommendation: 'Use another package that is licensed for use',
           dependencies,
@@ -127,7 +127,7 @@ module.exports = {
         if (!licenseGroups.osiApproved.includes(string)) {
           issues.push({
             severity: 'low',
-            title: `Dependency uses a license that is not OSI approved: ${string}`,
+            title: `Package uses a license that is not OSI approved ("${string}")`,
             shortTitle: 'License not OSI approved',
             recommendation: 'Read and validate the license terms',
             dependencies,
@@ -136,7 +136,7 @@ module.exports = {
         if (licenseGroups.deprecated.includes(string)) {
           issues.push({
             severity: 'low',
-            title: `Dependency uses a deprecated license: ${string}`,
+            title: `Package uses a deprecated license ("${string}")`,
             shortTitle: 'License is deprecated',
             dependencies,
           });
@@ -146,7 +146,7 @@ module.exports = {
       if (!licenseType || licenseType === 'Uncategorized') {
         issues.push({
           severity: 'high',
-          title: `Dependency uses an atypical license: ${string}`,
+          title: `Package uses an atypical license ("${string}")`,
           shortTitle: 'Atypical license',
           recommendation: 'Read and validate the license terms',
           dependencies,
@@ -154,7 +154,7 @@ module.exports = {
       } else if (licenseType === 'Invalid') {
         issues.push({
           severity: 'high',
-          title: `Dependency uses an invalid SPDX license: ${string}`,
+          title: `Package uses an invalid SPDX license ("${string}")`,
           shortTitle: 'Invalid SPDX license',
           recommendation: 'Validate that the package complies with your license policy',
           dependencies,
@@ -162,7 +162,7 @@ module.exports = {
       } else if (licenseType === 'Expression') {
         issues.push({
           severity: 'high',
-          title: `Dependency uses a custom license expression: ${string}`,
+          title: `Package uses a custom license expression ("${string}")`,
           shortTitle: 'Custom license expression',
           recommendation: 'Validate that the license expression complies with your license policy',
           dependencies,
@@ -173,7 +173,7 @@ module.exports = {
         if (includes.includes(string)) {
           issues.push({
             severity,
-            title: `Dependency uses a problematic license: ${string}`,
+            title: `Package uses a problematic license ("${string}")`,
             shortTitle: 'Problematic license',
             recommendation: 'Validate that the package complies with your license policy',
             dependencies,
@@ -181,7 +181,7 @@ module.exports = {
         } else if (includes.includes(`cat:${licenseType}`)) {
           issues.push({
             severity,
-            title: `Dependency uses a problematic ${licenseType} license: ${string}`,
+            title: `Package uses a problematic ${licenseType} license ("${string}")`,
             shortTitle: 'Problematic license',
             recommendation: 'Validate that the package complies with your license policy',
             dependencies,
@@ -195,8 +195,8 @@ module.exports = {
         agg.concat(
           dependencies.map(({name, version}) => ({
             severity,
-            title,
-            shortTitle,
+            title: `${title}: ${name}`,
+            shortTitle: `${shortTitle}: ${name}`,
             name,
             version,
             recommendation,
@@ -204,8 +204,8 @@ module.exports = {
               packageGraph,
               packageName: name,
               range: version,
-              allPathsAffected: false,
             }),
+            type: 'license',
           })),
         ),
       [],
