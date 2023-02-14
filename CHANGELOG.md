@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.20.2...audit-v1.21.0) (2023-02-14)
+
+
+### Features
+
+* better license and meta issue titles ([e118686](https://github.com/sandworm-hq/sandworm-audit/commit/e118686e579ba1bc2ffbc89009e67766e4aa46f1))
+
 ## [1.20.2](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.20.1...audit-v1.20.2) (2023-02-14)
 
 
