@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.20.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.19.1...audit-v1.20.0) (2023-02-14)
+
+
+### Features
+
+* better error aggregation ([7a200fd](https://github.com/sandworm-hq/sandworm-audit/commit/7a200fdf62215005e77a47c18bd7cb40cf2f935c))
+* scan for metadata issues ([6bc8a4a](https://github.com/sandworm-hq/sandworm-audit/commit/6bc8a4acecb313d82034fe9e1bd1b902472552a0))
+
+
+### Bug Fixes
+
+* scoped package output filename ([6878e82](https://github.com/sandworm-hq/sandworm-audit/commit/6878e82fe6a546dc2b9061734dcee2287c7107ea))
+* update utils module name ([6710f13](https://github.com/sandworm-hq/sandworm-audit/commit/6710f13c559c53be6536551dcbd6828b1452adb6))
+
 ## [1.19.1](https://github.com/sandworm-hq/audit/compare/audit-v1.19.0...audit-v1.19.1) (2023-02-10)
 
 
