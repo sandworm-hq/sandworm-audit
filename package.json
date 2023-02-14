@@ -1,6 +1,6 @@
 {
   "name": "@sandworm/audit",
-  "version": "1.20.2",
+  "version": "1.21.0",
   "description": "Security & License Compliance For Your App's Dependencies 🪱",
   "main": "src/index.js",
   "bin": {
