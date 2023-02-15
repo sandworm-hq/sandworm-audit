@@ -10,22 +10,50 @@
 
 Beautiful Security & License Compliance Reports For Your App's Dependencies 🪱
 
-* Free & Open Source
-* Scans for vulnerabilities, license, and misc issues
-* Configurable license compliance policy
-* Outputs easy to grok SVG dependency tree & treemap representations
-  * Powered by D3
-  * Overlays security vulnerabilities
-  * Overlays package license info
-* Outputs CSV of all dependencies & license info
-* Outputs all reports in JSON format
-* Works with npm, yarn, and pnpm
-* Made by the team behind [Sandworm](https://sandworm.dev/) - Easy auditing & sandboxing for your JavaScript dependencies
+## TL;DR
+* Free & open source command-line tool
+* Works with any JavaScript package manager
+* Scans your project & dependencies for vulnerabilities, license, and misc issues
+* Outputs:
+  * JSON issue & license usage reports
+  * Easy to grok SVG dependency tree & treemap visualizations
+    * Powered by D3
+    * Overlays security vulnerabilities
+    * Overlays package license info
+  * CSV of all dependencies & license info
 
-![Sandworm Tooltips](https://sandworm-assets.s3.amazonaws.com/sinkchart/demos/sinkchart-tooltip.png)
+```
+Sandworm 🪱
+Security and License Compliance Audit
+✔ Built dependency graph
+✔ Got vulnerabilities
+✔ Scanned licenses
+✔ Tree chart done
+✔ Treemap chart done
+✔ CSV done
+✨ Done
+```
 
-> **Warning**
-> Sandworm does NOT currently support [workspaces](https://docs.npmjs.com/cli/v9/using-npm/workspaces).
+![Sandworm Treemap and Tree Dependency Charts](https://assets.sandworm.dev/showcase/treemap-and-tree.png)
+
+```json
+{
+  "createdAt": "...",
+  "packageManager": "...",
+  "name": "...",
+  "version": "...",
+  "rootVulnerabilities": [...],
+  "dependencyVulnerabilities": [...],
+  "licenseUsage": {...},
+  "licenseIssues": [...],
+  "metaIssues": [...],
+  "errors": [...],
+}
+```
+
+### Documentation
+
+> [Read the full docs here](https://docs.sandworm.dev/audit).
 
 ### Get Involved
 
@@ -35,13 +63,17 @@ Beautiful Security & License Compliance Reports For Your App's Dependencies 🪱
 * Did you find a bug? [Post an issue](https://github.com/sandworm-hq/sandworm-audit/issues/new/choose).
 * Want to write some code? See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Install
+## Get Started
 
 ```bash
-yarn global add @sandworm/audit # or npm install -g @sandworm/audit
+npm install -g @sandworm/audit
+# or yarn global add @sandworm/audit
+# or pnpm add -g @sandworm/audit
 ```
 
-## Options
+Then, run `sandworm-audit` in the root directory of your application. Make sure there's a manifest and a lockfile.
+
+Available options:
 
 ```
 Options:
@@ -55,28 +87,7 @@ Options:
       --md, --max-depth  Max depth to represent                         [number]
 ```
 
-## Chart Types
-
-### Treemap
-* [Sample Treemap for Express@4.18.2](https://assets.sandworm.dev/charts/npm/express/4.18.2/treemap.svg)
-* Node colors represent the dependency depth;
-* Node surface represents the size of the corresponding directory under `node_modules`;
-* A dotted pattern in a node background means the package is a shared dependency, required by multiple packages, and present multiple times in the chart;
-* Shared dependency sizes are added to every dependent package, to represent the independent size structure properly; hence, the displayed size might be larger than the actual size on disk;
-* A red package background means the package has direct vulnerabilities;
-* A purple package background means the package depends on other vulnerable packages;
-* Click on a node to make the tooltip persist; click outside to close it;
-* When representing deep dependencies, the surface area of certain packages might reach zero, making them invisible.
-
-### Tree
-* [Sample Tree for Express@4.18.2](https://assets.sandworm.dev/charts/npm/express/4.18.2/tree.svg)
-* Nodes are grouped by color based on the root dependency that they belong to;
-* Red text in a package name means the package has direct vulnerabilities;
-* Purple text in a package name means the package depends on other vulnerable packages;
-* Click on a node to make the tooltip persist; click outside to close it;
-* By default, the tree chart has a maximum depth of 7, meaning only seven levels of dependencies will be represented, to keep the output readable; you can override this using the `--md` option.
-
-## Samples
+## Samples on Sandworm.dev
 
 * [Apollo Client](https://sandworm.dev/npm/package/apollo-client)
 * [AWS SDK](https://sandworm.dev/npm/package/aws-sdk)
