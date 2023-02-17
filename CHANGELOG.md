@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.21.0...audit-v1.21.1) (2023-02-17)
+
+
+### Bug Fixes
+
+* labeling nodes in cyclic dep graph ([1b4b90e](https://github.com/sandworm-hq/sandworm-audit/commit/1b4b90e2719a975a4e0760b404b851942dd13c5f))
+
 ## [1.21.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.20.2...audit-v1.21.0) (2023-02-14)
 
 
