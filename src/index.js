@@ -15,13 +15,14 @@ const getReport = async ({
   width = 1500,
   maxDepth = 7,
   licensePolicy,
+  loadDataFrom = 'registry',
   onProgress = () => {},
 }) => {
   const errors = [];
 
   // Generate the dependency graph
   onProgress({type: 'start', stage: 'graph'});
-  const dGraph = dependencyGraph || (await getDependencyGraph(appPath, {loadDataFrom: 'registry'}));
+  const dGraph = dependencyGraph || (await getDependencyGraph(appPath, {loadDataFrom}));
   const packageGraph = dGraph.root;
   onProgress({type: 'end', stage: 'graph'});
 
