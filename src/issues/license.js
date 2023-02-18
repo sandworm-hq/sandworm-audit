@@ -102,7 +102,7 @@ module.exports = {
     return licenseUsage.sort((a, b) => b.dependencies.length - a.dependencies.length);
   },
 
-  getLicenseIssues: ({licenseUsage, packageGraph}) => {
+  getLicenseIssues: ({licenseUsage, packageGraph, licensePolicy = DEFAULT_POLICY}) => {
     const issues = [];
 
     licenseUsage.forEach(({string, meta, dependencies}) => {
@@ -169,7 +169,7 @@ module.exports = {
         });
       }
 
-      Object.entries(DEFAULT_POLICY).forEach(([severity, includes]) => {
+      Object.entries(licensePolicy).forEach(([severity, includes]) => {
         if (includes.includes(string)) {
           issues.push({
             severity,

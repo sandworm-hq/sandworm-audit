@@ -14,6 +14,7 @@ const getReport = async ({
   minDisplayedSeverity = 'high',
   width = 1500,
   maxDepth = 7,
+  licensePolicy,
   onProgress = () => {},
 }) => {
   const errors = [];
@@ -56,7 +57,7 @@ const getReport = async ({
     licenseUsage = await getLicenseUsage({
       dependencies: includeDev ? dGraph.all : dGraph.prodDependencies,
     });
-    licenseIssues = await getLicenseIssues({licenseUsage, packageGraph});
+    licenseIssues = await getLicenseIssues({licenseUsage, packageGraph, licensePolicy});
   } catch (error) {
     errors.push(error);
   }
