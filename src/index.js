@@ -18,12 +18,13 @@ const getReport = async ({
   loadDataFrom = 'registry',
   onProgress = () => {},
 }) => {
-  const errors = [];
+  let errors = [];
 
   // Generate the dependency graph
   onProgress({type: 'start', stage: 'graph'});
   const dGraph = dependencyGraph || (await getDependencyGraph(appPath, {loadDataFrom}));
   const packageGraph = dGraph.root;
+  errors = [...errors, ...(dGraph.errors || [])];
   onProgress({type: 'end', stage: 'graph'});
 
   // Get vulnerabilities
