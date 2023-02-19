@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs/promises');
 const path = require('path');
+const { files: { loadConfig } } = require('@sandworm/utils');
 const {getReport} = require('.');
 
 const logger = console;
@@ -74,10 +75,10 @@ require('yargs')
     (yargs) => {
       yargs
         .option('o', {
-          alias: 'output',
+          alias: 'output-path',
           demandOption: false,
           default: '.sandworm',
-          describe: 'The name of the output directory, relative to the application path',
+          describe: 'The path of the output directory, relative to the application path',
           type: 'string',
         })
         .option('d', {
@@ -91,27 +92,48 @@ require('yargs')
           alias: 'show-versions',
           demandOption: false,
           default: false,
-          describe: 'Show package versions',
+          describe: 'Show package versions in chart names',
           type: 'boolean',
         })
         .option('p', {
           alias: 'path',
           demandOption: false,
-          default: process.cwd(),
-          describe: 'The application path',
+          describe: 'The path to the application to audit',
           type: 'string',
         })
         .option('md', {
           alias: 'max-depth',
           demandOption: false,
-          describe: 'Max depth to represent',
+          describe: 'Max depth to represent in charts',
           type: 'number',
+        })
+        .option('ms', {
+          alias: 'min-severity',
+          demandOption: false,
+          describe: 'Min issue severity to represent in charts',
+          type: 'string',
+        })
+        .option('lp', {
+          alias: 'license-policy',
+          demandOption: false,
+          describe: 'Custom license policy JSON string',
+          type: 'string',
+        })
+        .option('f', {
+          alias: 'from',
+          demandOption: false,
+          default: 'registry',
+          describe: 'Load data from "registry" or "disk"',
+          type: 'string',
         });
     },
     async (argv) => {
       logger.log('\x1b[36m%s\x1b[0m', `Sandworm 🪱`);
       logger.log('\x1b[2m%s\x1b[0m', `Security and License Compliance Audit`);
       const {default: ora} = await import('ora');
+      const appPath = argv.p || process.cwd();
+
+      const fileConfig = loadConfig(appPath)?.audit || {};
 
       const {
         dependencyGraph,
@@ -126,16 +148,19 @@ require('yargs')
         version,
         errors,
       } = await getReport({
-        appPath: argv.p,
-        includeDev: argv.d,
-        showVersions: argv.v,
-        maxDepth: argv.md,
+        appPath,
+        includeDev: fileConfig.includeDev || argv.d,
+        showVersions: fileConfig.showVersions || argv.v,
+        maxDepth: fileConfig.maxDepth || argv.md,
+        licensePolicy: fileConfig.licensePolicy || (argv.lp && JSON.parse(argv.lp)),
+        minDisplayedSeverity: fileConfig.minDisplayedSeverity,
+        loadDataFrom: fileConfig.loadDataFrom || argv.f,
         onProgress: onProgress(ora),
       });
 
       currentSpinner = ora('Writing Output Files').start();
 
-      const outputPath = path.join(argv.p, argv.o);
+      const outputPath = path.join(appPath, fileConfig.outputPath || argv.o);
       await fs.mkdir(outputPath, {recursive: true});
 
       const prefix = `${name.replace('/', '-')}@${version}`;

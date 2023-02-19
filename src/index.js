@@ -4,7 +4,8 @@ const {getLicenseIssues, getLicenseUsage} = require('./issues/license');
 const {buildTree, buildTreemap} = require('./charts');
 const {getReports} = require('./issues/utils');
 const csv = require('./charts/csv');
-const { getMetaIssues } = require('./issues/meta');
+const {getMetaIssues} = require('./issues/meta');
+const validateConfig = require('./validateConfig');
 
 const getReport = async ({
   appPath,
@@ -17,7 +18,18 @@ const getReport = async ({
   licensePolicy,
   loadDataFrom = 'registry',
   onProgress = () => {},
-}) => {
+} = {}) => {
+  validateConfig({
+    appPath,
+    dependencyGraph,
+    minDisplayedSeverity,
+    width,
+    maxDepth,
+    loadDataFrom,
+    licensePolicy,
+    onProgress,
+  });
+
   let errors = [];
 
   // Generate the dependency graph

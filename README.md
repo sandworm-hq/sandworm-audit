@@ -14,6 +14,7 @@ Beautiful Security & License Compliance Reports For Your App's Dependencies 🪱
 * Free & open source command-line tool
 * Works with any JavaScript package manager
 * Scans your project & dependencies for vulnerabilities, license, and misc issues
+* Supports custom license policies
 * Outputs:
   * JSON issue & license usage reports
   * Easy to grok SVG dependency tree & treemap visualizations
@@ -51,10 +52,6 @@ Security and License Compliance Audit
 }
 ```
 
-### Documentation
-
-> [Read the full docs here](https://docs.sandworm.dev/audit).
-
 ### Get Involved
 
 * Have a support question? [Post it here](https://github.com/sandworm-hq/sandworm-audit/discussions/categories/q-a).
@@ -77,15 +74,24 @@ Available options:
 
 ```
 Options:
-      --version          Show version number                           [boolean]
-      --help             Show help                                     [boolean]
-  -o, --output           The name of the output directory, relative to the
-                         application path        [string] [default: ".sandworm"]
-  -d, --include-dev      Include dev dependencies     [boolean] [default: false]
-  -v, --show-versions    Show package versions        [boolean] [default: false]
-  -p, --path             The application path    [string] [default: current dir]
-      --md, --max-depth  Max depth to represent                         [number]
+      --version               Show version number                      [boolean]
+      --help                  Show help                                [boolean]
+  -o, --output-path           The path of the output directory, relative to the
+                              application path   [string] [default: ".sandworm"]
+  -d, --include-dev           Include dev dependencies[boolean] [default: false]
+  -v, --show-versions         Show package versions in chart names
+                                                      [boolean] [default: false]
+  -p, --path                  The path to the application to audit      [string]
+      --md, --max-depth       Max depth to represent in charts          [number]
+      --ms, --min-severity    Min issue severity to represent in charts [string]
+      --lp, --license-policy  Custom license policy JSON string         [string]
+  -f, --from                  Load data from "registry" or "disk"
+                                                  [string] [default: "registry"]
 ```
+
+### Documentation
+
+> [Read the full docs here](https://docs.sandworm.dev/audit).
 
 ## Samples on Sandworm.dev
 
