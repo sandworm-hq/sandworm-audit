@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.22.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.21.1...audit-v1.22.0) (2023-02-19)
+
+
+### Features
+
+* api now supports custom license policies ([b890b92](https://github.com/sandworm-hq/sandworm-audit/commit/b890b920e72364b88e0877a3e19bd3d5807ecc34))
+* graph metadata soure now configurable in api ([a4e09ee](https://github.com/sandworm-hq/sandworm-audit/commit/a4e09ee2948a401d852373c5ae3712188270e0a9))
+* include graph gen errors in error output ([8deb50f](https://github.com/sandworm-hq/sandworm-audit/commit/8deb50f379520c2a9523e672d8c971d389452cd8))
+* support configuration file ([39b84c8](https://github.com/sandworm-hq/sandworm-audit/commit/39b84c86d08589b7fe41d07b9b7d5d7c0335c59a))
+
+
+### Bug Fixes
+
+* invalid extra registry call ([6ec0ede](https://github.com/sandworm-hq/sandworm-audit/commit/6ec0edeaf42ce5c628f9e849ebec5bfba597889b))
+
 ## [1.21.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.21.0...audit-v1.21.1) (2023-02-17)
 
 
