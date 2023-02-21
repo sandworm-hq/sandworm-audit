@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.23.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.22.0...audit-v1.23.0) (2023-02-21)
+
+
+### Features
+
+* cli now outputs issue counts ([9cc2d1f](https://github.com/sandworm-hq/sandworm-audit/commit/9cc2d1fe18d1a91e6256ac59c111efcecd3f845e))
+* fail on specific issue type and/or severity ([e19f48a](https://github.com/sandworm-hq/sandworm-audit/commit/e19f48a37ad03e9a0dd5ce8da268d4d1cc7649f8))
+
 ## [1.22.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.21.1...audit-v1.22.0) (2023-02-19)
 
 
