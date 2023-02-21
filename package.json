@@ -4,7 +4,7 @@
   "description": "Security & License Compliance For Your App's Dependencies 🪱",
   "main": "src/index.js",
   "bin": {
-    "sandworm-audit": "src/cli.js"
+    "sandworm-audit": "src/cli/index.js"
   },
   "scripts": {
     "lint": "yarn eslint ./src/",
