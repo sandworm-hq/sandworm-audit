@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 const fs = require('fs/promises');
 const path = require('path');
-const { files: { loadConfig } } = require('@sandworm/utils');
+const {
+  files: {loadConfig},
+} = require('@sandworm/utils');
 const {getReport} = require('.');
 
 const logger = console;
 let currentSpinner;
+
+const SEVERITIES = ['critical', 'high', 'moderate', 'low'];
 
 const getStartMessage = (stage) => {
   switch (stage) {
@@ -186,14 +190,53 @@ require('yargs')
         licenseIssues,
         metaIssues,
         errors,
-      }
+      };
       const reportOutputPath = path.join(outputPath, `${prefix}-report.json`);
       await fs.writeFile(reportOutputPath, JSON.stringify(report, null, 2));
 
-      if (errors.length === 0) {
-        currentSpinner.stopAndPersist({symbol: '✨', text: 'Done'});
+      currentSpinner.succeed('Report written to disk');
+
+      const issueCountsByType = {};
+      const issueCountsBySeverity = {};
+      Object.entries({
+        root: rootVulnerabilities,
+        dependencies: dependencyVulnerabilities,
+        licenses: licenseIssues,
+        meta: metaIssues,
+      }).forEach(([type, issues]) => {
+        issueCountsByType[type] = {};
+        SEVERITIES.forEach((severity) => {
+          const count = (issues || []).filter(
+            ({severity: issueSeverity}) => issueSeverity === severity,
+          ).length;
+          issueCountsByType[type][severity] = count;
+          issueCountsBySeverity[severity] = (issueCountsBySeverity[severity] || 0) + count;
+        });
+      });
+      const totalIssueCount = Object.values(issueCountsBySeverity).reduce(
+        (agg, count) => agg + count,
+        0,
+      );
+
+      if (totalIssueCount > 0) {
+        const displayableIssueCount = Object.entries(issueCountsBySeverity).filter(
+          ([, count]) => count > 0,
+        );
+
+        logger.log(
+          '\x1b[36m%s\x1b[0m',
+          `⚠️ Identified ${displayableIssueCount
+            .map(([severity, count]) => `${count} ${severity} severity`)
+            .join(', ')} issues`,
+        );
       } else {
-        currentSpinner.stopAndPersist({symbol: '✨', text: 'Done, but with errors:'});
+        logger.log('\x1b[36m%s\x1b[0m', `✅ Zero issues identified`);
+      }
+
+      if (errors.length === 0) {
+        logger.log('✨ Done');
+      } else {
+        logger.log('✨ Done, but with errors:');
         errors.forEach((error) => logger.log('⚠️  \x1b[31m%s\x1b[0m', error));
       }
     },
