@@ -129,6 +129,13 @@ require('yargs')
           default: 'registry',
           describe: 'Load data from "registry" or "disk"',
           type: 'string',
+        })
+        .option('fo', {
+          alias: 'fail-on',
+          demandOption: false,
+          default: '[]',
+          describe: 'Fail policy JSON string',
+          type: 'string',
         });
     },
     async (argv) => {
@@ -237,7 +244,32 @@ require('yargs')
         logger.log('✨ Done');
       } else {
         logger.log('✨ Done, but with errors:');
-        errors.forEach((error) => logger.log('⚠️  \x1b[31m%s\x1b[0m', error));
+        errors.forEach((error) => logger.log('❌  \x1b[31m%s\x1b[0m', error));
+        logger.log('❌ Failing because of errors');
+        process.exit(1);
+      }
+
+      const failOn = fileConfig.failOn || (argv.fo && JSON.parse(argv.fo));
+
+      if (failOn) {
+        Object.entries(issueCountsByType).forEach(([issueType, typeCountBySeverity]) => {
+          Object.entries(typeCountBySeverity).forEach(([issueSeverity, count]) => {
+            if (count > 0) {
+              failOn.forEach((failOnOption) => {
+                const [failType, failSeverity] = failOnOption.split('.');
+                if (
+                  (failType === '*' && failSeverity === '*') ||
+                  (failType === issueType && failSeverity === issueSeverity) ||
+                  (failType === '*' && failSeverity === issueSeverity) ||
+                  (failType === issueType && failSeverity === '*')
+                ) {
+                  logger.log(`❌ Failing because of rule "${failOnOption}"`);
+                  process.exit(1);
+                }
+              });
+            }
+          });
+        });
       }
     },
   )
