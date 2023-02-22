@@ -348,10 +348,10 @@
   resolved "https://registry.npmjs.org/@pnpm/util.lex-comparator/-/util.lex-comparator-1.0.0.tgz"
   integrity sha512-3aBQPHntVgk5AweBWZn+1I/fqZ9krK/w01197aYVkAJQGftb+BVWgEepxY5GChjSW12j52XX+CmfynYZ/p0DFQ==
 
-"@sandworm/utils@1.15.2":
-  version "1.15.2"
-  resolved "https://registry.yarnpkg.com/@sandworm/utils/-/utils-1.15.2.tgz#39429709a56dbfb093e0a456ba13ceb6f9de4ff4"
-  integrity sha512-XS2X03hQcsZbhiyouuG6hLBqbZjIClDk56TENczVfFkONR8FVyIL8ZFBolzObe+tvFVhmiziqAWljFmZzDwDuQ==
+"@sandworm/utils@1.16.0":
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/@sandworm/utils/-/utils-1.16.0.tgz#b89374a9aeba381b6a2b6ca589e756e462278135"
+  integrity sha512-p2twWevf5JId21CNFVxYL46EQ8FEckuRCkvL+M65l162YQL7CJVql/KzPJ5Lg14Av8NknV0+m0gtQhMCT6QYzQ==
   dependencies:
     "@pnpm/lockfile-file" "6.0.2"
     "@pnpm/logger" "5.0.0"

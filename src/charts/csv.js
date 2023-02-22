@@ -9,10 +9,32 @@ function jsonToCsv(items) {
 }
 
 module.exports = (dependencies) => {
-  const processedDependencies = (dependencies || []).map(
-    ({name, version, flags, parents, size, license}) => ({
+  const processedDependencies = (dependencies || []).map((dep) => {
+    const {
       name,
       version,
+      flags,
+      parents,
+      size,
+      license,
+      repository,
+      published,
+      publisher,
+      latestVersion,
+    } = dep;
+    return {
+      name,
+      version,
+      latestVersion,
+      repository: typeof repository === 'string' ? repository : repository?.url,
+      published,
+      publisher:
+        // eslint-disable-next-line no-nested-ternary
+        typeof publisher === 'string'
+          ? publisher
+          : typeof publisher === 'object'
+          ? `${publisher.name}${publisher.email ? ` (${publisher.email})` : ''}`
+          : undefined,
       size,
       license,
       isProd: !!flags.prod,
@@ -29,8 +51,8 @@ module.exports = (dependencies) => {
           [],
         )
         .join(','),
-    }),
-  );
+    };
+  });
 
   return {
     csvData: jsonToCsv(processedDependencies),
