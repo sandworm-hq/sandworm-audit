@@ -76,7 +76,7 @@ Options:
       --version               Show version number                      [boolean]
       --help                  Show help                                [boolean]
   -o, --output-path           The path of the output directory, relative to the
-                              application path   [string] [default: ".sandworm"]
+                              application path    [string] [default: "sandworm"]
   -d, --include-dev           Include dev dependencies[boolean] [default: false]
   -v, --show-versions         Show package versions in chart names
                                                       [boolean] [default: false]

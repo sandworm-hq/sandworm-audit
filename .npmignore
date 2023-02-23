@@ -1,4 +1,4 @@
-.sandworm
+sandworm
 .husky/commit-msg
 .husky/pre-commit
 .circleci

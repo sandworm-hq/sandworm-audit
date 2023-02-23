@@ -11,7 +11,7 @@ module.exports = (handler) =>
           .option('o', {
             alias: 'output-path',
             demandOption: false,
-            default: '.sandworm',
+            default: 'sandworm',
             describe: 'The path of the output directory, relative to the application path',
             type: 'string',
           })
