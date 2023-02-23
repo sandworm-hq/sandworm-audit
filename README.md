@@ -10,7 +10,8 @@
 
 Beautiful Security & License Compliance Reports For Your App's Dependencies 🪱
 
-## TL;DR
+## Summary
+
 * Free & open source command-line tool
 * Works with any JavaScript package manager
 * Scans your project & dependencies for vulnerabilities, license, and misc issues
@@ -23,20 +24,16 @@ Beautiful Security & License Compliance Reports For Your App's Dependencies 🪱
     * Overlays package license info
   * CSV of all dependencies & license info
 
-```
-Sandworm 🪱
-Security and License Compliance Audit
-✔ Built dependency graph
-✔ Got vulnerabilities
-✔ Scanned licenses
-✔ Tree chart done
-✔ Treemap chart done
-✔ CSV done
-✨ Done
-```
+### Generate a report
+![Running Sandworm Audit](https://assets.sandworm.dev/showcase/audit-terminal-output.gif)
 
-![Sandworm Treemap and Tree Dependency Charts](https://assets.sandworm.dev/showcase/treemap-and-tree.png)
+### Navigate charts
+![Sandworm treemap and tree dependency charts](https://assets.sandworm.dev/showcase/treemap-and-tree.png)
 
+### CSV output
+![Sandworm dependency CSV](https://assets.sandworm.dev/showcase/csv-snip.png)
+
+### JSON output
 ```json
 {
   "createdAt": "...",
@@ -62,13 +59,15 @@ Security and License Compliance Audit
 
 ## Get Started
 
+Install `sandworm-audit` globally via your favorite package manager:
+
 ```bash
 npm install -g @sandworm/audit
 # or yarn global add @sandworm/audit
 # or pnpm add -g @sandworm/audit
 ```
 
-Then, run `sandworm-audit` in the root directory of your application. Make sure there's a manifest and a lockfile.
+Then, run `sandworm-audit` (or run directly without installing via `npx @sandworm/audit`) in the root directory of your application. Make sure there's a manifest and a lockfile.
 
 Available options:
 
