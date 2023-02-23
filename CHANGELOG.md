@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.24.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.23.0...audit-v1.24.0) (2023-02-23)
+
+
+### Features
+
+* more info available in the csv output ([d0d95b5](https://github.com/sandworm-hq/sandworm-audit/commit/d0d95b5ca1caefc8099d8251a16b2e3665c871e2))
+* update default output dir name to `sandworm` ([90eef86](https://github.com/sandworm-hq/sandworm-audit/commit/90eef86110e1d85d6c4e8fb64e434408e171b75a))
+
 ## [1.23.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.22.0...audit-v1.23.0) (2023-02-21)
 
 
