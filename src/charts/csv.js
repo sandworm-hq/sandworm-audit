@@ -2,7 +2,15 @@ function jsonToCsv(items) {
   const headerNames = Object.keys(items[0]);
   const rowItems = items.map((row) =>
     headerNames
-      .map((fieldName) => JSON.stringify(row[fieldName], (_, value) => value ?? '-'))
+      .map((fieldName) => {
+        let normalized = JSON.stringify(row[fieldName], (_, value) => value ?? '-');
+
+        if (typeof normalized === 'string') {
+          normalized = normalized.replace(/\\"/g, '""');
+        }
+
+        return normalized;
+      })
       .join(','),
   );
   return [headerNames.join(','), ...rowItems].join('\r\n');
