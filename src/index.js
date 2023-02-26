@@ -54,6 +54,12 @@ const getReport = async ({
       packageGraph,
       onProgress: (message) => onProgress({type: 'update', stage: 'vulnerabilities', message}),
     });
+
+    if (!includeDev) {
+      dependencyVulnerabilities = (dependencyVulnerabilities || []).filter((issue) =>
+        (issue?.findings?.sources || []).find(({flags}) => flags.prod),
+      );
+    }
   } catch (error) {
     errors.push(error);
   }
@@ -141,9 +147,7 @@ const getReport = async ({
 
   return {
     dependencyGraph: dGraph,
-    dependencyVulnerabilities: (dependencyVulnerabilities || []).filter(
-      ({findings: {affects}}) => affects.length,
-    ),
+    dependencyVulnerabilities,
     rootVulnerabilities,
     licenseUsage,
     licenseIssues,

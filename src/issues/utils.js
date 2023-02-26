@@ -1,5 +1,6 @@
 const https = require('https');
 const semverSatisfies = require('semver/functions/satisfies');
+const {aggregateDependencies} = require('../charts/utils');
 
 const getPathsForPackage = (packageGraph, packageName, semver) => {
   const parse = (node, currentPath = [], depth = 0, seenNodes = []) => {
@@ -7,13 +8,16 @@ const getPathsForPackage = (packageGraph, packageName, semver) => {
       return [];
     }
 
-    const newPath = depth === 0 ? [] : [...currentPath, {name: node.name, version: node.version}];
+    const newPath =
+      depth === 0
+        ? []
+        : [...currentPath, {name: node.name, version: node.version, flags: node.flags}];
     if (node.name === packageName && semverSatisfies(node.version, semver)) {
       return [newPath];
     }
 
-    return Object.entries(node.dependencies || {}).reduce(
-      (agg, [, subnode]) => agg.concat(parse(subnode, newPath, depth + 1, [...seenNodes, node])),
+    return aggregateDependencies(node).reduce(
+      (agg, subnode) => agg.concat(parse(subnode, newPath, depth + 1, [...seenNodes, node])),
       [],
     );
   };
@@ -46,8 +50,10 @@ const getFindings = ({packageGraph, packageName, range, allPathsAffected = true}
     : getTargetPackagesFromPaths(allPaths);
   const rootDependencies = getRootPackagesFromPaths(allPaths);
   const paths = getDisplayPaths(allPaths);
+  const sources = getTargetPackagesFromPaths(allPaths);
 
   return {
+    sources,
     affects,
     rootDependencies,
     paths,
