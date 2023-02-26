@@ -66,6 +66,13 @@ module.exports = (handler) =>
             default: '[]',
             describe: 'Fail policy JSON string',
             type: 'string',
+          })
+          .option('s', {
+            alias: 'summary',
+            demandOption: false,
+            default: true,
+            describe: 'Print a summary of the audit results to the console',
+            type: 'boolean',
           });
       },
       handler,

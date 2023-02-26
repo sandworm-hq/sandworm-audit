@@ -8,12 +8,12 @@ const {getReport} = require('..');
 const onProgress = require('./progress');
 const {getIssueCounts, failIfRequested} = require('./utils');
 const command = require('./command');
-
-const logger = console;
+const summary = require('./summary');
+const logger = require('./logger');
 
 command(async (argv) => {
-  logger.log('\x1b[36m%s\x1b[0m', `Sandworm 🪱`);
-  logger.log('\x1b[2m%s\x1b[0m', `Security and License Compliance Audit`);
+  logger.logColor(logger.colors.CYAN, 'Sandworm 🪱');
+  logger.logColor(logger.colors.DIM, 'Security and License Compliance Audit');
   const {default: ora} = await import('ora');
   const appPath = argv.p || process.cwd();
   const fileConfig = loadConfig(appPath)?.audit || {};
@@ -85,34 +85,41 @@ command(async (argv) => {
   // ***************
   // Display results
   // ***************
-  const {issueCountsByType, issueCountsBySeverity, totalIssueCount} = getIssueCounts({
+  const issuesByType = {
     root: rootVulnerabilities,
     dependencies: dependencyVulnerabilities,
     licenses: licenseIssues,
     meta: metaIssues,
-  });
+  };
+  const {issueCountsByType, issueCountsBySeverity, totalIssueCount} = getIssueCounts(issuesByType);
 
+  logger.log('');
   if (totalIssueCount > 0) {
     const displayableIssueCount = Object.entries(issueCountsBySeverity).filter(
       ([, count]) => count > 0,
     );
 
-    logger.log(
-      '\x1b[36m%s\x1b[0m',
+    logger.logColor(
+      logger.colors.CYAN,
       `⚠️ Identified ${displayableIssueCount
         .map(([severity, count]) => `${count} ${severity} severity`)
         .join(', ')} issues`,
     );
+
+    if (argv.s) {
+      summary(issuesByType);
+    }
   } else {
-    logger.log('\x1b[36m%s\x1b[0m', `✅ Zero issues identified`);
+    logger.logColor(logger.colors.CYAN, '✅ Zero issues identified');
   }
 
+  logger.log('');
   if (errors.length === 0) {
     logger.log('✨ Done');
   } else {
     logger.log('✨ Done, but with errors:');
-    errors.forEach((error) => logger.log('❌  \x1b[31m%s\x1b[0m', error));
-    logger.log('❌ Failing because of errors');
+    errors.forEach((error) => logger.logColor(logger.colors.RED, `❌ ${error}`));
+    logger.logColor(logger.colors.RED, '❌ Failing because of errors');
     process.exit(1);
   }
 
@@ -122,6 +129,6 @@ command(async (argv) => {
   const failOn = fileConfig.failOn || (argv.fo && JSON.parse(argv.fo));
 
   if (failOn) {
-    failIfRequested({failOn, issueCountsByType, logger})
+    failIfRequested({failOn, issueCountsByType});
   }
 });

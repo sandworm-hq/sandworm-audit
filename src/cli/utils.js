@@ -1,3 +1,5 @@
+const logger = require('./logger');
+
 const SEVERITIES = ['critical', 'high', 'moderate', 'low'];
 
 const getIssueCounts = (issuesByType) => {
@@ -22,10 +24,10 @@ const getIssueCounts = (issuesByType) => {
     issueCountsByType,
     issueCountsBySeverity,
     totalIssueCount,
-  }
+  };
 };
 
-const failIfRequested = ({failOn, issueCountsByType, logger}) => {
+const failIfRequested = ({failOn, issueCountsByType}) => {
   Object.entries(issueCountsByType).forEach(([issueType, typeCountBySeverity]) => {
     Object.entries(typeCountBySeverity).forEach(([issueSeverity, count]) => {
       if (count > 0) {
@@ -37,16 +39,16 @@ const failIfRequested = ({failOn, issueCountsByType, logger}) => {
             (failType === '*' && failSeverity === issueSeverity) ||
             (failType === issueType && failSeverity === '*')
           ) {
-            logger.log(`❌ Failing because of rule "${failOnOption}"`);
+            logger.logColor(logger.colors.RED, `❌ Failing because of rule "${failOnOption}"`);
             process.exit(1);
           }
         });
       }
     });
   });
-}
+};
 
 module.exports = {
   getIssueCounts,
   failIfRequested,
-}
+};
