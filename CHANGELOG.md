@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.25.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.24.0...audit-v1.25.0) (2023-02-26)
+
+
+### Features
+
+* output audit summary in console ([4240198](https://github.com/sandworm-hq/sandworm-audit/commit/42401982e1b2bd82e3ab4e17abe235eac66ef7ec))
+
+
+### Bug Fixes
+
+* issue paths for non-prod deps ([ad1049a](https://github.com/sandworm-hq/sandworm-audit/commit/ad1049a11f924bc2514cdb37632ea12dc721fde9))
+* properly encode csv quotes ([772793f](https://github.com/sandworm-hq/sandworm-audit/commit/772793f87f691f56181445b23f613b379511cc3c))
+* specify required node version ([4ef5b8a](https://github.com/sandworm-hq/sandworm-audit/commit/4ef5b8a3dd02db1af9c73e6529fe45b4bd8e67af))
+
 ## [1.24.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.23.0...audit-v1.24.0) (2023-02-23)
 
 
