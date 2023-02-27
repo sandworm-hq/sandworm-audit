@@ -36,7 +36,10 @@ const generatePnpmGraph = ({data, manifest}) => {
     const {name, version} = parsePath(id);
     const newPackage = makeNode({
       name,
-      version,
+      // In some cases, pnpm appends metadata to the version
+      // Ex: `/rollup-plugin-terser/7.0.2_rollup@2.79.1`
+      // Ex: `/workbox-webpack-plugin/6.1.5_fa2917c6d78243729a500a2a8fe6cdc5`
+      version: version.split('_')[0],
       dev,
       ...(resolution && resolution.integrity && {integrity: resolution.integrity}),
     });
