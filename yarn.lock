@@ -269,6 +269,11 @@
   resolved "https://registry.npmjs.org/@pnpm/constants/-/constants-6.1.0.tgz"
   integrity sha512-L6AiU3OXv9kjKGTJN9j8n1TeJGDcLX9atQlZvAkthlvbXjvKc5SKNWESc/eXhr5nEfuMWhQhiKHDJCpYejmeCQ==
 
+"@pnpm/constants@6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@pnpm/constants/-/constants-6.2.0.tgz#13068883d5a2c95b20caeb4a1e93c590bc425801"
+  integrity sha512-GlDVUkeTR2WK0oZAM+wtDY6RBMLw6b0Z/5qKgBbDszx4e+R7CHyfG7JofyypogRCfeWXeAXp2C2FkFTh+sNgIg==
+
 "@pnpm/crypto.base32-hash@1.0.1":
   version "1.0.1"
   resolved "https://registry.npmjs.org/@pnpm/crypto.base32-hash/-/crypto.base32-hash-1.0.1.tgz"
@@ -276,12 +281,29 @@
   dependencies:
     rfc4648 "^1.5.1"
 
+"@pnpm/dependency-path@1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@pnpm/dependency-path/-/dependency-path-1.1.3.tgz#1f3cdc00aa90acbc6699f30f224e4369c5e2b172"
+  integrity sha512-HXmS9XzZ1CLCGFtfydAkWayn/o3jaftVFESXrJH0W6NENS92rYCUVvutqL/4Kfx72k0HHUbIZLQAsoISxKId8Q==
+  dependencies:
+    "@pnpm/crypto.base32-hash" "1.0.1"
+    "@pnpm/types" "8.10.0"
+    encode-registry "^3.0.0"
+    semver "^7.3.8"
+
 "@pnpm/error@4.0.0":
   version "4.0.0"
   resolved "https://registry.npmjs.org/@pnpm/error/-/error-4.0.0.tgz"
   integrity sha512-NI4DFCMF6xb1SA0bZiiV5KrMCaJM2QmPJFC6p78FXujn7FpiRSWhT9r032wpuQumsl7DEmN4s3wl/P8TA+bL8w==
   dependencies:
     "@pnpm/constants" "6.1.0"
+
+"@pnpm/error@4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@pnpm/error/-/error-4.0.1.tgz#a75ecaadde28bcdec3d8dad21e47cc34822f6dba"
+  integrity sha512-6UFakGqUDhnZVzYCfN+QaG1epxtBVS1M9mb9RzoBuvWxcimBYTT04fdYuyk1Nay8y/TvAVl3AVB/lCziWG0+2w==
+  dependencies:
+    "@pnpm/constants" "6.2.0"
 
 "@pnpm/git-utils@0.1.0":
   version "0.1.0"
@@ -313,12 +335,42 @@
     strip-bom "^4.0.0"
     write-file-atomic "^4.0.2"
 
+"@pnpm/lockfile-file@^7.0.5":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@pnpm/lockfile-file/-/lockfile-file-7.0.5.tgz#497f062fce0d860fc4bb528817de64a45148e4fc"
+  integrity sha512-KjgoJ9VQTkstwzCVqGOX7UVHzVOal1YGfnb1LSVriqdCxYAtA5iTGji1Vr5sGmyfbwGFjTFWdqx6QGRGP0rggw==
+  dependencies:
+    "@pnpm/constants" "6.2.0"
+    "@pnpm/dependency-path" "1.1.3"
+    "@pnpm/error" "4.0.1"
+    "@pnpm/git-utils" "0.1.0"
+    "@pnpm/lockfile-types" "4.3.6"
+    "@pnpm/merge-lockfile-changes" "4.0.3"
+    "@pnpm/types" "8.10.0"
+    "@pnpm/util.lex-comparator" "1.0.0"
+    "@zkochan/rimraf" "^2.1.2"
+    comver-to-semver "^1.0.0"
+    js-yaml "npm:@zkochan/js-yaml@0.0.6"
+    normalize-path "^3.0.0"
+    ramda "npm:@pnpm/ramda@0.28.1"
+    semver "^7.3.8"
+    sort-keys "^4.2.0"
+    strip-bom "^4.0.0"
+    write-file-atomic "^5.0.0"
+
 "@pnpm/lockfile-types@4.3.5":
   version "4.3.5"
   resolved "https://registry.npmjs.org/@pnpm/lockfile-types/-/lockfile-types-4.3.5.tgz"
   integrity sha512-5GdnnhGdz+4JphrKYYZ7rcv9t37BllNwdCbFLYli6ajyIeoSCklNNCHWNewskWs3PZZUHW8LxD/nKHPaarbm9g==
   dependencies:
     "@pnpm/types" "8.9.0"
+
+"@pnpm/lockfile-types@4.3.6":
+  version "4.3.6"
+  resolved "https://registry.yarnpkg.com/@pnpm/lockfile-types/-/lockfile-types-4.3.6.tgz#9d81aa3547a57af9e229572d4763e48268637a83"
+  integrity sha512-5vvdV3tEVOCzzeGv2FXK4590qPUVpZ+5gdqCawFuiNTJavx+4rmmY4aDUjdVXUcKGwqkIBPVKe/SNUBA3A2rtg==
+  dependencies:
+    "@pnpm/types" "8.10.0"
 
 "@pnpm/logger@5.0.0":
   version "5.0.0"
@@ -337,6 +389,21 @@
     comver-to-semver "^1.0.0"
     ramda "npm:@pnpm/ramda@0.28.1"
     semver "^7.3.8"
+
+"@pnpm/merge-lockfile-changes@4.0.3":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@pnpm/merge-lockfile-changes/-/merge-lockfile-changes-4.0.3.tgz#b06d57e76688d008d1b423623644fc94c0a25f70"
+  integrity sha512-njeoNDhWBW1Iylo8pCKNVYMdbEu5L3L7U99XCuBFuUiZYphmA/Ha3K1wxqrx6YHELZauAGkQOdwmU6iAeBsOjQ==
+  dependencies:
+    "@pnpm/lockfile-types" "4.3.6"
+    comver-to-semver "^1.0.0"
+    ramda "npm:@pnpm/ramda@0.28.1"
+    semver "^7.3.8"
+
+"@pnpm/types@8.10.0":
+  version "8.10.0"
+  resolved "https://registry.yarnpkg.com/@pnpm/types/-/types-8.10.0.tgz#29ebd095bb0653e5eab8283799c9f59fb6cf216f"
+  integrity sha512-A4pcNNvFJdkMXArEjTCOIYNL2VxD4uBynWZ6cBIELXb5qJ0tUzwKsaSz4J953I0rQFqnsFpUYqaWIquI10W1sw==
 
 "@pnpm/types@8.9.0":
   version "8.9.0"
@@ -415,10 +482,23 @@
   resolved "https://registry.npmjs.org/@yarnpkg/lockfile/-/lockfile-1.1.0.tgz"
   integrity sha512-GpSwvyXOcOOlV70vbnzjj4fW5xW/FdUF6nQEt1ENy7m4ZCczi1+/buVUPAqmGfqznsORNFzUMjctTIp8a9tuCQ==
 
+"@yarnpkg/lockfile@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@yarnpkg/lockfile/-/lockfile-1.1.0.tgz#e77a97fbd345b76d83245edcd17d393b1b41fb31"
+  integrity sha512-GpSwvyXOcOOlV70vbnzjj4fW5xW/FdUF6nQEt1ENy7m4ZCczi1+/buVUPAqmGfqznsORNFzUMjctTIp8a9tuCQ==
+
 "@yarnpkg/parsers@3.0.0-rc.31":
   version "3.0.0-rc.31"
   resolved "https://registry.npmjs.org/@yarnpkg/parsers/-/parsers-3.0.0-rc.31.tgz"
   integrity sha512-7M67TPmTM5OmtoypK0KHV3vIY9z0v4qZ6zF7flH8THLgjGuoA7naop8pEfL9x5vCtid1PDC4A4COrcym4WAZpQ==
+  dependencies:
+    js-yaml "^3.10.0"
+    tslib "^2.4.0"
+
+"@yarnpkg/parsers@^3.0.0-rc.39":
+  version "3.0.0-rc.39"
+  resolved "https://registry.yarnpkg.com/@yarnpkg/parsers/-/parsers-3.0.0-rc.39.tgz#0301a0541312124a5bdade79708868f10f9cdfcd"
+  integrity sha512-BsD4zq3EVmaHqlynXTceNuEFAtrfToV4fI9GA54moKlWZL4Eb2eXrhgf1jV2nMYx18SZxYO4Jc5Kf1sCDNRjOg==
   dependencies:
     js-yaml "^3.10.0"
     tslib "^2.4.0"
@@ -2043,6 +2123,13 @@ js-yaml@^4.1.0:
   dependencies:
     argparse "^2.0.1"
 
+"js-yaml@npm:@zkochan/js-yaml@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@zkochan/js-yaml/-/js-yaml-0.0.6.tgz#975f0b306e705e28b8068a07737fa46d3fc04826"
+  integrity sha512-nzvgl3VfhcELQ8LyVrYOru+UtAy1nrygk2+AGbTm8a5YcO6o8lSjAT+pfg3vJWxIoZKOUhrK6UU7xW/+00kQrg==
+  dependencies:
+    argparse "^2.0.1"
+
 "js-yaml@npm:@zkochan/js-yaml@^0.0.6":
   version "0.0.6"
   resolved "https://registry.npmjs.org/@zkochan/js-yaml/-/js-yaml-0.0.6.tgz"
@@ -3273,6 +3360,14 @@ write-file-atomic@^4.0.2:
   version "4.0.2"
   resolved "https://registry.npmjs.org/write-file-atomic/-/write-file-atomic-4.0.2.tgz"
   integrity sha512-7KxauUdBmSdWnmpaGFg+ppNjKF8uNLry8LyzjauQDOVONfFLNKrKvQOxZ/VuTIcS/gge/YNahf5RIIQWTSarlg==
+  dependencies:
+    imurmurhash "^0.1.4"
+    signal-exit "^3.0.7"
+
+write-file-atomic@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/write-file-atomic/-/write-file-atomic-5.0.0.tgz#54303f117e109bf3d540261125c8ea5a7320fab0"
+  integrity sha512-R7NYMnHSlV42K54lwY9lvW6MnSm1HSJqZL3xiSgi9E7//FYaI74r2G0rd+/X6VAMkHEdzxQaU5HUOXWUz5kA/w==
   dependencies:
     imurmurhash "^0.1.4"
     signal-exit "^3.0.7"

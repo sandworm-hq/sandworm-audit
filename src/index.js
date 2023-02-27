@@ -1,4 +1,3 @@
-const {getDependencyGraph, addDependencyGraphData} = require('@sandworm/utils');
 const {getDependencyVulnerabilities} = require('./issues/vulnerabilities');
 const {getLicenseIssues, getLicenseUsage} = require('./issues/license');
 const {buildTree, buildTreemap} = require('./charts');
@@ -6,6 +5,8 @@ const {getReports} = require('./issues/utils');
 const csv = require('./charts/csv');
 const {getMetaIssues} = require('./issues/meta');
 const validateConfig = require('./validateConfig');
+const getDependencyGraph = require('./graph');
+const {addDependencyGraphData} = require('./graph/utils');
 
 const getReport = async ({
   appPath,
