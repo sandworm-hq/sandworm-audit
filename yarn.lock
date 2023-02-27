@@ -380,6 +380,14 @@
     bole "^5.0.0"
     ndjson "^2.0.0"
 
+"@pnpm/logger@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@pnpm/logger/-/logger-5.0.0.tgz#9ac8254d40d8d5b5e676742dc66b8cac1af380bf"
+  integrity sha512-YfcB2QrX+Wx1o6LD1G2Y2fhDhOix/bAY/oAnMpHoNLsKkWIRbt1oKLkIFvxBMzLwAEPqnYWguJrYC+J6i4ywbw==
+  dependencies:
+    bole "^5.0.0"
+    ndjson "^2.0.0"
+
 "@pnpm/merge-lockfile-changes@4.0.2":
   version "4.0.2"
   resolved "https://registry.npmjs.org/@pnpm/merge-lockfile-changes/-/merge-lockfile-changes-4.0.2.tgz"
