@@ -26,9 +26,10 @@
   "license": "MIT",
   "homepage": "https://sandworm.dev",
   "dependencies": {
-    "@pnpm/lockfile-file": "^7.0.5",
-    "@yarnpkg/lockfile": "^1.1.0",
-    "@yarnpkg/parsers": "^3.0.0-rc.39",
+    "@pnpm/lockfile-file": "7.0.5",
+    "@sandworm/utils": "1.16.0",
+    "@yarnpkg/lockfile": "1.1.0",
+    "@yarnpkg/parsers": "3.0.0-rc.39",
     "d3-node": "3.0.0",
     "ora": "6.1.2",
     "semver": "7.3.8",
