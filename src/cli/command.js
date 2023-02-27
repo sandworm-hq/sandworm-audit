@@ -73,6 +73,13 @@ module.exports = (handler) =>
             default: true,
             describe: 'Print a summary of the audit results to the console',
             type: 'boolean',
+          })
+          .option('rs', {
+            alias: 'root-is-shell',
+            demandOption: false,
+            default: false,
+            describe: 'Root project is a shell with a single dependency',
+            type: 'boolean',
           });
       },
       handler,

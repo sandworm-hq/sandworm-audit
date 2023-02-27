@@ -4,7 +4,10 @@ const generatePnpmGraph = require('./generatePnpmGraph');
 const generateYarnGraph = require('./generateYarnGraph');
 const {postProcessGraph, addDependencyGraphData, getRegistryDataMultiple} = require('./utils');
 
-const generateGraphPromise = async (appPath, {packageData, loadDataFrom = false} = {}) => {
+const generateGraphPromise = async (
+  appPath,
+  {packageData, loadDataFrom = false, rootIsShell = false} = {},
+) => {
   const lockfile = await loadLockfile(appPath);
   const manifest = loadManifest(appPath);
   let graph;
@@ -30,12 +33,22 @@ const generateGraphPromise = async (appPath, {packageData, loadDataFrom = false}
   }
 
   const {root, allPackages} = graph;
-  const processedRoot = postProcessGraph({root});
-  const allConnectedPackages = allPackages.filter(
+  let processedRoot = postProcessGraph({root});
+  let allConnectedPackages = allPackages.filter(
     ({name, version, parents}) =>
       (name === manifest.name && version === manifest.version) ||
       Object.values(parents).reduce((agg, deps) => agg + Object.keys(deps).length, 0),
   );
+
+  if (rootIsShell) {
+    const shellName = processedRoot.name;
+    const shellVersion = processedRoot.version;
+    [processedRoot] = Object.values(processedRoot.dependencies);
+    allConnectedPackages = allConnectedPackages.filter(
+      ({name, version}) => name !== shellName && version !== shellVersion,
+    );
+  }
+
   const devDependencies = allConnectedPackages.filter(({flags}) => flags.dev);
   const prodDependencies = allConnectedPackages.filter(({flags}) => flags.prod);
 
@@ -52,7 +65,7 @@ const generateGraphPromise = async (appPath, {packageData, loadDataFrom = false}
   }
 
   if (additionalPackageData) {
-    addDependencyGraphData({root, packageData: additionalPackageData});
+    addDependencyGraphData({root: processedRoot, packageData: additionalPackageData});
   }
 
   return {
@@ -74,12 +87,16 @@ const generateGraphAsync = (appPath, options, done = () => {}) => {
   })();
 };
 
-const generateGraph = (appPath, {packageData, loadDataFrom = false} = {}, done = undefined) => {
+const generateGraph = (
+  appPath,
+  {packageData, loadDataFrom = false, rootIsShell = false} = {},
+  done = undefined,
+) => {
   if (typeof done === 'function') {
-    return generateGraphAsync(appPath, {packageData, loadDataFrom}, done);
+    return generateGraphAsync(appPath, {packageData, loadDataFrom, rootIsShell}, done);
   }
 
-  return generateGraphPromise(appPath, {packageData, loadDataFrom});
+  return generateGraphPromise(appPath, {packageData, loadDataFrom, rootIsShell});
 };
 
 module.exports = generateGraph;

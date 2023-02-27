@@ -37,6 +37,7 @@ command(async (argv) => {
     appPath,
     includeDev: fileConfig.includeDev || argv.d,
     showVersions: fileConfig.showVersions || argv.v,
+    rootIsShell: fileConfig.rootIsShell || argv.rs,
     maxDepth: fileConfig.maxDepth || argv.md,
     licensePolicy: fileConfig.licensePolicy || (argv.lp && JSON.parse(argv.lp)),
     minDisplayedSeverity: fileConfig.minDisplayedSeverity,

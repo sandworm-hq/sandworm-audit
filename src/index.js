@@ -13,6 +13,8 @@ const getReport = async ({
   dependencyGraph,
   includeDev = false,
   showVersions = false,
+  rootIsShell = false,
+  getAdvisoriesForRoot = true,
   minDisplayedSeverity = 'high',
   width = 1500,
   maxDepth = 7,
@@ -35,7 +37,8 @@ const getReport = async ({
 
   // Generate the dependency graph
   onProgress({type: 'start', stage: 'graph'});
-  const dGraph = dependencyGraph || (await getDependencyGraph(appPath, {loadDataFrom}));
+  const dGraph =
+    dependencyGraph || (await getDependencyGraph(appPath, {loadDataFrom, rootIsShell}));
   const packageGraph = dGraph.root;
   errors = [...errors, ...(dGraph.errors || [])];
   onProgress({type: 'end', stage: 'graph'});
@@ -65,10 +68,12 @@ const getReport = async ({
     errors.push(error);
   }
 
-  try {
-    rootVulnerabilities = await getReports(packageGraph.name, packageGraph.version, packageGraph);
-  } catch (error) {
-    errors.push(error);
+  if (!rootIsShell && getAdvisoriesForRoot) {
+    try {
+      rootVulnerabilities = await getReports(packageGraph.name, packageGraph.version, packageGraph);
+    } catch (error) {
+      errors.push(error);
+    }
   }
   onProgress({type: 'end', stage: 'vulnerabilities'});
 
