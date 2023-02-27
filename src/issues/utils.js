@@ -8,11 +8,15 @@ const getPathsForPackage = (packageGraph, packageName, semver) => {
       return [];
     }
 
+    const currentNodeValidatesSemver =
+      node.name === packageName && semverSatisfies(node.version, semver);
+    // For convenience, omit the root package from the path
+    // unless we're explicitly searching for the root
     const newPath =
-      depth === 0
+      depth === 0 && !currentNodeValidatesSemver
         ? []
         : [...currentPath, {name: node.name, version: node.version, flags: node.flags}];
-    if (node.name === packageName && semverSatisfies(node.version, semver)) {
+    if (currentNodeValidatesSemver) {
       return [newPath];
     }
 
