@@ -20,7 +20,7 @@ const getPathsForPackage = (packageGraph, packageName, semver) => {
       return [newPath];
     }
 
-    return aggregateDependencies(node).reduce(
+    return aggregateDependencies(node, true).reduce(
       (agg, subnode) => agg.concat(parse(subnode, newPath, depth + 1, [...seenNodes, node])),
       [],
     );
