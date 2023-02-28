@@ -38,7 +38,7 @@ const getReport = async ({
   // Generate the dependency graph
   onProgress({type: 'start', stage: 'graph'});
   const dGraph =
-    dependencyGraph || (await getDependencyGraph(appPath, {loadDataFrom, rootIsShell}));
+    dependencyGraph || (await getDependencyGraph(appPath, {loadDataFrom, rootIsShell, includeDev}));
   const packageGraph = dGraph.root;
   errors = [...errors, ...(dGraph.errors || [])];
   onProgress({type: 'end', stage: 'graph'});

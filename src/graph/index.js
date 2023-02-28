@@ -6,7 +6,7 @@ const {postProcessGraph, addDependencyGraphData, getRegistryDataMultiple} = requ
 
 const generateGraphPromise = async (
   appPath,
-  {packageData, loadDataFrom = false, rootIsShell = false} = {},
+  {packageData, loadDataFrom = false, rootIsShell = false, includeDev = false} = {},
 ) => {
   const lockfile = await loadLockfile(appPath);
   const manifest = loadManifest(appPath);
@@ -58,7 +58,9 @@ const generateGraphPromise = async (
     if (loadDataFrom === 'disk') {
       additionalPackageData = await loadInstalledPackages(appPath);
     } else if (loadDataFrom === 'registry') {
-      const {data, errors: registryErrors} = await getRegistryDataMultiple(prodDependencies);
+      const {data, errors: registryErrors} = await getRegistryDataMultiple(
+        includeDev ? allConnectedPackages : prodDependencies,
+      );
       additionalPackageData = data;
       errors = [...errors, ...registryErrors];
     }
@@ -89,14 +91,14 @@ const generateGraphAsync = (appPath, options, done = () => {}) => {
 
 const generateGraph = (
   appPath,
-  {packageData, loadDataFrom = false, rootIsShell = false} = {},
+  {packageData, loadDataFrom = false, rootIsShell = false, includeDev = false} = {},
   done = undefined,
 ) => {
   if (typeof done === 'function') {
-    return generateGraphAsync(appPath, {packageData, loadDataFrom, rootIsShell}, done);
+    return generateGraphAsync(appPath, {packageData, loadDataFrom, rootIsShell, includeDev}, done);
   }
 
-  return generateGraphPromise(appPath, {packageData, loadDataFrom, rootIsShell});
+  return generateGraphPromise(appPath, {packageData, loadDataFrom, rootIsShell, includeDev});
 };
 
 module.exports = generateGraph;
