@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.26.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.25.0...audit-v1.26.0) (2023-02-28)
+
+
+### Features
+
+* better install script issues ([7c9fd4d](https://github.com/sandworm-hq/sandworm-audit/commit/7c9fd4d8a984acc6171802e2c8708c19548f0db6))
+* support root shell project ([bb484df](https://github.com/sandworm-hq/sandworm-audit/commit/bb484dfed06298c9782dc098517fc35a1a48dad8))
+
+
+### Bug Fixes
+
+* additional pnpm semver parsing issue ([3f4fa77](https://github.com/sandworm-hq/sandworm-audit/commit/3f4fa77f80919d050578c62ac6387052808d723d))
+* get registry data for dev deps ([103af11](https://github.com/sandworm-hq/sandworm-audit/commit/103af1143be64c1b70a6cb9fb053250c08986701))
+* getting paths for dev dep issues ([03adb07](https://github.com/sandworm-hq/sandworm-audit/commit/03adb077c1620477d4073d06028fddbba436c8d5))
+* issue sources for root vulnerabilities ([a85d54b](https://github.com/sandworm-hq/sandworm-audit/commit/a85d54b00e2a1f498a5f4e00c5f063804af64576))
+* parsing pnpm package version from lockfile ([4667cde](https://github.com/sandworm-hq/sandworm-audit/commit/4667cde75ba15bdadd4339e46596cae5ab1c11b2))
+
 ## [1.25.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.24.0...audit-v1.25.0) (2023-02-26)
 
 
