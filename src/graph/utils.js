@@ -64,7 +64,10 @@ const processDependenciesForPackage = ({dependencies, newPackage, allPackages, p
     Object.entries(dependencyObject || {}).forEach(
       ([originalDependencyName, originalSemverRule]) => {
         const {name: dependencyName, semver: semverRule} = parseDependencyString(
-          `${originalDependencyName}@${originalSemverRule}`,
+          // In some cases, pnpm appends metadata to the version
+          // Ex: `/rollup-plugin-terser/7.0.2_rollup@2.79.1`
+          // Ex: `/workbox-webpack-plugin/6.1.5_fa2917c6d78243729a500a2a8fe6cdc5`
+          `${originalDependencyName}@${originalSemverRule.split('_')[0]}`,
         );
 
         const dependencyPackage = allPackages.find(
