@@ -1,10 +1,6 @@
 const {getFindings} = require('./utils');
 
-const INSTALL_SCRIPT_NAME = [
-  'preinstall',
-  'install',
-  'postinstall',
-];
+const INSTALL_SCRIPT_NAME = ['preinstall', 'install', 'postinstall'];
 
 module.exports = {
   getMetaIssues: ({dependencies = [], packageGraph}) => {
@@ -20,20 +16,25 @@ module.exports = {
         });
       }
 
-      const hasInstallScripts = INSTALL_SCRIPT_NAME.reduce(
-        (agg, scriptName) => agg || Object.keys(dep.scripts || {}).includes(scriptName),
-        false,
+      const installScripts = INSTALL_SCRIPT_NAME.reduce(
+        (agg, scriptName) => ({
+          ...agg,
+          ...(dep.scripts?.[scriptName] && {[scriptName]: dep.scripts?.[scriptName]}),
+        }),
+        {},
       );
 
-      if (hasInstallScripts) {
-        issues.push({
-          severity: 'high',
-          title: 'Package uses install scripts',
-          shortTitle: 'Uses install scripts',
-          name: dep.name,
-          version: dep.version,
-        });
-      }
+      Object.entries(installScripts).forEach(([scriptName, scriptString]) => {
+        if (scriptString !== 'node-gyp rebuild') {
+          issues.push({
+            severity: 'high',
+            title: `Package uses ${scriptName} script: "${scriptString}"`,
+            shortTitle: `Uses ${scriptName} script`,
+            name: dep.name,
+            version: dep.version,
+          });
+        }
+      });
 
       if (!dep.repository || Object.keys(dep.repository).length === 0) {
         issues.push({
