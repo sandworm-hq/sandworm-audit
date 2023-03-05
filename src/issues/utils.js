@@ -130,4 +130,7 @@ const getReports = (packageName, packageVersion, packageGraph) =>
     req.end();
   });
 
-module.exports = {getReports, getFindings, reportFromAdvisory};
+const getUniqueIssueId = ({code, name, version, specifier}) =>
+  `SWRM-${code}-${name}-${version}${specifier ? `-${specifier}` : ''}`;
+
+module.exports = {getReports, getFindings, reportFromAdvisory, getUniqueIssueId};

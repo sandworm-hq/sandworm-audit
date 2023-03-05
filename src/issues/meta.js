@@ -1,4 +1,4 @@
-const {getFindings} = require('./utils');
+const {getFindings, getUniqueIssueId} = require('./utils');
 
 const INSTALL_SCRIPT_NAME = ['preinstall', 'install', 'postinstall'];
 
@@ -13,6 +13,7 @@ module.exports = {
           title: 'Deprecated package',
           name: dep.name,
           version: dep.version,
+          sandwormIssueCode: 200,
         });
       }
 
@@ -32,6 +33,8 @@ module.exports = {
             shortTitle: `Uses ${scriptName} script`,
             name: dep.name,
             version: dep.version,
+            sandwormIssueCode: 201,
+            sandwormIssueSpecifier: scriptName,
           });
         }
       });
@@ -43,6 +46,7 @@ module.exports = {
           shortTitle: 'Has no repository',
           name: dep.name,
           version: dep.version,
+          sandwormIssueCode: 202,
         });
       }
 
@@ -54,6 +58,8 @@ module.exports = {
             shortTitle: 'Has HTTP dependency',
             name: dep.name,
             version: dep.version,
+            sandwormIssueCode: 203,
+            sandwormIssueSpecifier: depname,
           });
         } else if (depstring.startsWith('git')) {
           issues.push({
@@ -62,6 +68,8 @@ module.exports = {
             shortTitle: 'Has GIT dependency',
             name: dep.name,
             version: dep.version,
+            sandwormIssueCode: 204,
+            sandwormIssueSpecifier: depname,
           });
         } else if (depstring.startsWith('file')) {
           issues.push({
@@ -70,6 +78,8 @@ module.exports = {
             shortTitle: 'Has file dependency',
             name: dep.name,
             version: dep.version,
+            sandwormIssueCode: 205,
+            sandwormIssueSpecifier: depname,
           });
         }
       });
@@ -77,6 +87,12 @@ module.exports = {
 
     return issues.map((issue) => ({
       ...issue,
+      sandwormIssueId: getUniqueIssueId({
+        code: issue.sandwormIssueCode,
+        name: issue.name,
+        version: issue.version,
+        specifier: issue.sandwormIssueSpecifier,
+      }),
       findings: getFindings({
         packageGraph,
         packageName: issue.name,

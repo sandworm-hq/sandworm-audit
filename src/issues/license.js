@@ -1,5 +1,5 @@
 const licenseGroups = require('./licenses.json');
-const {getFindings} = require('./utils');
+const {getFindings, getUniqueIssueId} = require('./utils');
 
 const LICENSE_TYPES = [
   'Public Domain',
@@ -114,6 +114,7 @@ module.exports = {
           shortTitle: 'No license specified',
           recommendation: 'Check the package code and files for license information',
           dependencies,
+          sandwormIssueCode: 100,
         });
       } else if (string === 'UNLICENSED') {
         issues.push({
@@ -122,6 +123,7 @@ module.exports = {
           shortTitle: 'Not licensed for use',
           recommendation: 'Use another package that is licensed for use',
           dependencies,
+          sandwormIssueCode: 101,
         });
       } else if (!isSpdxExpression(string)) {
         if (!licenseGroups.osiApproved.includes(string)) {
@@ -131,6 +133,7 @@ module.exports = {
             shortTitle: 'License not OSI approved',
             recommendation: 'Read and validate the license terms',
             dependencies,
+            sandwormIssueCode: 102,
           });
         }
         if (licenseGroups.deprecated.includes(string)) {
@@ -139,6 +142,7 @@ module.exports = {
             title: `Package uses a deprecated license ("${string}")`,
             shortTitle: 'License is deprecated',
             dependencies,
+            sandwormIssueCode: 103,
           });
         }
       }
@@ -150,6 +154,7 @@ module.exports = {
           shortTitle: 'Atypical license',
           recommendation: 'Read and validate the license terms',
           dependencies,
+          sandwormIssueCode: 104,
         });
       } else if (licenseType === 'Invalid') {
         issues.push({
@@ -158,6 +163,7 @@ module.exports = {
           shortTitle: 'Invalid SPDX license',
           recommendation: 'Validate that the package complies with your license policy',
           dependencies,
+          sandwormIssueCode: 105,
         });
       } else if (licenseType === 'Expression') {
         issues.push({
@@ -166,6 +172,7 @@ module.exports = {
           shortTitle: 'Custom license expression',
           recommendation: 'Validate that the license expression complies with your license policy',
           dependencies,
+          sandwormIssueCode: 106,
         });
       }
 
@@ -177,6 +184,7 @@ module.exports = {
             shortTitle: 'Problematic license',
             recommendation: 'Validate that the package complies with your license policy',
             dependencies,
+            sandwormIssueCode: 150,
           });
         } else if (includes.includes(`cat:${licenseType}`)) {
           issues.push({
@@ -185,21 +193,26 @@ module.exports = {
             shortTitle: 'Problematic license',
             recommendation: 'Validate that the package complies with your license policy',
             dependencies,
+            sandwormIssueCode: 151,
           });
         }
       });
     });
 
     return issues.reduce(
-      (agg, {severity, title, shortTitle, dependencies, recommendation}) =>
+      (agg, issue) =>
         agg.concat(
-          dependencies.map(({name, version}) => ({
-            severity,
-            title,
-            shortTitle,
+          issue.dependencies.map(({name, version}) => ({
             name,
             version,
-            recommendation,
+            ...issue,
+            dependencies: undefined, // this field was just a crutch
+            sandwormIssueId: getUniqueIssueId({
+              code: issue.sandwormIssueCode,
+              name,
+              version,
+              specifier: issue.sandwormIssueSpecifier,
+            }),
             findings: getFindings({
               packageGraph,
               packageName: name,
