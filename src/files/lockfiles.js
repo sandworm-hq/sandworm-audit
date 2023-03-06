@@ -6,12 +6,14 @@ const {parseSyml} = require('@yarnpkg/parsers');
 
 const loadLockfiles = async (appPath) => {
   const lockfiles = {};
+  let lockfileFound = false;
 
   // NPM
   try {
     const lockfileContent = await fs.promises.readFile(path.join(appPath, 'package-lock.json'), {
       encoding: 'utf-8',
     });
+    lockfileFound = true;
     try {
       const lockfileData = JSON.parse(lockfileContent);
       lockfiles.npm = {
@@ -30,6 +32,7 @@ const loadLockfiles = async (appPath) => {
     const lockfileContent = await fs.promises.readFile(path.join(appPath, 'yarn.lock'), {
       encoding: 'utf-8',
     });
+    lockfileFound = true;
     const versionMatch = lockfileContent.match(/yarn lockfile v(\d+)/);
     if (versionMatch) {
       try {
@@ -69,7 +72,8 @@ const loadLockfiles = async (appPath) => {
   } catch {}
 
   // PNPM
-  if (existsWantedLockfile(appPath)) {
+  if (await existsWantedLockfile(appPath)) {
+    lockfileFound = true;
     try {
       const lockfileData = await readWantedLockfile(appPath, {});
       lockfiles.pnpm = {
@@ -80,6 +84,10 @@ const loadLockfiles = async (appPath) => {
     } catch (error) {
       lockfiles.pnpm = {manager: 'pnpm', error: error.message};
     }
+  }
+
+  if (!lockfileFound) {
+    throw new Error('No lockfile found');
   }
 
   return lockfiles;
