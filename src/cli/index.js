@@ -10,6 +10,7 @@ const {getIssueCounts, failIfRequested} = require('./utils');
 const command = require('./command');
 const summary = require('./summary');
 const logger = require('./logger');
+const checkUpdates = require('./checkUpdates');
 
 command(async (argv) => {
   logger.logColor(logger.colors.CYAN, 'Sandworm 🪱');
@@ -132,4 +133,12 @@ command(async (argv) => {
   if (failOn) {
     failIfRequested({failOn, issueCountsByType});
   }
+
+  // *****************
+  // Check for updates
+  // *****************
+  try {
+    await checkUpdates();
+    // eslint-disable-next-line no-empty
+  } catch (error) {}
 });
