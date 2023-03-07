@@ -276,12 +276,13 @@ const getRegistryData = (packageName, packageVersion) =>
         res.on('end', () => {
           try {
             const response = JSON.parse(Buffer.concat(data).toString());
+            const requestedVersion = packageVersion || response['dist-tags']?.latest;
 
             resolve({
               ...response,
-              ...(response.versions?.[packageVersion] || {}),
-              published: response.time?.[packageVersion],
-              size: response.versions?.[packageVersion]?.dist?.unpackedSize,
+              ...(response.versions?.[requestedVersion] || {}),
+              published: response.time?.[requestedVersion],
+              size: response.versions?.[requestedVersion]?.dist?.unpackedSize,
               versions: undefined,
               time: undefined,
             });
