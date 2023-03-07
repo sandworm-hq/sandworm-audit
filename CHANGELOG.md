@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.27.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.26.0...audit-v1.27.0) (2023-03-07)
+
+
+### Features
+
+* generate ids for Sandworm issues ([ccaf8ea](https://github.com/sandworm-hq/sandworm-audit/commit/ccaf8ea1e7c92470151b3b7b1fed0f935cea884b))
+
+
+### Bug Fixes
+
+* better error for no lockfile found ([4c430d9](https://github.com/sandworm-hq/sandworm-audit/commit/4c430d9fbbb5967f9195b1b1d847a23f15a588c3))
+
 ## [1.26.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.25.0...audit-v1.26.0) (2023-02-28)
 
 
