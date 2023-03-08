@@ -9,11 +9,19 @@ const generateGraphPromise = async (
   {packageData, loadDataFrom = false, rootIsShell = false, includeDev = false} = {},
 ) => {
   const lockfile = await loadLockfile(appPath);
+
+  if (lockfile.error) {
+    throw new Error(lockfile.error);
+  }
+
   const manifest = loadManifest(appPath);
   let graph;
   let errors = [];
 
   if (lockfile.manager === 'npm') {
+    if (lockfile.lockfileVersion === 1) {
+      throw new Error('Npm v1 lockfiles are not supported. Please upgrade your lockfile to v2.');
+    }
     graph = await generateNpmGraph(lockfile.data);
   } else if (lockfile.manager === 'yarn-classic') {
     graph = await generateYarnGraph({
