@@ -12,28 +12,32 @@ Beautiful Security & License Compliance Reports For Your App's Dependencies 🪱
 
 ## Summary
 
-* Free & open source command-line tool
-* Works with any JavaScript package manager
-* Scans your project & dependencies for vulnerabilities, license, and misc issues
-* Supports custom license policies
-* Outputs:
-  * JSON issue & license usage reports
-  * Easy to grok SVG dependency tree & treemap visualizations
-    * Powered by D3
-    * Overlays security vulnerabilities
-    * Overlays package license info
-  * CSV of all dependencies & license info
+- Free & open source command-line tool
+- Works with any JavaScript package manager
+- Scans your project & dependencies for vulnerabilities, license, and misc issues
+- Supports custom license policies
+- Outputs:
+  - JSON issue & license usage reports
+  - Easy to grok SVG dependency tree & treemap visualizations
+    - Powered by D3
+    - Overlays security vulnerabilities
+    - Overlays package license info
+  - CSV of all dependencies & license info
 
 ### Generate a report
+
 ![Running Sandworm Audit](https://assets.sandworm.dev/showcase/audit-terminal-output.gif)
 
 ### Navigate charts
+
 ![Sandworm treemap and tree dependency charts](https://assets.sandworm.dev/showcase/treemap-and-tree.png)
 
 ### CSV output
+
 ![Sandworm dependency CSV](https://assets.sandworm.dev/showcase/csv-snip.png)
 
 ### JSON output
+
 ```json
 {
   "createdAt": "...",
@@ -51,13 +55,19 @@ Beautiful Security & License Compliance Reports For Your App's Dependencies 🪱
 
 ### Get Involved
 
-* Have a support question? [Post it here](https://github.com/sandworm-hq/sandworm-audit/discussions/categories/q-a).
-* Have a feature request? [Post it here](https://github.com/sandworm-hq/sandworm-audit/discussions/categories/ideas).
-* Did you find a security issue? [See SECURITY.md](SECURITY.md).
-* Did you find a bug? [Post an issue](https://github.com/sandworm-hq/sandworm-audit/issues/new/choose).
-* Want to write some code? See [CONTRIBUTING.md](CONTRIBUTING.md).
+- Have a support question? [Post it here](https://github.com/sandworm-hq/sandworm-audit/discussions/categories/q-a).
+- Have a feature request? [Post it here](https://github.com/sandworm-hq/sandworm-audit/discussions/categories/ideas).
+- Did you find a security issue? [See SECURITY.md](SECURITY.md).
+- Did you find a bug? [Post an issue](https://github.com/sandworm-hq/sandworm-audit/issues/new/choose).
+- Want to write some code? See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Get Started
+
+> **Note**
+> Sandworm Audit requires Node 14.19+.
+
+> **Note**
+> When using npm, Sandworm Audit supports lockfile versions 2 and 3 (npm 7+).
 
 Install `sandworm-audit` globally via your favorite package manager:
 
@@ -67,7 +77,7 @@ npm install -g @sandworm/audit
 # or pnpm add -g @sandworm/audit
 ```
 
-Then, run `sandworm-audit` (or run directly without installing via `npx @sandworm/audit`) in the root directory of your application. Make sure there's a manifest and a lockfile.
+Then, run `sandworm-audit` (or run directly without installing via `npx @sandworm/audit@latest`) in the root directory of your application. Make sure there's a manifest and a lockfile.
 
 Available options:
 
@@ -94,10 +104,10 @@ Options:
 
 ## Samples on Sandworm.dev
 
-* [Apollo Client](https://sandworm.dev/npm/package/apollo-client)
-* [AWS SDK](https://sandworm.dev/npm/package/aws-sdk)
-* [Express](https://sandworm.dev/npm/package/express)
-* [Mocha](https://sandworm.dev/npm/package/mocha)
-* [Mongoose](https://sandworm.dev/npm/package/mongoose)
-* [Nest.js](https://sandworm.dev/npm/package/@nestjs/cli)
-* [Redis](https://sandworm.dev/npm/package/redis)
+- [Apollo Client](https://sandworm.dev/npm/package/apollo-client)
+- [AWS SDK](https://sandworm.dev/npm/package/aws-sdk)
+- [Express](https://sandworm.dev/npm/package/express)
+- [Mocha](https://sandworm.dev/npm/package/mocha)
+- [Mongoose](https://sandworm.dev/npm/package/mongoose)
+- [Nest.js](https://sandworm.dev/npm/package/@nestjs/cli)
+- [Redis](https://sandworm.dev/npm/package/redis)
