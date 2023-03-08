@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.28.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.27.0...audit-v1.28.0) (2023-03-08)
+
+
+### Features
+
+* notification on new version available ([8ddf36d](https://github.com/sandworm-hq/sandworm-audit/commit/8ddf36d3421360fe74fac2613b6527ac359d041d))
+
+
+### Bug Fixes
+
+* better lockfile parsing errors ([a9bb92e](https://github.com/sandworm-hq/sandworm-audit/commit/a9bb92ebcb53e06c887f4d010f04cef6335d2ff6))
+* manifest engine requirements ([61d00a3](https://github.com/sandworm-hq/sandworm-audit/commit/61d00a31b1a69f5cc0205aa5427a8ed2114891d5))
+
 ## [1.27.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.26.0...audit-v1.27.0) (2023-03-07)
 
 
