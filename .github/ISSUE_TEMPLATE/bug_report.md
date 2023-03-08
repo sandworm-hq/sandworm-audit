@@ -22,7 +22,8 @@ A clear and concise description of what you expected to happen.
 
 **System (please complete the following information):**
 - Node Version [e.g. 14.17.3]
-- npm Version [e.g. 8.5.5]
+- Package Manager [e.g. npm]
+- Package Manager Version [e.g. 8.5.5]
 - OS: [e.g. Ubuntu 22.04]
 
 **Additional context**
