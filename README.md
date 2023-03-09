@@ -13,9 +13,10 @@ Beautiful Security & License Compliance Reports For Your App's Dependencies 🪱
 ## Summary
 
 - Free & open source command-line tool
-- Works with any JavaScript package manager
+- Works with any modern JavaScript package manager
 - Scans your project & dependencies for vulnerabilities, license, and misc issues
-- Supports custom license policies
+- Supports [custom license policies](https://docs.sandworm.dev/audit/license-policies)
+- [Configurable conditions](https://docs.sandworm.dev/audit/fail-policies) to fail CI / GIT hook workflows
 - Outputs:
   - JSON issue & license usage reports
   - Easy to grok SVG dependency tree & treemap visualizations
