@@ -79,10 +79,9 @@ const generateGraphPromise = async (
   }
 
   return {
-    root: {
-      ...(processedRoot || {}),
+    root: Object.assign(processedRoot || {}, {
       meta: {lockfileVersion: lockfile.lockfileVersion, packageManager: lockfile.manager},
-    },
+    }),
     all: allConnectedPackages,
     devDependencies,
     prodDependencies,

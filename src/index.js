@@ -68,7 +68,7 @@ const getReport = async ({
     errors.push(error);
   }
 
-  if (!rootIsShell && getAdvisoriesForRoot) {
+  if (getAdvisoriesForRoot) {
     try {
       rootVulnerabilities = await getReports(packageGraph.name, packageGraph.version, packageGraph);
     } catch (error) {
