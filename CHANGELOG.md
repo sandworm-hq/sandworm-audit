@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.29.0...audit-v1.29.1) (2023-03-10)
+
+
+### Bug Fixes
+
+* false audit issues with root shell config ([1dbc0a5](https://github.com/sandworm-hq/sandworm-audit/commit/1dbc0a57cafd1e6dd0a367a920a96872d914dfc5))
+
 ## [1.29.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.28.0...audit-v1.29.0) (2023-03-10)
 
 
