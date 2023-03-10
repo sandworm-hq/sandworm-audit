@@ -1,4 +1,4 @@
-const {getFindings, getUniqueIssueId} = require('./utils');
+const {getFindings, makeSandwormIssueId} = require('./utils');
 
 const INSTALL_SCRIPT_NAME = ['preinstall', 'install', 'postinstall'];
 
@@ -87,7 +87,7 @@ module.exports = {
 
     return issues.map((issue) => ({
       ...issue,
-      sandwormIssueId: getUniqueIssueId({
+      sandwormIssueId: makeSandwormIssueId({
         code: issue.sandwormIssueCode,
         name: issue.name,
         version: issue.version,

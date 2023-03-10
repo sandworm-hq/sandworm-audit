@@ -1,11 +1,5 @@
+const {getUniqueIssueId} = require('../issues/utils');
 const logger = require('./logger');
-
-const SEVERITY_ICONS = {
-  critical: '🔴',
-  high: '🟠',
-  moderate: '🟡',
-  low: '⚪',
-};
 
 const groupIssuesBySeverity = (issuesByType) => {
   const grouped = {
@@ -28,9 +22,12 @@ module.exports = (issuesByType) => {
     issues.forEach((issue) => {
       const {sources} = issue.findings;
       logger.log(
-        `${SEVERITY_ICONS[issue.severity]} ${logger.colors.RED}%s${logger.colors.RESET} %s`,
+        `${logger.SEVERITY_ICONS[issue.severity]} ${logger.colors.RED}%s${logger.colors.RESET} %s ${
+          logger.colors.DIM
+        }%s${logger.colors.RESET}`,
         `${sources[0]?.name}@${sources[0]?.version}`,
         `${issue.shortTitle || issue.title}`,
+        `${getUniqueIssueId(issue)}`,
       );
     });
   });

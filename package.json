@@ -4,7 +4,8 @@
   "description": "Security & License Compliance For Your App's Dependencies 🪱",
   "main": "src/index.js",
   "bin": {
-    "sandworm-audit": "src/cli/index.js"
+    "sandworm-audit": "src/cli/index.js",
+    "sandworm": "src/cli/index.js"
   },
   "scripts": {
     "lint": "yarn eslint ./src/",
@@ -33,6 +34,7 @@
     "@yarnpkg/parsers": "3.0.0-rc.39",
     "d3-node": "3.0.0",
     "ora": "6.1.2",
+    "prompts": "^2.4.2",
     "semver": "7.3.8",
     "yargs": "17.6.0"
   },

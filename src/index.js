@@ -1,12 +1,18 @@
 const {getDependencyVulnerabilities} = require('./issues/vulnerabilities');
 const {getLicenseIssues, getLicenseUsage} = require('./issues/license');
 const {buildTree, buildTreemap} = require('./charts');
-const {getReports} = require('./issues/utils');
+const {
+  getReports,
+  excludeResolved,
+  validateResolvedIssues,
+  allIssuesFromReport,
+} = require('./issues/utils');
 const csv = require('./charts/csv');
 const {getMetaIssues} = require('./issues/meta');
 const validateConfig = require('./validateConfig');
 const getDependencyGraph = require('./graph');
 const {addDependencyGraphData} = require('./graph/utils');
+const {loadResolvedIssues} = require('./files');
 
 const getReport = async ({
   appPath,
@@ -151,13 +157,41 @@ const getReport = async ({
   }
   onProgress({type: 'end', stage: 'csv'});
 
-  return {
-    dependencyGraph: dGraph,
+  const allIssues = allIssuesFromReport({
     dependencyVulnerabilities,
     rootVulnerabilities,
-    licenseUsage,
     licenseIssues,
     metaIssues,
+  });
+  let resolvedIssues = loadResolvedIssues(appPath);
+  let resolvedIssuesAlerts;
+
+  try {
+    // Doctor the resolved issues file
+    resolvedIssuesAlerts = validateResolvedIssues(resolvedIssues, allIssues);
+  } catch (error) {
+    resolvedIssues = [];
+    errors.push(error);
+  }
+
+  const allIssueCount = allIssues.length;
+  const unresolvedIssues = {
+    dependencyVulnerabilities: excludeResolved(dependencyVulnerabilities, resolvedIssues),
+    rootVulnerabilities: excludeResolved(rootVulnerabilities, resolvedIssues),
+    licenseIssues: excludeResolved(licenseIssues, resolvedIssues),
+    metaIssues: excludeResolved(metaIssues, resolvedIssues),
+  };
+  const allUnresolvedIssues = allIssuesFromReport(unresolvedIssues);
+  const unresolvedIssuesCount = allUnresolvedIssues.length;
+  const resolvedIssuesCount = allIssueCount - unresolvedIssuesCount;
+
+  return {
+    ...unresolvedIssues,
+    dependencyGraph: dGraph,
+    licenseUsage,
+    resolvedIssues,
+    resolvedIssuesAlerts,
+    resolvedIssuesCount,
     svgs,
     csv: csvData,
     allDependencies: jsonData,

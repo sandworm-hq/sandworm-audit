@@ -1,5 +1,5 @@
 const licenseGroups = require('./licenses.json');
-const {getFindings, getUniqueIssueId} = require('./utils');
+const {getFindings, makeSandwormIssueId} = require('./utils');
 
 const LICENSE_TYPES = [
   'Public Domain',
@@ -207,7 +207,7 @@ module.exports = {
             version,
             ...issue,
             dependencies: undefined, // this field was just a crutch
-            sandwormIssueId: getUniqueIssueId({
+            sandwormIssueId: makeSandwormIssueId({
               code: issue.sandwormIssueCode,
               name,
               version,

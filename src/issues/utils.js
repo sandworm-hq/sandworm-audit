@@ -65,15 +65,21 @@ const getFindings = ({packageGraph, packageName, range, allPathsAffected = true}
 };
 
 const reportFromAdvisory = (advisory, packageGraph) => ({
-  ...advisory,
   findings: getFindings({
     packageGraph,
     packageName: advisory.module_name,
     range: advisory.vulnerable_versions,
   }),
+  githubAdvisoryId: advisory.github_advisory_id,
+  id: advisory.id,
+  title: advisory.title,
+  url: advisory.url,
+  severity: advisory.severity,
   name: advisory.module_name,
   range: advisory.vulnerable_versions,
   type: 'vulnerability',
+  recommendation: advisory.recommendation,
+  advisory,
 });
 
 const getReports = (packageName, packageVersion, packageGraph) =>
@@ -130,7 +136,85 @@ const getReports = (packageName, packageVersion, packageGraph) =>
     req.end();
   });
 
-const getUniqueIssueId = ({code, name, version, specifier}) =>
+const allIssuesFromReport = (report) => [
+  ...(report.rootVulnerabilities || []),
+  ...(report.dependencyVulnerabilities || []),
+  ...(report.licenseIssues || []),
+  ...(report.metaIssues || []),
+];
+
+const makeSandwormIssueId = ({code, name, version, specifier}) =>
   `SWRM-${code}-${name}-${version}${specifier ? `-${specifier}` : ''}`;
 
-module.exports = {getReports, getFindings, reportFromAdvisory, getUniqueIssueId};
+const getUniqueIssueId = (issue) => issue.githubAdvisoryId || issue.sandwormIssueId || issue.id;
+
+const excludeResolved = (issues = [], resolved = []) => {
+  const filteredIssues = [];
+
+  issues.forEach((issue) => {
+    const issueId = getUniqueIssueId(issue);
+    const matchingResolutions = resolved.filter(({id}) => id === issueId);
+    const matchingResolvedPaths = matchingResolutions.reduce(
+      (agg, {paths}) => agg.concat(paths),
+      [],
+    );
+    const unresolvedPaths = issue.findings.paths.filter(
+      (path) => !matchingResolvedPaths.includes(path),
+    );
+
+    if (unresolvedPaths.length > 0) {
+      Object.assign(issue.findings, {paths: unresolvedPaths});
+      filteredIssues.push(issue);
+    }
+  });
+
+  return filteredIssues;
+};
+
+const validateResolvedIssues = (resolvedIssues = [], currentIssues = []) => {
+  if (!Array.isArray(resolvedIssues)) {
+    throw new Error('Resolved issues must be array');
+  }
+  return resolvedIssues.reduce((agg, resolvedIssue) => {
+    if (!resolvedIssue.id || !resolvedIssue.paths || !resolvedIssue.notes) {
+      throw new Error(
+        'Each resolved issue must have the following fields: "id", "paths", and "notes"',
+      );
+    }
+    if (!Array.isArray(resolvedIssue.paths)) {
+      throw new Error('Issue paths must be array');
+    }
+
+    const currentIssue = currentIssues.find(
+      (issue) => resolvedIssue.id === getUniqueIssueId(issue),
+    );
+
+    if (!currentIssue) {
+      return [
+        ...agg,
+        `Issue ${resolvedIssue.id} is not present in the latest audit, you can remove it from your resolution file`,
+      ];
+    }
+
+    return [
+      ...agg,
+      ...resolvedIssue.paths
+        .filter((path) => !currentIssue.findings.paths.includes(path))
+        .map(
+          (path) =>
+            `Issue ${resolvedIssue.id} with path ${path} is not present in the latest audit, you can remove it from your resolution file`,
+        ),
+    ];
+  }, []);
+};
+
+module.exports = {
+  getReports,
+  getFindings,
+  reportFromAdvisory,
+  getUniqueIssueId,
+  makeSandwormIssueId,
+  excludeResolved,
+  allIssuesFromReport,
+  validateResolvedIssues,
+};
