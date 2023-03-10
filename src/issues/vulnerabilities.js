@@ -20,7 +20,10 @@ const fromNpm = (appPath, packageGraph) =>
               .forEach((v) => {
                 const report = {
                   findings: getFindings({packageGraph, packageName: v.name, range: v.range}),
-                  id: v.source,
+                  source: v.source,
+                  githubAdvisoryId:
+                    v.url?.startsWith?.('https://github.com/advisories/') &&
+                    v.url.replace('https://github.com/advisories/', ''),
                   name: v.name,
                   title: v.title,
                   // overview missing here,
