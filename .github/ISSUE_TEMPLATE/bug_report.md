@@ -13,9 +13,11 @@ The library version you're using.
 **Describe the bug**
 A clear and concise description of what the bug is.
 
+**Manifest files**
+Whenever possible, please provide your `package.json` manifest file content (or at least a list of all the dependencies within), as well as your lockfile.
+
 **To Reproduce**
 Steps to reproduce the behavior.
-Here, whenever possible, please provide your `package.json` manifest file content (or at least a list of all the dependencies within), as well as your lockfile.
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
