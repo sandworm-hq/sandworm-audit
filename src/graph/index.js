@@ -53,7 +53,7 @@ const generateGraphPromise = async (
     const shellVersion = processedRoot.version;
     [processedRoot] = Object.values(processedRoot.dependencies);
     allConnectedPackages = allConnectedPackages.filter(
-      ({name, version}) => name !== shellName && version !== shellVersion,
+      ({name, version}) => name !== shellName || version !== shellVersion,
     );
   }
 
