@@ -1,4 +1,7 @@
 function jsonToCsv(items) {
+  if (!items?.[0]) {
+    return '';
+  }
   const headerNames = Object.keys(items[0]);
   const rowItems = items.map((row) =>
     headerNames
