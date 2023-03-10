@@ -13,6 +13,12 @@ const logger = require('./logger');
 const checkUpdates = require('./checkUpdates');
 
 command(async (argv) => {
+  let isOutdated = false;
+
+  (async () => {
+    isOutdated = await checkUpdates();
+  })();
+
   logger.logColor(logger.colors.CYAN, 'Sandworm 🪱');
   logger.logColor(logger.colors.DIM, 'Security and License Compliance Audit');
   const {default: ora} = await import('ora');
@@ -134,11 +140,13 @@ command(async (argv) => {
     failIfRequested({failOn, issueCountsByType});
   }
 
-  // *****************
-  // Check for updates
-  // *****************
-  try {
-    await checkUpdates();
-    // eslint-disable-next-line no-empty
-  } catch (error) {}
+  // *********************
+  // Outdated notification
+  // *********************
+  if (isOutdated) {
+    logger.log(
+      `🔔 ${logger.colors.BG_CYAN}${logger.colors.BLACK}%s${logger.colors.RESET}\n`,
+      'New version available! Run "npm i -g @sandworm/audit" to update.',
+    );
+  }
 });
