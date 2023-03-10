@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.29.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.28.0...audit-v1.29.0) (2023-03-10)
+
+
+### Features
+
+* outdated check now runs parallel to audit ([e501a97](https://github.com/sandworm-hq/sandworm-audit/commit/e501a976525e71abb97343d44d13f094afee9e83))
+
+
+### Bug Fixes
+
+* all packages array bug for shell root setup ([5da5001](https://github.com/sandworm-hq/sandworm-audit/commit/5da50017d14a8f3375739b4b8eef237d24cc2fc6))
+* support empty csv output ([8e69060](https://github.com/sandworm-hq/sandworm-audit/commit/8e690602c12f970e831c11744a5d7c4c3bded77c))
+
 ## [1.28.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.27.0...audit-v1.28.0) (2023-03-08)
 
 
