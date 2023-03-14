@@ -29,7 +29,7 @@ exports.builder = (yargs) =>
       describe: 'Include dev dependencies',
       type: 'boolean',
     })
-    .option('v', {
+    .option('sv', {
       alias: 'show-versions',
       demandOption: false,
       default: false,
