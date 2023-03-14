@@ -298,7 +298,9 @@ const getRegistryData = (packageName, packageVersion) =>
     req.end();
   });
 
-const getRegistryDataMultiple = async (packages) => {
+const getRegistryDataMultiple = async (packages, onProgress = () => {}) => {
+  const totalCount = packages.length;
+  let currentCount = 0;
   const errors = [];
   const threadCount = 10;
   const jobCount = Math.ceil(packages.length / threadCount);
@@ -312,6 +314,9 @@ const getRegistryDataMultiple = async (packages) => {
           try {
             const {name, version} = packages[globalJobIndex];
             const packageData = await getRegistryData(name, version);
+
+            currentCount += 1;
+            onProgress?.(`${currentCount}/${totalCount}`);
             return [...prevData, packageData];
           } catch (error) {
             errors.push(error);
