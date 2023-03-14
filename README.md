@@ -84,12 +84,12 @@ Available options:
 
 ```
 Options:
-      --version               Show version number                      [boolean]
+  -v, --version               Show version number                      [boolean]
       --help                  Show help                                [boolean]
   -o, --output-path           The path of the output directory, relative to the
                               application path    [string] [default: "sandworm"]
   -d, --include-dev           Include dev dependencies[boolean] [default: false]
-  -v, --show-versions         Show package versions in chart names
+      --sv, --show-versions   Show package versions in chart names
                                                       [boolean] [default: false]
   -p, --path                  The path to the application to audit      [string]
       --md, --max-depth       Max depth to represent in charts          [number]
@@ -97,6 +97,9 @@ Options:
       --lp, --license-policy  Custom license policy JSON string         [string]
   -f, --from                  Load data from "registry" or "disk"
                                                   [string] [default: "registry"]
+      --fo, --fail-on         Fail policy JSON string   [string] [default: "[]"]
+  -s, --summary               Print a summary of the audit results to the
+                              console                  [boolean] [default: true]
 ```
 
 ### Documentation
