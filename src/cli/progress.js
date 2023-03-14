@@ -1,3 +1,5 @@
+const logger = require('./logger');
+
 let currentSpinner;
 
 const getStartMessage = (stage) => {
@@ -44,7 +46,7 @@ const getEndMessage = (stage) => {
 
 const onProgress =
   (ora) =>
-  ({type, stage, message}) => {
+  ({type, stage, message, progress}) => {
     switch (type) {
       case 'start':
         currentSpinner = ora().start(getStartMessage(stage));
@@ -54,6 +56,11 @@ const onProgress =
         break;
       case 'update':
         currentSpinner.text = message;
+        break;
+      case 'progress':
+        currentSpinner.text = `${getStartMessage(stage)} ${logger.colors.DIM}${progress}${
+          logger.colors.RESET
+        }`;
         break;
       default:
         break;
