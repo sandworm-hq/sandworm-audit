@@ -52,29 +52,45 @@ const fromYarnClassic = (appPath, packageGraph) =>
   new Promise((resolve, reject) => {
     exec('yarn audit --json', {cwd: appPath}, (err, stdout, stderr) => {
       if (stderr) {
-        reject(new Error(stderr));
-      } else {
-        resolve(
-          stdout.split('\n').reduce((agg, rawLine) => {
+        try {
+          const error = stderr.split('\n').find((rawLine) => {
             if (!rawLine) {
-              return agg;
+              return false;
             }
-            try {
-              const event = JSON.parse(rawLine);
-              if (event.type === 'auditAdvisory') {
-                const {advisory} = event.data;
-                const report = reportFromAdvisory(advisory, packageGraph);
-                if (!agg.find(({id}) => id === report.id)) {
-                  agg.push(report);
-                }
-              }
-              return agg;
-            } catch (error) {
-              return agg;
-            }
-          }, []),
-        );
+            const event = JSON.parse(rawLine);
+            return event.type === 'error';
+          });
+
+          if (error) {
+            reject(new Error(error));
+            return;
+          }
+        } catch (error) {
+          reject(new Error(stderr));
+          return;
+        }
       }
+
+      resolve(
+        stdout.split('\n').reduce((agg, rawLine) => {
+          if (!rawLine) {
+            return agg;
+          }
+          try {
+            const event = JSON.parse(rawLine);
+            if (event.type === 'auditAdvisory') {
+              const {advisory} = event.data;
+              const report = reportFromAdvisory(advisory, packageGraph);
+              if (!agg.find(({id}) => id === report.id)) {
+                agg.push(report);
+              }
+            }
+            return agg;
+          } catch (error) {
+            return agg;
+          }
+        }, []),
+      );
     });
   });
 
