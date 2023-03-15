@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.30.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.29.1...audit-v1.30.0) (2023-03-15)
+
+
+### Features
+
+* `-v` option now outputs current version ([1b72ff1](https://github.com/sandworm-hq/sandworm-audit/commit/1b72ff1e036c85faa815deaa20cde44ce2a75623))
+* display dependency graph progress ([69d9975](https://github.com/sandworm-hq/sandworm-audit/commit/69d99754d78efb90e0a899e674a1ab1244596d7f))
+* support marking issues as resolved ([e9b6208](https://github.com/sandworm-hq/sandworm-audit/commit/e9b62086afac43f92bdbc12522efadc34d98c33a))
+
 ## [1.29.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.29.0...audit-v1.29.1) (2023-03-10)
 
 
