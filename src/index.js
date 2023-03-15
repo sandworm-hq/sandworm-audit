@@ -23,7 +23,7 @@ const getReport = async ({
   getAdvisoriesForRoot = true,
   minDisplayedSeverity = 'high',
   width = 1500,
-  maxDepth = 7,
+  maxDepth = 5,
   licensePolicy,
   loadDataFrom = 'registry',
   onProgress = () => {},
