@@ -63,3 +63,11 @@ test.js
 
 # Sandworm audit report output
 sandworm
+
+# Webstorm internal
+.idea
+
+# heap dumps
+*.heapsnapshot
+
+.DS_Store
