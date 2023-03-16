@@ -17,6 +17,8 @@ const {
   allIssuesFromReport,
   validateResolvedIssues,
 } = require('../../issues/utils');
+const {UsageError} = require('../../errors');
+const handleCrash = require('../handleCrash');
 
 const onCancel = () => {
   logger.log('↩️ Cancelled');
@@ -47,9 +49,10 @@ exports.builder = {
 };
 
 exports.handler = async (argv) => {
+  const appPath = argv.p || process.cwd();
+
   try {
     logger.logCliHeader();
-    const appPath = argv.p || process.cwd();
     const {issueId} = argv;
     const manifest = loadManifest(appPath);
     const fileConfig = loadConfig(appPath)?.audit || {};
@@ -58,9 +61,7 @@ exports.handler = async (argv) => {
     const report = loadJsonFile(path.join(outputPath, filenames.json));
 
     if (!report) {
-      const error = new Error('Report for current version not found. Run an audit first.');
-      error.internal = true;
-      throw error;
+      throw new UsageError('Report for current version not found. Run an audit first.');
     }
 
     const allResolvedIssues = loadResolvedIssues(appPath);
@@ -79,9 +80,7 @@ exports.handler = async (argv) => {
     const issueToResolve = resolvableIssues.find(({id}) => id === issueId);
 
     if (!issueToResolve) {
-      const error = new Error('Issue not found in current audit results.');
-      error.internal = true;
-      throw error;
+      throw new UsageError('Issue not found in current audit results.');
     }
 
     logger.log(`Resolving issue ${issueId}:`);
@@ -151,9 +150,6 @@ exports.handler = async (argv) => {
     logger.log('');
     logger.log('✨ Done');
   } catch (error) {
-    logger.log(`❌ Failed: ${error.message}`);
-    if (!error.internal) {
-      logger.log(error.stack);
-    }
+    await handleCrash(error, appPath);
   }
 };

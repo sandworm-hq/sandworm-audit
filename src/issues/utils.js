@@ -1,6 +1,7 @@
 const https = require('https');
 const semverSatisfies = require('semver/functions/satisfies');
 const {aggregateDependencies} = require('../charts/utils');
+const {UsageError} = require('../errors');
 
 const getPathsForPackage = (packageGraph, packageName, semver) => {
   const parse = (node, currentPath = [], depth = 0, seenNodes = []) => {
@@ -173,16 +174,16 @@ const excludeResolved = (issues = [], resolved = []) => {
 
 const validateResolvedIssues = (resolvedIssues = [], currentIssues = []) => {
   if (!Array.isArray(resolvedIssues)) {
-    throw new Error('Resolved issues must be array');
+    throw new UsageError('Resolved issues must be array');
   }
   return resolvedIssues.reduce((agg, resolvedIssue) => {
     if (!resolvedIssue.id || !resolvedIssue.paths || !resolvedIssue.notes) {
-      throw new Error(
+      throw new UsageError(
         'Each resolved issue must have the following fields: "id", "paths", and "notes"',
       );
     }
     if (!Array.isArray(resolvedIssue.paths)) {
-      throw new Error('Issue paths must be array');
+      throw new UsageError('Issue paths must be array');
     }
 
     const currentIssue = currentIssues.find(
