@@ -1,8 +1,21 @@
 const fs = require('fs');
 const path = require('path');
+const {exec} = require('child_process');
 const {existsWantedLockfile, readWantedLockfile} = require('@pnpm/lockfile-file');
 const yarnLockfileParser = require('@yarnpkg/lockfile');
 const {parseSyml} = require('@yarnpkg/parsers');
+const {UsageError} = require('../errors');
+
+const getCommandVersion = (command) =>
+  new Promise((resolve) => {
+    exec(`${command} -v`, (err, stdout, stderr) => {
+      if (stderr || err) {
+        resolve(null);
+      } else {
+        resolve(stdout?.replace?.('\n', ''));
+      }
+    });
+  });
 
 const loadLockfiles = async (appPath) => {
   const lockfiles = {};
@@ -18,6 +31,7 @@ const loadLockfiles = async (appPath) => {
       const lockfileData = JSON.parse(lockfileContent);
       lockfiles.npm = {
         manager: 'npm',
+        managerVersion: await getCommandVersion('npm'),
         data: lockfileData,
         lockfileVersion: lockfileData.lockfileVersion,
       };
@@ -41,6 +55,7 @@ const loadLockfiles = async (appPath) => {
         if (lockfileData.type === 'success') {
           lockfiles.yarn = {
             manager: 'yarn-classic',
+            managerVersion: await getCommandVersion('yarn'),
             data: lockfileData.object,
             lockfileVersion: +versionMatch[1],
           };
@@ -57,6 +72,7 @@ const loadLockfiles = async (appPath) => {
         const lockfileData = parseSyml(lockfileContent);
         lockfiles.yarn = {
           manager: 'yarn',
+          managerVersion: await getCommandVersion('yarn'),
           data: lockfileData,
           // eslint-disable-next-line no-underscore-dangle
           lockfileVersion: +lockfileData.__metadata.version,
@@ -78,6 +94,7 @@ const loadLockfiles = async (appPath) => {
       const lockfileData = await readWantedLockfile(appPath, {});
       lockfiles.pnpm = {
         manager: 'pnpm',
+        managerVersion: await getCommandVersion('pnpm'),
         data: lockfileData,
         lockfileVersion: lockfileData.lockfileVersion,
       };
@@ -87,7 +104,7 @@ const loadLockfiles = async (appPath) => {
   }
 
   if (!lockfileFound) {
-    throw new Error('No lockfile found');
+    throw new UsageError('No lockfile found');
   }
 
   return lockfiles;

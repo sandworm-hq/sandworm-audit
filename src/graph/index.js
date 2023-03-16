@@ -1,3 +1,4 @@
+const {UsageError} = require('../errors');
 const {loadLockfile, loadManifest, loadInstalledPackages} = require('../files');
 const generateNpmGraph = require('./generateNpmGraph');
 const generatePnpmGraph = require('./generatePnpmGraph');
@@ -15,12 +16,19 @@ const generateGraphPromise = async (
   }
 
   const manifest = loadManifest(appPath);
+
+  if (!manifest) {
+    throw new UsageError('Manifest not found at app path');
+  }
+
   let graph;
   let errors = [];
 
   if (lockfile.manager === 'npm') {
     if (lockfile.lockfileVersion === 1) {
-      throw new Error('Npm v1 lockfiles are not supported. Please upgrade your lockfile to v2.');
+      throw new UsageError(
+        'Npm v1 lockfiles are not supported. Please upgrade your lockfile to v2.',
+      );
     }
     graph = await generateNpmGraph(lockfile.data);
   } else if (lockfile.manager === 'yarn-classic') {
@@ -81,7 +89,11 @@ const generateGraphPromise = async (
 
   return {
     root: Object.assign(processedRoot || {}, {
-      meta: {lockfileVersion: lockfile.lockfileVersion, packageManager: lockfile.manager},
+      meta: {
+        lockfileVersion: lockfile.lockfileVersion,
+        packageManager: lockfile.manager,
+        packageManagerVersion: lockfile.managerVersion,
+      },
     }),
     all: allConnectedPackages,
     devDependencies,
