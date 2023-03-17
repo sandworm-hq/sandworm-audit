@@ -96,7 +96,10 @@ const processGraph = (node, options = {}, depth = 0, history = []) => {
           .map((n) => processGraph(n, options, depth + 1, [...history, node]));
 
   return postprocess({
-    ...node,
+    name: node.name,
+    version: node.version,
+    license: node.license,
+    size: node.size,
     children: dependencies,
   });
 };

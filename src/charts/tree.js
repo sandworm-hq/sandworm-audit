@@ -1,4 +1,5 @@
 const D3Node = require('d3-node');
+const logger = require('../cli/logger');
 const addTooltips = require('./tooltip');
 const {
   getModuleName,
@@ -29,6 +30,22 @@ const buildTree = (
   const d3n = new D3Node();
   const {d3} = d3n;
   const root = d3.hierarchy(processGraph(data, {maxDepth, includeDev}));
+
+  const descendants = root.descendants();
+
+  if (descendants.length > 100000) {
+    logger.log(
+      `\n\n⚠️ Your dependency tree has a very large number of nodes (${descendants.length}).`,
+    );
+    logger.log('Generating the tree chart might take a lot of time & memory.');
+    logger.log('If the process crashes you have several options:');
+    logger.log(
+      '- Allocate more memory to the node process by exporting `NODE_OPTIONS="--max-old-space-size=16384"`',
+    );
+    logger.log(
+      '- Reduce the depth of the tree represented by passing the `--max-depth` option to Sandworm',
+    );
+  }
 
   // Construct an ordinal color scale
   const color = d3.scaleOrdinal(
@@ -117,7 +134,7 @@ const buildTree = (
     .append('g')
     .attr('id', 'label-group')
     .selectAll('g')
-    .data(root.descendants())
+    .data(descendants)
     .join('g')
     .attr('style', 'cursor: pointer')
     .attr('transform', (d) => `translate(${d.y},${d.x})`);
