@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.31.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.30.0...audit-v1.31.0) (2023-03-17)
+
+
+### Features
+
+* notify about very large trees ([d9e5f8c](https://github.com/sandworm-hq/sandworm-audit/commit/d9e5f8c6110cfe82f33aaa8023b54cd6a5de3cf3))
+* opt-in crash reports ([84c90c5](https://github.com/sandworm-hq/sandworm-audit/commit/84c90c513ea3a0634c8d435bb26301c50f9e40c4))
+
+
+### Bug Fixes
+
+* file name undefined version ([0fba979](https://github.com/sandworm-hq/sandworm-audit/commit/0fba97913515380a010cb1b85c52aea6b3e761e6))
+* yarn audit warnings treated as errors ([f187ce7](https://github.com/sandworm-hq/sandworm-audit/commit/f187ce7512ca3ee79fd67c7fcbaf5d3f795db3d9))
+
 ## [1.30.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.29.1...audit-v1.30.0) (2023-03-15)
 
 
