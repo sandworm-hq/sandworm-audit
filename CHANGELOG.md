@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.32.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.31.0...audit-v1.32.0) (2023-03-20)
+
+
+### Features
+
+* export `normalizeLicense` method ([acd5c6f](https://github.com/sandworm-hq/sandworm-audit/commit/acd5c6fb961f8b014ada5b9dd8bd320975932ee4))
+
 ## [1.31.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.30.0...audit-v1.31.0) (2023-03-17)
 
 
