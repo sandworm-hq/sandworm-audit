@@ -170,6 +170,10 @@ const normalizeLicense = (rawLicense) => {
   let license;
   let licenseData = rawLicense;
 
+  if (!rawLicense) {
+    return rawLicense;
+  }
+
   try {
     licenseData = JSON.parse(licenseData);
     // eslint-disable-next-line no-empty
@@ -219,7 +223,7 @@ const addDependencyGraphData = ({root, processedNodes = [], packageData = []}) =
     );
 
     if (currentPackageData) {
-      const license = normalizeLicense(currentPackageData.license || currentPackageData.licenses);
+      const license = normalizeLicense(currentPackageData.licenses || currentPackageData.license);
 
       Object.assign(root, {
         ...(currentPackageData.relativePath && {relativePath: currentPackageData.relativePath}),
