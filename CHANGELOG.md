@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.32.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.32.0...audit-v1.32.1) (2023-03-20)
+
+
+### Bug Fixes
+
+* normalizing null licenses ([9de645d](https://github.com/sandworm-hq/sandworm-audit/commit/9de645d3cbe7f02006c8d123545c49316b98d12c))
+
 ## [1.32.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.31.0...audit-v1.32.0) (2023-03-20)
 
 
