@@ -166,6 +166,45 @@ const postProcessGraph = ({root, processedNodes = [], flags = {}, depth = 0}) =>
   return root;
 };
 
+const normalizeLicense = (rawLicense) => {
+  let license;
+  let licenseData = rawLicense;
+
+  try {
+    licenseData = JSON.parse(licenseData);
+    // eslint-disable-next-line no-empty
+  } catch (error) {}
+
+  if (typeof licenseData === 'string') {
+    // Standard SPDX field
+    license = licenseData;
+  } else if (Array.isArray(licenseData)) {
+    // Some older packages use an array
+    //  {
+    //   "licenses" : [
+    //     {"type": "MIT", "url": "..."},
+    //     {"type": "Apache-2.0", "url": "..."}
+    //   ]
+    // }
+    if (licenseData.length === 1) {
+      license = licenseData[0].type;
+    } else {
+      license = `(${licenseData.map(({type}) => type).join(' OR ')})`;
+    }
+  } else if (typeof licenseData === 'object') {
+    // Some older packages use an object
+    // {
+    //   "license" : {
+    //     "type" : "ISC",
+    //     "url" : "..."
+    //   }
+    // }
+    license = licenseData.type;
+  }
+
+  return license;
+};
+
 const addDependencyGraphData = ({root, processedNodes = [], packageData = []}) => {
   if (!root) {
     return root;
@@ -180,40 +219,7 @@ const addDependencyGraphData = ({root, processedNodes = [], packageData = []}) =
     );
 
     if (currentPackageData) {
-      let license;
-      let licenseData = currentPackageData.license || currentPackageData.licenses;
-
-      try {
-        licenseData = JSON.parse(licenseData);
-        // eslint-disable-next-line no-empty
-      } catch (error) {}
-
-      if (typeof licenseData === 'string') {
-        // Standard SPDX field
-        license = licenseData;
-      } else if (Array.isArray(licenseData)) {
-        // Some older packages use an array
-        //  {
-        //   "licenses" : [
-        //     {"type": "MIT", "url": "..."},
-        //     {"type": "Apache-2.0", "url": "..."}
-        //   ]
-        // }
-        if (licenseData.length === 1) {
-          license = licenseData[0].type;
-        } else {
-          license = `(${licenseData.map(({type}) => type).join(' OR ')})`;
-        }
-      } else if (typeof licenseData === 'object') {
-        // Some older packages use an object
-        // {
-        //   "license" : {
-        //     "type" : "ISC",
-        //     "url" : "..."
-        //   }
-        // }
-        license = licenseData.type;
-      }
+      const license = normalizeLicense(currentPackageData.license || currentPackageData.licenses);
 
       Object.assign(root, {
         ...(currentPackageData.relativePath && {relativePath: currentPackageData.relativePath}),
@@ -343,4 +349,5 @@ module.exports = {
   addDependencyGraphData,
   getRegistryData,
   getRegistryDataMultiple,
+  normalizeLicense,
 };
