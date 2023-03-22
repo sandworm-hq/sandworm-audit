@@ -89,10 +89,40 @@ exports.builder = (yargs) =>
       describe: 'Root project is a shell with a single dependency',
       hidden: true,
       type: 'boolean',
+    })
+    .option('skip-tree', {
+      demandOption: false,
+      default: false,
+      describe: "Don't output the dependency tree chart",
+      type: 'boolean',
+    })
+    .option('skip-treemap', {
+      demandOption: false,
+      default: false,
+      describe: "Don't output the dependency treemap chart",
+      type: 'boolean',
+    })
+    .option('skip-csv', {
+      demandOption: false,
+      default: false,
+      describe: "Don't output the dependency csv file",
+      type: 'boolean',
+    })
+    .option('skip-report', {
+      demandOption: false,
+      default: false,
+      describe: "Don't output the report json file",
+      type: 'boolean',
+    })
+    .option('skip-all', {
+      demandOption: false,
+      default: false,
+      describe: "Don't output any file",
+      type: 'boolean',
     });
 
 exports.handler = async (argv) => {
-  const appPath = argv.p || process.cwd();
+  const appPath = argv.path || process.cwd();
 
   try {
     let isOutdated = false;
@@ -104,8 +134,8 @@ exports.handler = async (argv) => {
     logger.logCliHeader();
     const {default: ora} = await import('ora');
     const fileConfig = loadConfig(appPath)?.audit || {};
-
-    // throw new Error('Salutare :)');
+    const skipOutput =
+      typeof fileConfig.skipAll !== 'undefined' ? !!fileConfig.skipAll : argv.skipAll;
 
     // *****************
     // Perform the audit
@@ -127,13 +157,25 @@ exports.handler = async (argv) => {
       errors,
     } = await getReport({
       appPath,
-      includeDev: fileConfig.includeDev || argv.d,
-      showVersions: fileConfig.showVersions || argv.v,
-      rootIsShell: fileConfig.rootIsShell || argv.rs,
-      maxDepth: fileConfig.maxDepth || argv.md,
-      licensePolicy: fileConfig.licensePolicy || (argv.lp && JSON.parse(argv.lp)),
-      minDisplayedSeverity: fileConfig.minDisplayedSeverity,
-      loadDataFrom: fileConfig.loadDataFrom || argv.f,
+      includeDev: fileConfig.includeDev || argv.includeDev,
+      showVersions: fileConfig.showVersions || argv.showVersions,
+      rootIsShell: fileConfig.rootIsShell || argv.rootIsShell,
+      maxDepth: fileConfig.maxDepth || argv.maxDepth,
+      licensePolicy:
+        fileConfig.licensePolicy || (argv.licensePolicy && JSON.parse(argv.licensePolicy)),
+      minDisplayedSeverity: fileConfig.minDisplayedSeverity || argv.minSeverity,
+      loadDataFrom: fileConfig.loadDataFrom || argv.from,
+      output: skipOutput
+        ? []
+        : [
+            !(typeof fileConfig.skipTree !== 'undefined' ? !!fileConfig.skipTree : argv.skipTree) &&
+              'tree',
+            !(typeof fileConfig.skipTreemap !== 'undefined'
+              ? !!fileConfig.skipTreemap
+              : argv.skipTreemap) && 'treemap',
+            !(typeof fileConfig.skipCsv !== 'undefined' ? !!fileConfig.skipCsv : argv.skipCsv) &&
+              'csv',
+          ].filter((o) => o),
       onProgress: onProgress(ora),
     });
 
@@ -142,7 +184,7 @@ exports.handler = async (argv) => {
     // ********************
     const outputSpinner = ora('Writing Output Files').start();
     const filenames = outputFilenames(name, version);
-    const outputPath = path.join(appPath, fileConfig.outputPath || argv.o);
+    const outputPath = path.join(appPath, fileConfig.outputPath || argv.outputPath);
     await fs.mkdir(outputPath, {recursive: true});
 
     // Write charts
@@ -154,32 +196,39 @@ exports.handler = async (argv) => {
     }, Promise.resolve());
 
     // Write CSV
-    const csvOutputPath = path.join(outputPath, filenames.dependenciesCsv);
-    await fs.writeFile(csvOutputPath, csv);
+    if (csv) {
+      const csvOutputPath = path.join(outputPath, filenames.dependenciesCsv);
+      await fs.writeFile(csvOutputPath, csv);
+    }
 
     // Write JSON report
-    const {version: sandwormVersion} = await loadManifest(path.join(__dirname, '../../..'));
-    const report = {
-      createdAt: Date.now(),
-      system: {
-        sandwormVersion,
-        nodeVersion: process.versions.node,
-        ...(dependencyGraph.root.meta || {}),
-      },
-      name,
-      version,
-      rootVulnerabilities,
-      dependencyVulnerabilities,
-      licenseUsage,
-      licenseIssues,
-      metaIssues,
-      resolvedIssues,
-      errors,
-    };
-    const reportOutputPath = path.join(outputPath, filenames.json);
-    await fs.writeFile(reportOutputPath, JSON.stringify(report, null, 2));
+    const shouldWriteReport =
+      !skipOutput &&
+      !(typeof fileConfig.skipReport !== 'undefined' ? !!fileConfig.skipReport : argv.skipReport);
+    if (shouldWriteReport) {
+      const {version: sandwormVersion} = await loadManifest(path.join(__dirname, '../../..'));
+      const report = {
+        createdAt: Date.now(),
+        system: {
+          sandwormVersion,
+          nodeVersion: process.versions.node,
+          ...(dependencyGraph.root.meta || {}),
+        },
+        name,
+        version,
+        rootVulnerabilities,
+        dependencyVulnerabilities,
+        licenseUsage,
+        licenseIssues,
+        metaIssues,
+        resolvedIssues,
+        errors,
+      };
+      const reportOutputPath = path.join(outputPath, filenames.json);
+      await fs.writeFile(reportOutputPath, JSON.stringify(report, null, 2));
+    }
 
-    outputSpinner.succeed('Report written to disk');
+    outputSpinner.succeed(shouldWriteReport ? 'Report written to disk' : 'Report done');
 
     // ***************
     // Display results
@@ -214,7 +263,7 @@ exports.handler = async (argv) => {
           .join(', ')} issues`,
       );
 
-      if (argv.s) {
+      if (argv.summary) {
         summary(issuesByType);
       }
     } else {
@@ -241,7 +290,7 @@ exports.handler = async (argv) => {
     // *****************
     // Fail if requested
     // *****************
-    const failOn = fileConfig.failOn || (argv.fo && JSON.parse(argv.fo));
+    const failOn = fileConfig.failOn || (argv.failOn && JSON.parse(argv.failOn));
 
     if (failOn) {
       failIfRequested({failOn, issueCountsByType});

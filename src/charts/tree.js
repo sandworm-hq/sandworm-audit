@@ -45,6 +45,8 @@ const buildTree = (
     logger.log(
       '- Reduce the depth of the tree represented by passing the `--max-depth` option to Sandworm',
     );
+    logger.log('- Use the `--skip-tree` option to skip building the tree');
+    logger.log('- Try another package manager');
   }
 
   // Construct an ordinal color scale

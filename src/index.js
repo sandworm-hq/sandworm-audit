@@ -17,26 +17,28 @@ const {loadResolvedIssues} = require('./files');
 const getReport = async ({
   appPath,
   dependencyGraph,
-  includeDev = false,
-  showVersions = false,
-  rootIsShell = false,
   getAdvisoriesForRoot = true,
-  minDisplayedSeverity = 'high',
-  width = 1500,
-  maxDepth = 7,
+  includeDev = false,
   licensePolicy,
   loadDataFrom = 'registry',
+  maxDepth = 7,
+  minDisplayedSeverity = 'high',
   onProgress = () => {},
+  output = ['tree', 'treemap', 'csv'],
+  rootIsShell = false,
+  showVersions = false,
+  width = 1500,
 } = {}) => {
   validateConfig({
     appPath,
     dependencyGraph,
-    minDisplayedSeverity,
-    width,
-    maxDepth,
-    loadDataFrom,
     licensePolicy,
+    loadDataFrom,
+    maxDepth,
+    minDisplayedSeverity,
     onProgress,
+    output,
+    width,
   });
 
   let errors = [];
@@ -113,7 +115,6 @@ const getReport = async ({
   }
   onProgress({type: 'end', stage: 'issues'});
 
-  // Generate charts
   const SEVERITIES = ['critical', 'high', 'moderate', 'low'];
   const sortBySeverity = (a, b) => SEVERITIES.indexOf(a.severity) - SEVERITIES.indexOf(b.severity);
   const filteredIssues = (dependencyVulnerabilities || [])
@@ -134,34 +135,32 @@ const getReport = async ({
     onProgress: (message) => onProgress({type: 'update', stage: 'chart', message}),
   };
 
-  const methods = {
-    tree: buildTree,
-    treemap: buildTreemap,
-  };
+  // Generate charts
+  const svgs = {};
+  if (output.includes('tree')) {
+    onProgress({type: 'start', stage: 'tree'});
+    svgs.tree = await buildTree(packageGraph, options);
+    onProgress({type: 'end', stage: 'tree'});
+  }
 
-  const svgs = await ['tree', 'treemap'].reduce(async (agg, type) => {
-    const current = await agg;
-    const method = methods[type];
-
-    onProgress({type: 'start', stage: type});
-    const chart = await method.call(method, packageGraph, options);
-    onProgress({type: 'end', stage: type});
-
-    current[type] = chart;
-
-    return current;
-  }, Promise.resolve({}));
+  if (output.includes('treemap')) {
+    onProgress({type: 'start', stage: 'treemap'});
+    svgs.treemap = await buildTreemap(packageGraph, options);
+    onProgress({type: 'end', stage: 'treemap'});
+  }
 
   // Generate CSV
-  onProgress({type: 'start', stage: 'csv'});
   let csvData;
   let jsonData;
-  try {
-    ({csvData, jsonData} = csv(dGraph.all));
-  } catch (error) {
-    errors.push(error);
+  if (output.includes('csv')) {
+    onProgress({type: 'start', stage: 'csv'});
+    try {
+      ({csvData, jsonData} = csv(dGraph.all));
+    } catch (error) {
+      errors.push(error);
+    }
+    onProgress({type: 'end', stage: 'csv'});
   }
-  onProgress({type: 'end', stage: 'csv'});
 
   const allIssues = allIssuesFromReport({
     dependencyVulnerabilities,
