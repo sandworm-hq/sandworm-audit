@@ -191,9 +191,11 @@ const normalizeLicense = (rawLicense) => {
     //   ]
     // }
     if (licenseData.length === 1) {
-      license = licenseData[0].type;
+      const onlyLicense = licenseData[0];
+      license =
+        typeof onlyLicense === 'string' ? onlyLicense : onlyLicense.type || onlyLicense.name;
     } else {
-      license = `(${licenseData.map(({type}) => type).join(' OR ')})`;
+      license = `(${licenseData.map(({type, name}) => type || name).join(' OR ')})`;
     }
   } else if (typeof licenseData === 'object') {
     // Some older packages use an object
@@ -203,7 +205,7 @@ const normalizeLicense = (rawLicense) => {
     //     "url" : "..."
     //   }
     // }
-    license = licenseData.type;
+    license = licenseData.type || licenseData.name;
   }
 
   return license;
