@@ -103,6 +103,15 @@ Options:
       --fo, --fail-on         Fail policy JSON string   [string] [default: "[]"]
   -s, --summary               Print a summary of the audit results to the
                               console                  [boolean] [default: true]
+      --skip-tree             Don't output the dependency tree chart
+                                                      [boolean] [default: false]
+      --skip-treemap          Don't output the dependency treemap chart
+                                                      [boolean] [default: false]
+      --skip-csv              Don't output the dependency csv file
+                                                      [boolean] [default: false]
+      --skip-report           Don't output the report json file
+                                                      [boolean] [default: false]
+      --skip-all              Don't output any file   [boolean] [default: false]
 ```
 
 ### Documentation

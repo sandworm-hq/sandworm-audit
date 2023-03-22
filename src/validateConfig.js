@@ -5,12 +5,13 @@ const SUPPORTED_SEVERITIES = ['critical', 'high', 'moderate', 'low'];
 module.exports = ({
   appPath,
   dependencyGraph,
-  minDisplayedSeverity,
-  width,
-  maxDepth,
-  loadDataFrom,
   licensePolicy,
+  loadDataFrom,
+  maxDepth,
+  minDisplayedSeverity,
   onProgress,
+  output,
+  width,
 }) => {
   if (!appPath) {
     throw new UsageError(
@@ -58,6 +59,16 @@ module.exports = ({
       }
       if (!Array.isArray(data)) {
         throw new UsageError(`License policy values must be arrays of strings.`);
+      }
+    });
+  }
+
+  if (!Array.isArray(output)) {
+    throw new UsageError('`output` must be an array.');
+  } else {
+    output.forEach((type) => {
+      if (!['tree', 'treemap', 'csv'].includes(type)) {
+        throw new UsageError('`output` elements must be one of "tree", "treemap", or "csv".');
       }
     });
   }
