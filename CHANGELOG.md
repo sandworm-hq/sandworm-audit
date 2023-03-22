@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.33.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.32.1...audit-v1.33.0) (2023-03-22)
+
+
+### Features
+
+* more permissive `normalizeLicense` ([28dd24a](https://github.com/sandworm-hq/sandworm-audit/commit/28dd24ae2ca6ca76322f3fa6251bfbaf57a0b8c9))
+
+
+### Bug Fixes
+
+* crash for apps with no manifest name ([4e97c8c](https://github.com/sandworm-hq/sandworm-audit/commit/4e97c8c747353c244d16b43f834993c149a4d0fa))
+
 ## [1.32.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.32.0...audit-v1.32.1) (2023-03-20)
 
 
