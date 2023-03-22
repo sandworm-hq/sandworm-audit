@@ -7,7 +7,7 @@ const {loadJsonFile} = require('./utils');
 const RESOLVED_ISSUES_FILENAME = 'resolved-issues.json';
 
 const outputFilenames = (name, version) => {
-  const prefix = `${name.replace('/', '-')}${version ? `@${version}` : ''}`;
+  const prefix = name && `${name.replace('/', '-')}${version ? `@${version}` : ''}`;
 
   return {
     tree: `${prefix ? `${prefix}-` : ''}tree.svg`,
