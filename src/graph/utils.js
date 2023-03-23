@@ -314,34 +314,34 @@ const getRegistryDataMultiple = async (packages, onProgress = () => {}) => {
   const totalCount = packages.length;
   let currentCount = 0;
   const errors = [];
+  const data = [];
   const threadCount = 10;
-  const jobCount = Math.ceil(packages.length / threadCount);
-  const batchedData = await Promise.all(
-    [...Array(threadCount).keys()].map(async (threadIndex) =>
-      [...Array(jobCount).keys()].reduce(async (agg, jobIndex) => {
-        const prevData = await agg;
-        const globalJobIndex = threadIndex * jobCount + jobIndex;
+  const packageQueue = [...packages];
 
-        if (globalJobIndex < packages.length) {
-          try {
-            const {name, version} = packages[globalJobIndex];
-            const packageData = await getRegistryData(name, version);
+  await Promise.all(
+    [...Array(threadCount).keys()].map(async () => {
+      let currentPackage;
+      // eslint-disable-next-line no-cond-assign
+      while ((currentPackage = packageQueue.pop())) {
+        try {
+          const {name, version} = currentPackage;
+          // eslint-disable-next-line no-await-in-loop
+          const packageData = await getRegistryData(name, version);
 
-            currentCount += 1;
-            onProgress?.(`${currentCount}/${totalCount}`);
-            return [...prevData, packageData];
-          } catch (error) {
-            errors.push(error);
-            return prevData;
-          }
+          currentCount += 1;
+          onProgress?.(`${currentCount}/${totalCount}`);
+          data.push(packageData);
+        } catch (error) {
+          errors.push(error);
         }
+      }
 
-        return prevData;
-      }, Promise.resolve([])),
-    ),
+      return data;
+    }),
   );
+
   return {
-    data: batchedData.reduce((agg, batch) => [...agg, ...batch], []),
+    data,
     errors,
   };
 };
