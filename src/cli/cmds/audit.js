@@ -119,6 +119,12 @@ exports.builder = (yargs) =>
       default: false,
       describe: "Don't output any file",
       type: 'boolean',
+    })
+    .option('show-tips', {
+      demandOption: false,
+      default: true,
+      describe: 'Show Sandworm tips while building the dependency graph',
+      type: 'boolean',
     });
 
 exports.handler = async (argv) => {
@@ -157,9 +163,14 @@ exports.handler = async (argv) => {
       errors,
     } = await getReport({
       appPath,
-      includeDev: fileConfig.includeDev || argv.includeDev,
-      showVersions: fileConfig.showVersions || argv.showVersions,
-      rootIsShell: fileConfig.rootIsShell || argv.rootIsShell,
+      includeDev:
+        typeof fileConfig.includeDev !== 'undefined' ? fileConfig.includeDev : argv.includeDev,
+      showVersions:
+        typeof fileConfig.showVersions !== 'undefined'
+          ? fileConfig.showVersions
+          : argv.showVersions,
+      rootIsShell:
+        typeof fileConfig.rootIsShell !== 'undefined' ? fileConfig.rootIsShell : argv.rootIsShell,
       maxDepth: fileConfig.maxDepth || argv.maxDepth,
       licensePolicy:
         fileConfig.licensePolicy || (argv.licensePolicy && JSON.parse(argv.licensePolicy)),
@@ -176,7 +187,10 @@ exports.handler = async (argv) => {
             !(typeof fileConfig.skipCsv !== 'undefined' ? !!fileConfig.skipCsv : argv.skipCsv) &&
               'csv',
           ].filter((o) => o),
-      onProgress: onProgress(ora),
+      onProgress: onProgress({
+        ora,
+        showTips: typeof fileConfig.showTips !== 'undefined' ? fileConfig.showTips : argv.showTips,
+      }),
     });
 
     // ********************
@@ -305,6 +319,8 @@ exports.handler = async (argv) => {
         'New version available! Run "npm i -g @sandworm/audit" to update.',
       );
     }
+
+    process.exit();
   } catch (error) {
     await handleCrash(error, appPath);
   }
