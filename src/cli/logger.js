@@ -4,10 +4,12 @@ const colors = {
   BLACK: '\x1b[30m',
   CYAN: '\x1b[36m',
   BG_CYAN: '\x1b[46m',
+  BG_GRAY: '\x1b[100m',
   RED: '\x1b[31m',
   DIM: '\x1b[2m',
   CRIMSON: '\x1b[38m',
   GREEN: '\x1b[32m',
+  UNDERLINE: '\x1b[4m',
 };
 const SEVERITY_ICONS = {
   critical: '🔴',

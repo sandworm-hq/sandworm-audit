@@ -112,6 +112,8 @@ Options:
       --skip-report           Don't output the report json file
                                                       [boolean] [default: false]
       --skip-all              Don't output any file   [boolean] [default: false]
+      --show-tips             Show Sandworm tips while building the dependency
+                              graph                    [boolean] [default: true]
 ```
 
 ### Documentation
