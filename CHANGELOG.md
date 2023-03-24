@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.34.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.33.0...audit-v1.34.0) (2023-03-24)
+
+
+### Features
+
+* audit output now configurable ([77e0099](https://github.com/sandworm-hq/sandworm-audit/commit/77e0099b230b89e2e1e42244a7fc36d595872d80))
+* more efficient registry queries ([166c2fd](https://github.com/sandworm-hq/sandworm-audit/commit/166c2fd78a0629922477136141ba3561bb195898))
+
 ## [1.33.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.32.1...audit-v1.33.0) (2023-03-22)
 
 
