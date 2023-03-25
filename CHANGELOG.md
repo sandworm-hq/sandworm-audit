@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.35.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.34.0...audit-v1.35.0) (2023-03-25)
+
+
+### Features
+
+* show tips while building dep graph ([a4f1b32](https://github.com/sandworm-hq/sandworm-audit/commit/a4f1b323204555e3fddf1520f4db8f54ea38ad43))
+
 ## [1.34.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.33.0...audit-v1.34.0) (2023-03-24)
 
 
