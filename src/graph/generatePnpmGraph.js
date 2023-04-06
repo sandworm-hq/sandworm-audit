@@ -1,9 +1,21 @@
 const {processDependenciesForPackage, processPlaceholders, makeNode} = require('./utils');
 
 const parsePath = (path) => {
-  const parts = path.slice(1).split('/');
-  const version = parts.pop();
-  const name = parts.join('/');
+  // parse pnpm lockfile package names like:
+  // (lockfile v5)
+  // /babel-preset-jest/29.2.0
+  // /babel-preset-jest/29.2.0_@babel+core@7.20.7
+  // /ts-node/10.9.1_xl7wyiapi7jo5c2pfz5vjm55na
+  // (lockfile v6)
+  // /@nestjs/schematics/9.1.0(typescript@5.0.3)
+  // /ts-node/10.9.1(@types/node@14.18.36)(typescript@4.9.3)
+  // see https://github.com/pnpm/pnpm/pull/5810
+  const results = path.match(
+    // basically /^\/(.*?)\/(SEMVER)(.*?)$/
+    /^\/(.*?)\/((0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?)(.*?)$/,
+  );
+  const name = results[1];
+  const version = results[2];
 
   return {name, version};
 };
@@ -36,10 +48,7 @@ const generatePnpmGraph = ({data, manifest}) => {
     const {name, version} = parsePath(id);
     const newPackage = makeNode({
       name,
-      // In some cases, pnpm appends metadata to the version
-      // Ex: `/rollup-plugin-terser/7.0.2_rollup@2.79.1`
-      // Ex: `/workbox-webpack-plugin/6.1.5_fa2917c6d78243729a500a2a8fe6cdc5`
-      version: version.split('_')[0],
+      version,
       dev,
       ...(resolution && resolution.integrity && {integrity: resolution.integrity}),
     });
