@@ -1,9 +1,10 @@
 const {UsageError} = require('../errors');
 const {loadLockfile, loadManifest, loadInstalledPackages} = require('../files');
+const {getRegistryDataMultiple} = require('../registry');
 const generateNpmGraph = require('./generateNpmGraph');
 const generatePnpmGraph = require('./generatePnpmGraph');
 const generateYarnGraph = require('./generateYarnGraph');
-const {postProcessGraph, addDependencyGraphData, getRegistryDataMultiple} = require('./utils');
+const {postProcessGraph, addDependencyGraphData} = require('./utils');
 
 const generateGraphPromise = async (
   appPath,

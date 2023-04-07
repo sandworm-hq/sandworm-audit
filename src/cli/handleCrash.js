@@ -1,4 +1,3 @@
-const https = require('https');
 const path = require('path');
 const prompts = require('prompts');
 const {UsageError} = require('../errors');
@@ -7,39 +6,11 @@ const logger = require('./logger');
 
 const PUBLIC_ROLLBAR_ACCESS_TOKEN = '7f41bd88e3164d598d6c69a1a88ce6f2';
 
-const trackError = async (error, customData) =>
-  new Promise((resolve) => {
-    const req = https.request(
-      {
-        method: 'POST',
-        hostname: 'api.rollbar.com',
-        path: '/api/1/item/',
-        headers: {
-          'X-Rollbar-Access-Token': PUBLIC_ROLLBAR_ACCESS_TOKEN,
-          'Content-Type': 'application/json',
-        },
-        maxRedirects: 20,
-      },
-      (res) => {
-        const chunks = [];
-
-        res.on('data', (chunk) => {
-          chunks.push(chunk);
-        });
-
-        res.on('end', () => {
-          // console.log(Buffer.concat(chunks).toString());
-          resolve();
-        });
-
-        res.on('error', (err) => {
-          logger.error(err);
-          resolve();
-        });
-      },
-    );
-
-    const options = JSON.stringify({
+const trackError = async (error, customData) => {
+  const {default: fetch} = await import('node-fetch');
+  return fetch('https://api.rollbar.com/api/1/item/', {
+    method: 'post',
+    body: JSON.stringify({
       data: {
         environment: 'production',
         body: {
@@ -51,11 +22,13 @@ const trackError = async (error, customData) =>
         level: 'error',
         custom: customData,
       },
-    });
-    req.write(options);
-
-    req.end();
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Rollbar-Access-Token': PUBLIC_ROLLBAR_ACCESS_TOKEN,
+    },
   });
+};
 
 module.exports = async (error, appPath) => {
   logger.log(`\n❌ Failed: ${error.message}`);

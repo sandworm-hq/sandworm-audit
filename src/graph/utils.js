@@ -1,4 +1,3 @@
-const https = require('https');
 const semverLib = require('semver');
 
 const parseDependencyString = (depstring) => {
@@ -297,82 +296,6 @@ const addDependencyGraphData = ({root, processedNodes = [], packageData = []}) =
   return root;
 };
 
-const getRegistryData = (packageName, packageVersion) =>
-  new Promise((resolve, reject) => {
-    const req = https.request(
-      {
-        hostname: 'registry.npmjs.org',
-        port: 443,
-        path: `/${packageName}`,
-        method: 'GET',
-      },
-      (res) => {
-        const data = [];
-
-        res.on('data', (chunk) => {
-          data.push(chunk);
-        });
-        res.on('end', () => {
-          try {
-            const response = JSON.parse(Buffer.concat(data).toString());
-            const requestedVersion = packageVersion || response['dist-tags']?.latest;
-
-            resolve({
-              ...response,
-              ...(response.versions?.[requestedVersion] || {}),
-              published: response.time?.[requestedVersion],
-              size: response.versions?.[requestedVersion]?.dist?.unpackedSize,
-              versions: undefined,
-              time: undefined,
-            });
-          } catch (error) {
-            reject(error);
-          }
-        });
-      },
-    );
-    req.on('error', (err) => {
-      reject(err);
-    });
-    req.end();
-  });
-
-const getRegistryDataMultiple = async (packages, onProgress = () => {}) => {
-  const totalCount = packages.length;
-  let currentCount = 0;
-  const errors = [];
-  const data = [];
-  const threadCount = 10;
-  const packageQueue = [...packages];
-
-  await Promise.all(
-    [...Array(threadCount).keys()].map(async () => {
-      let currentPackage;
-      // eslint-disable-next-line no-cond-assign
-      while ((currentPackage = packageQueue.pop())) {
-        try {
-          const {name, version} = currentPackage;
-          // eslint-disable-next-line no-await-in-loop
-          const packageData = await getRegistryData(name, version);
-
-          currentCount += 1;
-          onProgress?.(`${currentCount}/${totalCount}`);
-          data.push(packageData);
-        } catch (error) {
-          errors.push(error);
-        }
-      }
-
-      return data;
-    }),
-  );
-
-  return {
-    data,
-    errors,
-  };
-};
-
 module.exports = {
   makeNode,
   parseDependencyString,
@@ -380,7 +303,5 @@ module.exports = {
   processPlaceholders,
   postProcessGraph,
   addDependencyGraphData,
-  getRegistryData,
-  getRegistryDataMultiple,
   normalizeLicense,
 };

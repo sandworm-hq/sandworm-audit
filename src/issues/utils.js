@@ -1,4 +1,3 @@
-const https = require('https');
 const semverSatisfies = require('semver/functions/satisfies');
 const {aggregateDependencies} = require('../charts/utils');
 const {UsageError} = require('../errors');
@@ -83,60 +82,6 @@ const reportFromAdvisory = (advisory, packageGraph) => ({
   advisory,
 });
 
-const getReports = (packageName, packageVersion, packageGraph) =>
-  new Promise((resolve, reject) => {
-    const req = https.request(
-      {
-        hostname: 'registry.npmjs.org',
-        port: 443,
-        path: '/-/npm/v1/security/audits',
-        method: 'POST',
-      },
-      (res) => {
-        const data = [];
-
-        res.on('data', (chunk) => {
-          data.push(chunk);
-        });
-
-        res.on('end', () => {
-          try {
-            const response = JSON.parse(Buffer.concat(data).toString());
-
-            resolve(
-              Object.values(response.advisories || {}).map((advisory) =>
-                reportFromAdvisory(advisory, packageGraph),
-              ),
-            );
-          } catch (error) {
-            reject(error);
-          }
-        });
-      },
-    );
-
-    req.on('error', (err) => {
-      reject(err);
-    });
-
-    req.write(
-      JSON.stringify({
-        name: 'sandworm-prompt',
-        version: '1.0.0',
-        requires: {
-          [packageName]: packageVersion,
-        },
-        dependencies: {
-          [packageName]: {
-            version: packageVersion,
-          },
-        },
-      }),
-    );
-
-    req.end();
-  });
-
 const allIssuesFromReport = (report) => [
   ...(report.rootVulnerabilities || []),
   ...(report.dependencyVulnerabilities || []),
@@ -210,7 +155,6 @@ const validateResolvedIssues = (resolvedIssues = [], currentIssues = []) => {
 };
 
 module.exports = {
-  getReports,
   getFindings,
   reportFromAdvisory,
   getUniqueIssueId,
