@@ -3,15 +3,32 @@ const semverLib = require('semver');
 
 const parseDependencyString = (depstring) => {
   const parts = depstring.split('@');
-  const semver = parts.pop();
+  let semver = parts.pop();
   let name;
   let localName;
 
   if (parts.length === 1) {
-    // Parses js-sdsl@^4.1.4
-    [name] = parts;
+    if (semver.startsWith('/')) {
+      // Parses the pnpm format execa@/safe-execa/0.1.3
+      [, name, semver] = semver.split('/');
+      [localName] = parts;
+    } else {
+      // Parses js-sdsl@^4.1.4
+      [name] = parts;
+    }
   } else if (parts.length === 2) {
-    if (parts[0] === '') {
+    if (semver.startsWith('/')) {
+      // Parses the pnpm format @zkochan/js-yaml@/js-yaml/0.0.6
+      [, name, semver] = semver.split('/');
+      [, localName] = parts;
+      localName = `@${localName}`;
+    } else if (parts[1] === '/') {
+      // Parses the pnpm format js-yaml@/@zkochan/js-yaml/0.0.6
+      const semverParts = semver.split('/');
+      name = `@${semverParts[0]}/${semverParts[1]}`;
+      [, , semver] = semverParts;
+      [localName] = parts;
+    } else if (parts[0] === '') {
       // @pnpm/constant@6.1.0
       name = `@${parts[1]}`;
     } else {
@@ -20,9 +37,18 @@ const parseDependencyString = (depstring) => {
       name = parts[1].replace('npm:', '');
     }
   } else if (parts.length === 3) {
-    // js-yaml@npm:@zkochan/js-yaml@^0.0.6
-    [localName] = parts;
-    name = `@${parts[2]}`;
+    if (parts[2] === '/') {
+      // Parses the pnpm format @test/pck@/@test/pkg/0.0.6
+      const semverParts = semver.split('/');
+      name = `@${semverParts[0]}/${semverParts[1]}`;
+      [, , semver] = semverParts;
+      [, localName] = parts;
+      localName = `@${localName}`;
+    } else {
+      // js-yaml@npm:@zkochan/js-yaml@^0.0.6
+      [localName] = parts;
+      name = `@${parts[2]}`;
+    }
   } else if (parts.length === 4) {
     // @pnpm/constant@npm:@test/constant@6.1.0
     localName = `@${parts[1]}`;
