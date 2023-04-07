@@ -1,18 +1,14 @@
 const {getDependencyVulnerabilities} = require('./issues/vulnerabilities');
 const {getLicenseIssues, getLicenseUsage} = require('./issues/license');
 const {buildTree, buildTreemap} = require('./charts');
-const {
-  getReports,
-  excludeResolved,
-  validateResolvedIssues,
-  allIssuesFromReport,
-} = require('./issues/utils');
+const {excludeResolved, validateResolvedIssues, allIssuesFromReport} = require('./issues/utils');
 const csv = require('./charts/csv');
 const {getMetaIssues} = require('./issues/meta');
 const validateConfig = require('./validateConfig');
 const getDependencyGraph = require('./graph');
 const {addDependencyGraphData} = require('./graph/utils');
 const {loadResolvedIssues} = require('./files');
+const {getRegistryAudit, setupRegistries} = require('./registry');
 
 const getReport = async ({
   appPath,
@@ -45,6 +41,7 @@ const getReport = async ({
 
   // Generate the dependency graph
   onProgress({type: 'start', stage: 'graph'});
+  await setupRegistries(appPath);
   const dGraph =
     dependencyGraph ||
     (await getDependencyGraph(appPath, {
@@ -84,7 +81,11 @@ const getReport = async ({
 
   if (getAdvisoriesForRoot) {
     try {
-      rootVulnerabilities = await getReports(packageGraph.name, packageGraph.version, packageGraph);
+      rootVulnerabilities = await getRegistryAudit(
+        packageGraph.name,
+        packageGraph.version,
+        packageGraph,
+      );
     } catch (error) {
       errors.push(error);
     }

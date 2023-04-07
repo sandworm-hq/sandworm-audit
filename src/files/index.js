@@ -3,6 +3,7 @@ const fs = require('fs');
 const lockfiles = require('./lockfiles');
 const packages = require('./packages');
 const {loadJsonFile} = require('./utils');
+const {loadNpmConfigs} = require('./npmrc');
 
 const RESOLVED_ISSUES_FILENAME = 'resolved-issues.json';
 
@@ -22,6 +23,7 @@ module.exports = {
   ...lockfiles,
   ...packages,
   loadManifest: (appPath) => loadJsonFile(path.join(appPath, 'package.json')),
+  loadNpmConfigs,
   loadResolvedIssues: (appPath) => loadJsonFile(path.join(appPath, RESOLVED_ISSUES_FILENAME)) || [],
   saveResolvedIssues: (appPath, content) =>
     fs.promises.writeFile(

@@ -1,7 +1,7 @@
 const path = require('path');
 const semver = require('semver');
 const {loadManifest} = require('../files');
-const {getRegistryData} = require('../graph/utils');
+const {getRegistryData} = require('../registry');
 
 module.exports = async () => {
   try {
