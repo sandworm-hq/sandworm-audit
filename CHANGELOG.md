@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.35.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.35.0...audit-v1.35.1) (2023-04-07)
+
+
+### Bug Fixes
+
+* pnpm graph gen issue ([de15efa](https://github.com/sandworm-hq/sandworm-audit/commit/de15efa85fb2ec1d20b065a8cd0bfda2ca93f775))
+* support pnpm lockfile v6 ([eb88694](https://github.com/sandworm-hq/sandworm-audit/commit/eb88694b6dcd51b46d359ca40477acc9b66336e7))
+
 ## [1.35.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.34.0...audit-v1.35.0) (2023-03-25)
 
 
