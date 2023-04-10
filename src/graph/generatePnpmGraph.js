@@ -1,4 +1,9 @@
-const {processDependenciesForPackage, processPlaceholders, makeNode} = require('./utils');
+const {
+  processDependenciesForPackage,
+  processPlaceholders,
+  makeNode,
+  SEMVER_REGEXP,
+} = require('./utils');
 
 const parsePath = (path) => {
   // parse pnpm lockfile package names like:
@@ -10,12 +15,9 @@ const parsePath = (path) => {
   // /@nestjs/schematics/9.1.0(typescript@5.0.3)
   // /ts-node/10.9.1(@types/node@14.18.36)(typescript@4.9.3)
   // see https://github.com/pnpm/pnpm/pull/5810
-  const results = path.match(
-    // basically /^\/(.*?)\/(SEMVER)(.*?)$/
-    /^\/(.*?)\/((0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?)(.*?)$/,
-  );
-  const name = results[1];
-  const version = results[2];
+  const results = path.match(new RegExp(`^/(.*?)/(${SEMVER_REGEXP.source})(.*?)$`));
+  const name = results?.[1];
+  const version = results?.[2];
 
   return {name, version};
 };

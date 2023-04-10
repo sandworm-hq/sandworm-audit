@@ -1,6 +1,9 @@
 const https = require('https');
 const semverLib = require('semver');
 
+const SEMVER_REGEXP =
+  /(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?/;
+
 const parseDependencyString = (depstring) => {
   const parts = depstring.split('@');
   let semver = parts.pop();
@@ -374,6 +377,7 @@ const getRegistryDataMultiple = async (packages, onProgress = () => {}) => {
 };
 
 module.exports = {
+  SEMVER_REGEXP,
   makeNode,
   parseDependencyString,
   processDependenciesForPackage,

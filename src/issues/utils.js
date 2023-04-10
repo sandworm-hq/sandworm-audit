@@ -2,6 +2,7 @@ const https = require('https');
 const semverSatisfies = require('semver/functions/satisfies');
 const {aggregateDependencies} = require('../charts/utils');
 const {UsageError} = require('../errors');
+const {SEMVER_REGEXP} = require('../graph/utils');
 
 const getPathsForPackage = (packageGraph, packageName, semver) => {
   const parse = (node, currentPath = [], depth = 0, seenNodes = []) => {
@@ -149,12 +150,34 @@ const makeSandwormIssueId = ({code, name, version, specifier}) =>
 
 const getUniqueIssueId = (issue) => issue.githubAdvisoryId || issue.sandwormIssueId || issue.id;
 
+const resolutionIdMatchesIssueId = (resolutionId, issueId) => {
+  if (typeof resolutionId !== 'string' || typeof issueId !== 'string') {
+    return false;
+  }
+
+  if (resolutionId === issueId) {
+    return true;
+  }
+
+  if (resolutionId.includes('*')) {
+    const [start, end] = resolutionId.split('*');
+    if (issueId.startsWith(start) && issueId.endsWith(end)) {
+      const wildcardContent = issueId.replace(start, '').replace(end, '');
+      if (wildcardContent.match(SEMVER_REGEXP)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
 const excludeResolved = (issues = [], resolved = []) => {
   const filteredIssues = [];
 
   issues.forEach((issue) => {
     const issueId = getUniqueIssueId(issue);
-    const matchingResolutions = resolved.filter(({id}) => id === issueId);
+    const matchingResolutions = resolved.filter(({id}) => resolutionIdMatchesIssueId(id, issueId));
     const matchingResolvedPaths = matchingResolutions.reduce(
       (agg, {paths}) => agg.concat(paths),
       [],
@@ -186,11 +209,11 @@ const validateResolvedIssues = (resolvedIssues = [], currentIssues = []) => {
       throw new UsageError('Issue paths must be array');
     }
 
-    const currentIssue = currentIssues.find(
-      (issue) => resolvedIssue.id === getUniqueIssueId(issue),
+    const matchingIssues = currentIssues.filter((issue) =>
+      resolutionIdMatchesIssueId(resolvedIssue.id, getUniqueIssueId(issue)),
     );
 
-    if (!currentIssue) {
+    if (matchingIssues.length === 0) {
       return [
         ...agg,
         `Issue ${resolvedIssue.id} is not present in the latest audit, you can remove it from your resolution file`,
@@ -200,10 +223,13 @@ const validateResolvedIssues = (resolvedIssues = [], currentIssues = []) => {
     return [
       ...agg,
       ...resolvedIssue.paths
-        .filter((path) => !currentIssue.findings.paths.includes(path))
+        .filter(
+          (path) =>
+            !matchingIssues.reduce((ag, i) => [...ag, ...i.findings.paths], []).includes(path),
+        )
         .map(
           (path) =>
-            `Issue ${resolvedIssue.id} with path ${path} is not present in the latest audit, you can remove it from your resolution file`,
+            `Path ${path} for issue ${resolvedIssue.id} is not present in the latest audit, you can remove it from your resolution file`,
         ),
     ];
   }, []);
@@ -218,4 +244,5 @@ module.exports = {
   excludeResolved,
   allIssuesFromReport,
   validateResolvedIssues,
+  resolutionIdMatchesIssueId,
 };
