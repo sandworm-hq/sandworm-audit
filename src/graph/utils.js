@@ -1,5 +1,8 @@
 const semverLib = require('semver');
 
+const SEMVER_REGEXP =
+  /(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?/;
+
 const parseDependencyString = (depstring) => {
   const parts = depstring.split('@');
   let semver = parts.pop();
@@ -297,6 +300,7 @@ const addDependencyGraphData = ({root, processedNodes = [], packageData = []}) =
 };
 
 module.exports = {
+  SEMVER_REGEXP,
   makeNode,
   parseDependencyString,
   processDependenciesForPackage,

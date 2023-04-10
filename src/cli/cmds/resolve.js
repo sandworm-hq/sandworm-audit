@@ -16,6 +16,7 @@ const {
   excludeResolved,
   allIssuesFromReport,
   validateResolvedIssues,
+  resolutionIdMatchesIssueId,
 } = require('../../issues/utils');
 const {UsageError} = require('../../errors');
 const handleCrash = require('../handleCrash');
@@ -77,22 +78,36 @@ exports.handler = async (argv) => {
       Object.assign(issue, {id: getUniqueIssueId(issue)}),
     );
 
-    const issueToResolve = resolvableIssues.find(({id}) => id === issueId);
+    const issuesToResolve = resolvableIssues.filter(({id}) =>
+      resolutionIdMatchesIssueId(issueId, id),
+    );
 
-    if (!issueToResolve) {
+    if (issuesToResolve.length === 0) {
       throw new UsageError('Issue not found in current audit results.');
     }
 
     logger.log(`Resolving issue ${issueId}:`);
-    logger.log(`${logger.SEVERITY_ICONS[issueToResolve.severity]} ${issueToResolve.title}`);
+    logger.log(`${logger.SEVERITY_ICONS[issuesToResolve[0].severity]} ${issuesToResolve[0].title}`);
     logger.log('');
+
+    const allIssuePaths = issuesToResolve.reduce(
+      (agg, i) => [
+        ...agg,
+        ...i.findings.paths.map((p) => ({path: p, package: `${i.name}@${i.version || i.range}`})),
+      ],
+      [],
+    );
 
     const selectedPaths = await prompts(
       {
         name: 'paths',
         type: 'multiselect',
         message: 'Select paths to resolve',
-        choices: issueToResolve.findings.paths.map((p) => ({title: p, value: p, selected: false})),
+        choices: allIssuePaths.map((p) => ({
+          title: issuesToResolve.length > 1 ? `${p.package}: ${p.path}` : p.path,
+          value: p.path,
+          selected: false,
+        })),
         hint: ' - Space to select. Return to submit. "a" to select/deselect all.',
         instructions: false,
         min: 1,
