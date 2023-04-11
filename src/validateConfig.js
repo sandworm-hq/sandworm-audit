@@ -1,6 +1,7 @@
 const {UsageError} = require('./errors');
 
 const SUPPORTED_SEVERITIES = ['critical', 'high', 'moderate', 'low'];
+const LICENSE_POLICY_KEYS = [...SUPPORTED_SEVERITIES, 'categories'];
 
 module.exports = ({
   appPath,
@@ -49,10 +50,10 @@ module.exports = ({
     if (typeof licensePolicy !== 'object') {
       throw new UsageError('License policy must be a valid object.');
     }
-    Object.entries(licensePolicy).forEach(([severity, data]) => {
-      if (!SUPPORTED_SEVERITIES.includes(severity)) {
+    Object.entries(licensePolicy).forEach(([key, data]) => {
+      if (!LICENSE_POLICY_KEYS.includes(key)) {
         throw new UsageError(
-          `License policy keys must be one of ${SUPPORTED_SEVERITIES.map((s) => `\`${s}\``).join(
+          `License policy keys must be one of ${LICENSE_POLICY_KEYS.map((s) => `\`${s}\``).join(
             ', ',
           )}.`,
         );

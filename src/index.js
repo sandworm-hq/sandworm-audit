@@ -96,6 +96,7 @@ const getReport = async ({
   try {
     licenseUsage = await getLicenseUsage({
       dependencies: includeDev ? dGraph.all : dGraph.prodDependencies,
+      licensePolicy,
     });
     licenseIssues = await getLicenseIssues({licenseUsage, packageGraph, licensePolicy});
   } catch (error) {
