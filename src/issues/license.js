@@ -1,4 +1,4 @@
-const licenseGroups = require('./licenses.json');
+const licenseCatalog = require('./licenses.json');
 const {getFindings, makeSandwormIssueId} = require('./utils');
 
 const LICENSE_TYPES = [
@@ -24,10 +24,13 @@ const isSpdxExpression = (license) => {
   return !!(license.match(/ or /i) || license.match(/ and /i) || license.match(/ with /i));
 };
 
-const typeForLicense = (license) => {
+const getCategoriesForLicense = (license, licensePolicy = DEFAULT_POLICY) => {
   if (!license || license === 'N/A') {
-    return 'N/A';
+    return {defaultCategory: 'N/A', userCategories: []};
   }
+
+  let defaultCategory;
+
   if (isSpdxExpression(license)) {
     // Parse simple AND/OR SPDX expressions
     if ((license.match(/\s/g) || []).length === 2) {
@@ -43,185 +46,204 @@ const typeForLicense = (license) => {
       }
 
       if (expressionLicenses) {
-        const expressionTypes = [
-          typeForLicense(expressionLicenses[0]),
-          typeForLicense(expressionLicenses[1]),
-        ];
+        const {defaultCategory: cat1} = getCategoriesForLicense(
+          expressionLicenses[0],
+          licensePolicy,
+        );
+        const {defaultCategory: cat2} = getCategoriesForLicense(
+          expressionLicenses[1],
+          licensePolicy,
+        );
 
-        if ([expressionTypes[0], expressionTypes[1]].includes('Invalid')) {
-          return 'Invalid';
+        if ([cat1, cat2].includes('Invalid')) {
+          defaultCategory = 'Invalid';
+        } else {
+          const aggregateExpressionType =
+            LICENSE_TYPES[
+              condition === 'or'
+                ? Math.min(LICENSE_TYPES.indexOf(cat1), LICENSE_TYPES.indexOf(cat2))
+                : Math.max(LICENSE_TYPES.indexOf(cat1), LICENSE_TYPES.indexOf(cat2))
+            ];
+
+          defaultCategory = aggregateExpressionType;
         }
-
-        const aggregateExpressionType =
-          LICENSE_TYPES[
-            condition === 'or'
-              ? Math.min(
-                  LICENSE_TYPES.indexOf(expressionTypes[0]),
-                  LICENSE_TYPES.indexOf(expressionTypes[1]),
-                )
-              : Math.max(
-                  LICENSE_TYPES.indexOf(expressionTypes[0]),
-                  LICENSE_TYPES.indexOf(expressionTypes[1]),
-                )
-          ];
-
-        return aggregateExpressionType;
       }
+    } else {
+      defaultCategory = 'Expression';
     }
-    return 'Expression';
   }
-  return licenseGroups.types.find(({licenses}) => licenses.includes(license))?.type || 'Invalid';
+
+  if (!defaultCategory) {
+    defaultCategory =
+      licenseCatalog.categories.find(({licenses}) => licenses.includes(license))?.type || 'Invalid';
+  }
+
+  const userCategories =
+    (licensePolicy.categories || [])
+      .filter(({licenses}) => licenses.includes(license))
+      .map((c) => c.type) || [];
+
+  return {defaultCategory, userCategories};
 };
 
-module.exports = {
-  typeForLicense,
-  getLicenseUsage: ({dependencies = []}) => {
-    const licenseUsage = dependencies.reduce((agg, {name, version, license}) => {
-      const licenseString = license || 'N/A';
+const getLicenseUsage = ({dependencies = [], licensePolicy = DEFAULT_POLICY}) => {
+  const licenseUsage = dependencies.reduce((agg, {name, version, license}) => {
+    const licenseString = license || 'N/A';
 
-      const licenseData = agg.find(({string}) => string === licenseString);
+    const licenseData = agg.find(({string}) => string === licenseString);
 
-      if (!licenseData) {
-        return [
-          ...agg,
-          {
-            string: licenseString,
-            meta: {
-              type: typeForLicense(licenseString),
-              isSpdxExpression: isSpdxExpression(licenseString),
-            },
-            dependencies: [{name, version}],
+    if (!licenseData) {
+      return [
+        ...agg,
+        {
+          string: licenseString,
+          meta: {
+            categories: getCategoriesForLicense(licenseString, licensePolicy),
+            isSpdxExpression: isSpdxExpression(licenseString),
           },
-        ];
-      }
+          dependencies: [{name, version}],
+        },
+      ];
+    }
 
-      licenseData.dependencies.push({name, version});
-      return agg;
-    }, []);
+    licenseData.dependencies.push({name, version});
+    return agg;
+  }, []);
 
-    return licenseUsage.sort((a, b) => b.dependencies.length - a.dependencies.length);
-  },
+  return licenseUsage.sort((a, b) => b.dependencies.length - a.dependencies.length);
+};
 
-  getLicenseIssues: ({licenseUsage, packageGraph, licensePolicy = DEFAULT_POLICY}) => {
-    const issues = [];
+const getLicenseIssues = ({licenseUsage, packageGraph, licensePolicy = DEFAULT_POLICY}) => {
+  const issues = [];
 
-    licenseUsage.forEach(({string, meta, dependencies}) => {
-      const licenseType = meta?.type;
-      if (string === 'N/A') {
+  licenseUsage.forEach(({string, meta, dependencies}) => {
+    const defaultCategory = meta?.categories?.defaultCategory;
+    const userCategories = meta?.categories?.userCategories || [];
+
+    if (string === 'N/A') {
+      issues.push({
+        severity: 'critical',
+        title: 'Package has no specified license',
+        shortTitle: 'No license specified',
+        recommendation: 'Check the package code and files for license information',
+        dependencies,
+        sandwormIssueCode: 100,
+      });
+    } else if (string === 'UNLICENSED') {
+      issues.push({
+        severity: 'critical',
+        title: 'Package is explicitly not available for use under any terms',
+        shortTitle: 'Not licensed for use',
+        recommendation: 'Use another package that is licensed for use',
+        dependencies,
+        sandwormIssueCode: 101,
+      });
+    } else if (!isSpdxExpression(string)) {
+      if (!licenseCatalog.osiApproved.includes(string)) {
         issues.push({
-          severity: 'critical',
-          title: 'Package has no specified license',
-          shortTitle: 'No license specified',
-          recommendation: 'Check the package code and files for license information',
-          dependencies,
-          sandwormIssueCode: 100,
-        });
-      } else if (string === 'UNLICENSED') {
-        issues.push({
-          severity: 'critical',
-          title: 'Package is explicitly not available for use under any terms',
-          shortTitle: 'Not licensed for use',
-          recommendation: 'Use another package that is licensed for use',
-          dependencies,
-          sandwormIssueCode: 101,
-        });
-      } else if (!isSpdxExpression(string)) {
-        if (!licenseGroups.osiApproved.includes(string)) {
-          issues.push({
-            severity: 'low',
-            title: `Package uses a license that is not OSI approved ("${string}")`,
-            shortTitle: 'License not OSI approved',
-            recommendation: 'Read and validate the license terms',
-            dependencies,
-            sandwormIssueCode: 102,
-          });
-        }
-        if (licenseGroups.deprecated.includes(string)) {
-          issues.push({
-            severity: 'low',
-            title: `Package uses a deprecated license ("${string}")`,
-            shortTitle: 'License is deprecated',
-            dependencies,
-            sandwormIssueCode: 103,
-          });
-        }
-      }
-
-      if (!licenseType || licenseType === 'Uncategorized') {
-        issues.push({
-          severity: 'high',
-          title: `Package uses an atypical license ("${string}")`,
-          shortTitle: 'Atypical license',
+          severity: 'low',
+          title: `Package uses a license that is not OSI approved ("${string}")`,
+          shortTitle: 'License not OSI approved',
           recommendation: 'Read and validate the license terms',
           dependencies,
-          sandwormIssueCode: 104,
-        });
-      } else if (licenseType === 'Invalid') {
-        issues.push({
-          severity: 'high',
-          title: `Package uses an invalid SPDX license ("${string}")`,
-          shortTitle: 'Invalid SPDX license',
-          recommendation: 'Validate that the package complies with your license policy',
-          dependencies,
-          sandwormIssueCode: 105,
-        });
-      } else if (licenseType === 'Expression') {
-        issues.push({
-          severity: 'high',
-          title: `Package uses a custom license expression ("${string}")`,
-          shortTitle: 'Custom license expression',
-          recommendation: 'Validate that the license expression complies with your license policy',
-          dependencies,
-          sandwormIssueCode: 106,
+          sandwormIssueCode: 102,
         });
       }
+      if (licenseCatalog.deprecated.includes(string)) {
+        issues.push({
+          severity: 'low',
+          title: `Package uses a deprecated license ("${string}")`,
+          shortTitle: 'License is deprecated',
+          dependencies,
+          sandwormIssueCode: 103,
+        });
+      }
+    }
 
-      Object.entries(licensePolicy).forEach(([severity, includes]) => {
+    if ((!defaultCategory || defaultCategory === 'Uncategorized') && userCategories.length === 0) {
+      issues.push({
+        severity: 'high',
+        title: `Package uses an atypical license ("${string}")`,
+        shortTitle: 'Atypical license',
+        recommendation: 'Read and validate the license terms',
+        dependencies,
+        sandwormIssueCode: 104,
+      });
+    } else if (defaultCategory === 'Invalid') {
+      issues.push({
+        severity: 'high',
+        title: `Package uses an invalid SPDX license ("${string}")`,
+        shortTitle: 'Invalid SPDX license',
+        recommendation: 'Validate that the package complies with your license policy',
+        dependencies,
+        sandwormIssueCode: 105,
+      });
+    } else if (defaultCategory === 'Expression') {
+      issues.push({
+        severity: 'high',
+        title: `Package uses a custom license expression ("${string}")`,
+        shortTitle: 'Custom license expression',
+        recommendation: 'Validate that the license expression complies with your license policy',
+        dependencies,
+        sandwormIssueCode: 106,
+      });
+    }
+
+    const allCategoryStrings = [defaultCategory, ...userCategories].map((c) => `cat:${c}`);
+
+    Object.entries(licensePolicy).forEach(([config, includes]) => {
+      if (['critical', 'high', 'moderate', 'low'].includes(config)) {
         if (includes.includes(string)) {
           issues.push({
-            severity,
+            severity: config,
             title: `Package uses a problematic license ("${string}")`,
             shortTitle: 'Problematic license',
             recommendation: 'Validate that the package complies with your license policy',
             dependencies,
             sandwormIssueCode: 150,
           });
-        } else if (includes.includes(`cat:${licenseType}`)) {
+        } else if (includes.find((c) => allCategoryStrings.includes(c))) {
           issues.push({
-            severity,
-            title: `Package uses a problematic ${licenseType} license ("${string}")`,
+            severity: config,
+            title: `Package uses a problematic ${defaultCategory} license ("${string}")`,
             shortTitle: 'Problematic license',
             recommendation: 'Validate that the package complies with your license policy',
             dependencies,
             sandwormIssueCode: 151,
           });
         }
-      });
+      }
     });
+  });
 
-    return issues.reduce(
-      (agg, issue) =>
-        agg.concat(
-          issue.dependencies.map(({name, version}) => ({
+  return issues.reduce(
+    (agg, issue) =>
+      agg.concat(
+        issue.dependencies.map(({name, version}) => ({
+          name,
+          version,
+          ...issue,
+          dependencies: undefined, // this field was just a crutch
+          sandwormIssueId: makeSandwormIssueId({
+            code: issue.sandwormIssueCode,
             name,
             version,
-            ...issue,
-            dependencies: undefined, // this field was just a crutch
-            sandwormIssueId: makeSandwormIssueId({
-              code: issue.sandwormIssueCode,
-              name,
-              version,
-              specifier: issue.sandwormIssueSpecifier,
-            }),
-            findings: getFindings({
-              packageGraph,
-              packageName: name,
-              range: version,
-            }),
-            type: 'license',
-          })),
-        ),
-      [],
-    );
-  },
+            specifier: issue.sandwormIssueSpecifier,
+          }),
+          findings: getFindings({
+            packageGraph,
+            packageName: name,
+            range: version,
+          }),
+          type: 'license',
+        })),
+      ),
+    [],
+  );
+};
+
+module.exports = {
+  getCategoriesForLicense,
+  getLicenseUsage,
+  getLicenseIssues,
 };
