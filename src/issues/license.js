@@ -1,7 +1,7 @@
 const licenseCatalog = require('./licenses.json');
 const {getFindings, makeSandwormIssueId} = require('./utils');
 
-const LICENSE_TYPES = [
+const DEFAULT_LICENSE_CATEGORIES = [
   'Public Domain',
   'Permissive',
   'Weakly Protective',
@@ -24,7 +24,31 @@ const isSpdxExpression = (license) => {
   return !!(license.match(/ or /i) || license.match(/ and /i) || license.match(/ with /i));
 };
 
-const getCategoriesForLicense = (license, licensePolicy = DEFAULT_POLICY) => {
+const getLicenseCategories = (licensePolicy = DEFAULT_POLICY) => {
+  const defaultCategories = licenseCatalog.categories;
+  const userCategories = licensePolicy.categories || [];
+  const filteredUserCategories = [];
+
+  userCategories.forEach(({name, licenses}) => {
+    if (name !== 'Invalid' && DEFAULT_LICENSE_CATEGORIES.includes(name)) {
+      defaultCategories.forEach((dc) => {
+        // eslint-disable-next-line no-param-reassign
+        dc.licenses = dc.licenses.filter((dcl) => !licenses.includes(dcl));
+      });
+      const targetCategory = defaultCategories.find(({name: targetName}) => name === targetName);
+      targetCategory.licenses = [...targetCategory.licenses, ...licenses];
+    } else {
+      filteredUserCategories.push({name, licenses});
+    }
+  });
+
+  return {
+    defaultCategories,
+    userCategories: filteredUserCategories,
+  };
+};
+
+const getCategoriesForLicense = ({license, defaultCategories, userCategories}) => {
   if (!license || license === 'N/A') {
     return {defaultCategory: 'N/A', userCategories: []};
   }
@@ -46,23 +70,31 @@ const getCategoriesForLicense = (license, licensePolicy = DEFAULT_POLICY) => {
       }
 
       if (expressionLicenses) {
-        const {defaultCategory: cat1} = getCategoriesForLicense(
-          expressionLicenses[0],
-          licensePolicy,
-        );
-        const {defaultCategory: cat2} = getCategoriesForLicense(
-          expressionLicenses[1],
-          licensePolicy,
-        );
+        const {defaultCategory: cat1} = getCategoriesForLicense({
+          license: expressionLicenses[0],
+          defaultCategories,
+          userCategories,
+        });
+        const {defaultCategory: cat2} = getCategoriesForLicense({
+          license: expressionLicenses[1],
+          defaultCategories,
+          userCategories,
+        });
 
         if ([cat1, cat2].includes('Invalid')) {
           defaultCategory = 'Invalid';
         } else {
           const aggregateExpressionType =
-            LICENSE_TYPES[
+            DEFAULT_LICENSE_CATEGORIES[
               condition === 'or'
-                ? Math.min(LICENSE_TYPES.indexOf(cat1), LICENSE_TYPES.indexOf(cat2))
-                : Math.max(LICENSE_TYPES.indexOf(cat1), LICENSE_TYPES.indexOf(cat2))
+                ? Math.min(
+                    DEFAULT_LICENSE_CATEGORIES.indexOf(cat1),
+                    DEFAULT_LICENSE_CATEGORIES.indexOf(cat2),
+                  )
+                : Math.max(
+                    DEFAULT_LICENSE_CATEGORIES.indexOf(cat1),
+                    DEFAULT_LICENSE_CATEGORIES.indexOf(cat2),
+                  )
             ];
 
           defaultCategory = aggregateExpressionType;
@@ -75,18 +107,16 @@ const getCategoriesForLicense = (license, licensePolicy = DEFAULT_POLICY) => {
 
   if (!defaultCategory) {
     defaultCategory =
-      licenseCatalog.categories.find(({licenses}) => licenses.includes(license))?.type || 'Invalid';
+      defaultCategories.find(({licenses}) => licenses.includes(license))?.name || 'Invalid';
   }
 
-  const userCategories =
-    (licensePolicy.categories || [])
-      .filter(({licenses}) => licenses.includes(license))
-      .map((c) => c.type) || [];
+  const selectedUserCategories =
+    userCategories.filter(({licenses}) => licenses.includes(license)).map((c) => c.name) || [];
 
-  return {defaultCategory, userCategories};
+  return {defaultCategory, userCategories: selectedUserCategories};
 };
 
-const getLicenseUsage = ({dependencies = [], licensePolicy = DEFAULT_POLICY}) => {
+const getLicenseUsage = ({dependencies = [], defaultCategories, userCategories}) => {
   const licenseUsage = dependencies.reduce((agg, {name, version, license}) => {
     const licenseString = license || 'N/A';
 
@@ -98,7 +128,11 @@ const getLicenseUsage = ({dependencies = [], licensePolicy = DEFAULT_POLICY}) =>
         {
           string: licenseString,
           meta: {
-            categories: getCategoriesForLicense(licenseString, licensePolicy),
+            categories: getCategoriesForLicense({
+              license: licenseString,
+              defaultCategories,
+              userCategories,
+            }),
             isSpdxExpression: isSpdxExpression(licenseString),
           },
           dependencies: [{name, version}],
@@ -243,6 +277,7 @@ const getLicenseIssues = ({licenseUsage, packageGraph, licensePolicy = DEFAULT_P
 };
 
 module.exports = {
+  getLicenseCategories,
   getCategoriesForLicense,
   getLicenseUsage,
   getLicenseIssues,

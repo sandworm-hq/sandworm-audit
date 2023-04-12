@@ -1,5 +1,5 @@
 const {getDependencyVulnerabilities} = require('./issues/vulnerabilities');
-const {getLicenseIssues, getLicenseUsage} = require('./issues/license');
+const {getLicenseIssues, getLicenseUsage, getLicenseCategories} = require('./issues/license');
 const {buildTree, buildTreemap} = require('./charts');
 const {excludeResolved, validateResolvedIssues, allIssuesFromReport} = require('./issues/utils');
 const csv = require('./charts/csv');
@@ -95,9 +95,11 @@ const getReport = async ({
   // Get license info and issues
   onProgress({type: 'start', stage: 'licenses'});
   try {
+    const {defaultCategories, userCategories} = getLicenseCategories(licensePolicy);
     licenseUsage = await getLicenseUsage({
       dependencies: includeDev ? dGraph.all : dGraph.prodDependencies,
-      licensePolicy,
+      defaultCategories,
+      userCategories,
     });
     licenseIssues = await getLicenseIssues({licenseUsage, packageGraph, licensePolicy});
   } catch (error) {
