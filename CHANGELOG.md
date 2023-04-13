@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.36.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.35.1...audit-v1.36.0) (2023-04-13)
+
+
+### Features
+
+* accept wildcard version in resolved issue id ([1565943](https://github.com/sandworm-hq/sandworm-audit/commit/1565943d333c632664e53c4c1c0ca177a333e73a))
+* support custom license categories ([68b7791](https://github.com/sandworm-hq/sandworm-audit/commit/68b7791328af076ccbcd498d855c23dcbb019805))
+* support editing default license categories ([0f473cc](https://github.com/sandworm-hq/sandworm-audit/commit/0f473cc04fd6020bdc78703f5a1b9334dbd7af2e))
+* support private registries ([b36cba0](https://github.com/sandworm-hq/sandworm-audit/commit/b36cba014f6a2a4ff2850daa8e88650cb90ebcbf))
+
 ## [1.35.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.35.0...audit-v1.35.1) (2023-04-07)
 
 
