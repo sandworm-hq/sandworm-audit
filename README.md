@@ -18,6 +18,7 @@ Beautiful Security & License Compliance Reports For Your App's Dependencies 🪱
 - Supports [marking issues as resolved](https://docs.sandworm.dev/audit/resolving-issues)
 - Supports [custom license policies](https://docs.sandworm.dev/audit/license-policies)
 - [Configurable fail conditions](https://docs.sandworm.dev/audit/fail-policies) for CI / GIT hook workflows
+- Can connect to [private/custom registries](https://docs.sandworm.dev/audit/custom-registries)
 - Outputs:
   - JSON issue & license usage reports
   - Easy to grok SVG dependency tree & treemap visualizations
