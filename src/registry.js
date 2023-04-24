@@ -6,7 +6,7 @@ let registriesInfo = [];
 let fetch = () => {};
 
 const replaceEnvVars = (str) =>
-  str.replace(/\${([^}]+)}/g, (match, variableName) => process.env[variableName] || '');
+  str?.replace?.(/\${([^}]+)}/g, (match, variableName) => process.env[variableName] || '') || str;
 
 const getRegistriesInfo = (appPath) => {
   const configs = loadNpmConfigs(appPath);
