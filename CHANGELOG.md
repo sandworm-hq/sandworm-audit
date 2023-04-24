@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.36.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.36.0...audit-v1.36.1) (2023-04-24)
+
+
+### Bug Fixes
+
+* crash on non-string npmrc configs ([ab49e97](https://github.com/sandworm-hq/sandworm-audit/commit/ab49e970a0df42233fab6bf559ba4ce70174be61))
+
 ## [1.36.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.35.1...audit-v1.36.0) (2023-04-13)
 
 
