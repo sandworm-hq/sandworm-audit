@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.37.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.36.2...audit-v1.37.0) (2023-04-25)
+
+
+### Features
+
+* improve type validations ([38b7bac](https://github.com/sandworm-hq/sandworm-audit/commit/38b7baccd475e591a9e1ec0fb4e438215714aee2))
+
 ## [1.36.2](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.36.1...audit-v1.36.2) (2023-04-25)
 
 
