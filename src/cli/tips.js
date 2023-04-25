@@ -34,13 +34,9 @@ const tip = () => {
 
   const currentTip = `${logger.colors.DIM}\n//\n// ${logger.colors.RESET}💡 ${
     logger.colors.DIM
-  }${message}${
-    example
-      ? `\n//    ${logger.colors.RESET}${logger.colors.BG_GRAY}${example}${logger.colors.RESET}${logger.colors.DIM}`
-      : ''
-  }${url ? `\n//    ${logger.colors.UNDERLINE}${url}${logger.colors.RESET}` : ''}\n${
-    logger.colors.DIM
-  }//${logger.colors.RESET}`;
+  }${message}${example ? `\n//    ${example}` : ''}${
+    url ? `\n//    ${logger.colors.UNDERLINE}${url}${logger.colors.RESET}` : ''
+  }\n${logger.colors.DIM}//${logger.colors.RESET}\n`;
 
   return currentTip;
 };

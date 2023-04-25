@@ -11,6 +11,7 @@ const logger = require('../logger');
 const checkUpdates = require('../checkUpdates');
 const {outputFilenames, loadManifest} = require('../../files');
 const handleCrash = require('../handleCrash');
+const tip = require('../tips');
 
 exports.command = ['audit', '*'];
 exports.desc = "Security & License Compliance For Your App's Dependencies 🪱";
@@ -187,10 +188,7 @@ exports.handler = async (argv) => {
             !(typeof fileConfig.skipCsv !== 'undefined' ? !!fileConfig.skipCsv : argv.skipCsv) &&
               'csv',
           ].filter((o) => o),
-      onProgress: onProgress({
-        ora,
-        showTips: typeof fileConfig.showTips !== 'undefined' ? fileConfig.showTips : argv.showTips,
-      }),
+      onProgress: onProgress({ora}),
     });
 
     // ********************
@@ -318,6 +316,8 @@ exports.handler = async (argv) => {
         `🔔 ${logger.colors.BG_CYAN}${logger.colors.BLACK}%s${logger.colors.RESET}\n`,
         'New version available! Run "npm i -g @sandworm/audit" to update.',
       );
+    } else if (typeof fileConfig.showTips !== 'undefined' ? fileConfig.showTips : argv.showTips) {
+      logger.log(tip());
     }
 
     process.exit();

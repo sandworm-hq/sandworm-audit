@@ -1,11 +1,7 @@
 const logger = require('./logger');
-const tip = require('./tips');
-
-const INITIAL_TIP_DELAY = 2000;
 
 let currentSpinner;
 let tipTimeout;
-let tipDisplayed = false;
 
 const getStartMessage = (stage) => {
   switch (stage) {
@@ -50,23 +46,10 @@ const getEndMessage = (stage) => {
 };
 
 const onProgress =
-  ({ora, showTips = true}) =>
+  ({ora}) =>
   ({type, stage, message, progress}) => {
     switch (type) {
       case 'start':
-        if (showTips) {
-          if (stage === 'graph') {
-            tipTimeout = setTimeout(() => {
-              logger.log(tip());
-              tipDisplayed = true;
-              // Move up to continue counting graph packages
-              process.stdout.moveCursor(0, -6);
-            }, INITIAL_TIP_DELAY);
-          } else if (stage === 'vulnerabilities' && tipDisplayed) {
-            // Move down to skip over tips
-            process.stdout.moveCursor(0, 5);
-          }
-        }
         currentSpinner = ora().start(getStartMessage(stage));
         break;
       case 'end':
