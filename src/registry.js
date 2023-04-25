@@ -6,7 +6,7 @@ let registriesInfo = [];
 let fetch = () => {};
 
 const replaceEnvVars = (str) =>
-  str?.replace?.(/\${([^}]+)}/g, (match, variableName) => process.env[variableName] || '') || str;
+  str.replace(/\${([^}]+)}/g, (match, variableName) => process.env[variableName] || '');
 
 const getRegistriesInfo = (appPath) => {
   const configs = loadNpmConfigs(appPath);
@@ -14,18 +14,20 @@ const getRegistriesInfo = (appPath) => {
   const authTokens = {};
 
   Object.entries(configs).forEach(([key, value]) => {
-    const processedValue = replaceEnvVars(value);
-    if (key === 'registry') {
-      registries.push({org: 'default', url: processedValue});
-    } else if (key.includes(':')) {
-      const keyParts = key.split(':');
-      const configName = keyParts.pop();
-      const specifier = keyParts.join(':');
+    if (typeof value === 'string') {
+      const processedValue = replaceEnvVars(value);
+      if (key === 'registry') {
+        registries.push({org: 'default', url: processedValue});
+      } else if (key?.includes?.(':')) {
+        const keyParts = key.split(':');
+        const configName = keyParts.pop();
+        const specifier = keyParts.join(':');
 
-      if (configName === 'registry') {
-        registries.push({org: specifier, url: processedValue});
-      } else if (configName === '_authToken') {
-        authTokens[specifier] = processedValue;
+        if (configName === 'registry') {
+          registries.push({org: specifier, url: processedValue});
+        } else if (configName === '_authToken') {
+          authTokens[specifier] = processedValue;
+        }
       }
     }
   });
@@ -88,6 +90,12 @@ const getRegistryInfoForPackage = (packageName) => {
 };
 
 const getRegistryData = async (packageName, packageVersion) => {
+  if (typeof packageName !== 'string' || !['string', 'undefined'].includes(typeof packageVersion)) {
+    throw new Error(
+      `getRegistryData: invalid arguments given (${packageName} / ${packageVersion})`,
+    );
+  }
+
   const registryInfo = getRegistryInfoForPackage(packageName);
   const packageUrl = new URL(`/${packageName}`, registryInfo?.url || DEFAULT_REGISTRY_URL);
   const responseRaw = await fetch(packageUrl.href, {

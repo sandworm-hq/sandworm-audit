@@ -59,7 +59,32 @@ module.exports = ({
         );
       }
       if (!Array.isArray(data)) {
-        throw new UsageError(`License policy values must be arrays of strings.`);
+        throw new UsageError('License policy values must be arrays.');
+      }
+      if (key === 'categories') {
+        data.forEach((customCat) => {
+          if (typeof customCat.name !== 'string') {
+            throw new UsageError('Each custom license category must have a name.');
+          }
+          if (!Array.isArray(customCat.licenses)) {
+            throw new UsageError(
+              'Each custom license category must have a `licenses` array of strings.',
+            );
+          }
+          customCat.licenses.forEach((l) => {
+            if (typeof l !== 'string') {
+              throw new UsageError(
+                'Each item in a license policy custom category array must be a string.',
+              );
+            }
+          });
+        });
+      } else {
+        data.forEach((l) => {
+          if (typeof l !== 'string') {
+            throw new UsageError('Each item in a license policy severity array must be a string.');
+          }
+        });
       }
     });
   }
