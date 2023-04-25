@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.36.2](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.36.1...audit-v1.36.2) (2023-04-25)
+
+
+### Bug Fixes
+
+* tips display crash in non-tty envs ([afd121c](https://github.com/sandworm-hq/sandworm-audit/commit/afd121c118f1935837b68b2b03f770addf1484b3))
+
 ## [1.36.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.36.0...audit-v1.36.1) (2023-04-24)
 
 
