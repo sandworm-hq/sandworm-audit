@@ -3,6 +3,8 @@ const path = require('path');
 const {
   files: {loadConfig},
 } = require('@sandworm/utils');
+const semver = require('semver');
+
 const {getReport} = require('../..');
 const onProgress = require('../progress');
 const {getIssueCounts, failIfRequested} = require('../utils');
@@ -133,6 +135,12 @@ exports.handler = async (argv) => {
   const appPath = argv.path || process.cwd();
 
   try {
+    if (semver.lt(process.versions.node, '14.19.0')) {
+      throw new UsageError(
+        `Sandworm requires Node >=14.19.0 (currently on ${process.versions.node})`,
+      );
+    }
+
     let isOutdated = false;
 
     (async () => {
