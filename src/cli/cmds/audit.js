@@ -12,6 +12,7 @@ const checkUpdates = require('../checkUpdates');
 const {outputFilenames, loadManifest} = require('../../files');
 const handleCrash = require('../handleCrash');
 const tip = require('../tips');
+const {UsageError} = require('../../errors');
 
 exports.command = ['audit', '*'];
 exports.desc = "Security & License Compliance For Your App's Dependencies 🪱";
@@ -143,6 +144,21 @@ exports.handler = async (argv) => {
     const fileConfig = loadConfig(appPath)?.audit || {};
     const skipOutput =
       typeof fileConfig.skipAll !== 'undefined' ? !!fileConfig.skipAll : argv.skipAll;
+
+    if (argv.licensePolicy) {
+      try {
+        JSON.parse(argv.licensePolicy);
+      } catch (error) {
+        throw new UsageError('The provided license policy is not valid JSON');
+      }
+    }
+    if (argv.failOn) {
+      try {
+        JSON.parse(argv.failOn);
+      } catch (error) {
+        throw new UsageError('The provided fail policy is not valid JSON');
+      }
+    }
 
     // *****************
     // Perform the audit
