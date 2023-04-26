@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.38.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.37.0...audit-v1.38.0) (2023-04-26)
+
+
+### Features
+
+* cli args license&fail policy valid json check ([6a0592d](https://github.com/sandworm-hq/sandworm-audit/commit/6a0592d69dacc5c53a1c401c2fe2757fdbfa4f23))
+* enforce min node version ([7560c64](https://github.com/sandworm-hq/sandworm-audit/commit/7560c64247783062e0749578194a16105855c4c8))
+
 ## [1.37.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.36.2...audit-v1.37.0) (2023-04-25)
 
 
