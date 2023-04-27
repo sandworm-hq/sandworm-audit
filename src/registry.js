@@ -3,7 +3,7 @@ const {loadNpmConfigs} = require('./files');
 
 const DEFAULT_REGISTRY_URL = 'https://registry.npmjs.org/';
 let registriesInfo = [];
-let fetch = () => {};
+let fetch;
 
 const replaceEnvVars = (str) =>
   str.replace(/\${([^}]+)}/g, (match, variableName) => process.env[variableName] || '');
@@ -67,13 +67,8 @@ const getRegistriesInfo = (appPath) => {
   return registries.map((reg) => ({...reg, url: new URL(reg.url)}));
 };
 
-const loadRegistriesInfo = (appPath) => {
+const setupRegistries = (appPath) => {
   registriesInfo = getRegistriesInfo(appPath);
-};
-
-const setupRegistries = async (appPath) => {
-  loadRegistriesInfo(appPath);
-  fetch = (await import('node-fetch')).default;
 };
 
 const getRegistryInfoForPackage = (packageName) => {
@@ -98,6 +93,11 @@ const getRegistryData = async (packageName, packageVersion) => {
 
   const registryInfo = getRegistryInfoForPackage(packageName);
   const packageUrl = new URL(`/${packageName}`, registryInfo?.url || DEFAULT_REGISTRY_URL);
+
+  if (!fetch) {
+    fetch = (await import('node-fetch')).default;
+  }
+
   const responseRaw = await fetch(packageUrl.href, {
     headers: {
       ...(registryInfo?.token && {Authorization: `Bearer ${registryInfo.token}`}),
@@ -188,7 +188,6 @@ const getRegistryAudit = async (packageName, packageVersion, packageGraph) => {
 
 module.exports = {
   setupRegistries,
-  loadRegistriesInfo,
   getRegistryData,
   getRegistryDataMultiple,
   getRegistryAudit,
