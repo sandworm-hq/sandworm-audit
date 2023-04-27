@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.38.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.38.0...audit-v1.38.1) (2023-04-27)
+
+
+### Bug Fixes
+
+* lazy-load `fetch` ([73aacb5](https://github.com/sandworm-hq/sandworm-audit/commit/73aacb5e622e6f2e9e224d1612ce07cf8cd4cb05))
+
 ## [1.38.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.37.0...audit-v1.38.0) (2023-04-26)
 
 
