@@ -127,7 +127,7 @@ exports.builder = (yargs) =>
     .option('show-tips', {
       demandOption: false,
       default: true,
-      describe: 'Show Sandworm tips while building the dependency graph',
+      describe: 'Show usage tips',
       type: 'boolean',
     });
 
