@@ -13,7 +13,6 @@ const {getRegistryAudit, setupRegistries} = require('./registry');
 const getReport = async ({
   appPath,
   dependencyGraph,
-  getAdvisoriesForRoot = true,
   includeDev = false,
   licensePolicy,
   loadDataFrom = 'registry',
@@ -22,6 +21,9 @@ const getReport = async ({
   onProgress = () => {},
   output = ['tree', 'treemap', 'csv'],
   rootIsShell = false,
+  skipLicenseIssues = false,
+  skipMetaIssues = false,
+  skipRootAdvisories = false,
   showVersions = false,
   width = 1500,
 } = {}) => {
@@ -79,7 +81,7 @@ const getReport = async ({
     errors.push(error);
   }
 
-  if (getAdvisoriesForRoot) {
+  if (!skipRootAdvisories) {
     try {
       rootVulnerabilities = await getRegistryAudit(
         packageGraph.name,
@@ -92,32 +94,36 @@ const getReport = async ({
   }
   onProgress({type: 'end', stage: 'vulnerabilities'});
 
-  // Get license info and issues
-  onProgress({type: 'start', stage: 'licenses'});
-  try {
-    const {defaultCategories, userCategories} = getLicenseCategories(licensePolicy);
-    licenseUsage = await getLicenseUsage({
-      dependencies: includeDev ? dGraph.all : dGraph.prodDependencies,
-      defaultCategories,
-      userCategories,
-    });
-    licenseIssues = await getLicenseIssues({licenseUsage, packageGraph, licensePolicy});
-  } catch (error) {
-    errors.push(error);
+  if (!skipLicenseIssues) {
+    // Get license info and issues
+    onProgress({type: 'start', stage: 'licenses'});
+    try {
+      const {defaultCategories, userCategories} = getLicenseCategories(licensePolicy);
+      licenseUsage = await getLicenseUsage({
+        dependencies: includeDev ? dGraph.all : dGraph.prodDependencies,
+        defaultCategories,
+        userCategories,
+      });
+      licenseIssues = await getLicenseIssues({licenseUsage, packageGraph, licensePolicy});
+    } catch (error) {
+      errors.push(error);
+    }
+    onProgress({type: 'end', stage: 'licenses'});
   }
-  onProgress({type: 'end', stage: 'licenses'});
 
-  // Get meta issues
-  onProgress({type: 'start', stage: 'issues'});
-  try {
-    metaIssues = await getMetaIssues({
-      dependencies: includeDev ? dGraph.all : dGraph.prodDependencies,
-      packageGraph,
-    });
-  } catch (error) {
-    errors.push(error);
+  if (!skipMetaIssues) {
+    // Get meta issues
+    onProgress({type: 'start', stage: 'issues'});
+    try {
+      metaIssues = await getMetaIssues({
+        dependencies: includeDev ? dGraph.all : dGraph.prodDependencies,
+        packageGraph,
+      });
+    } catch (error) {
+      errors.push(error);
+    }
+    onProgress({type: 'end', stage: 'issues'});
   }
-  onProgress({type: 'end', stage: 'issues'});
 
   const SEVERITIES = ['critical', 'high', 'moderate', 'low'];
   const sortBySeverity = (a, b) => SEVERITIES.indexOf(a.severity) - SEVERITIES.indexOf(b.severity);

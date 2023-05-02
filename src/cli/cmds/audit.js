@@ -94,6 +94,18 @@ exports.builder = (yargs) =>
       hidden: true,
       type: 'boolean',
     })
+    .option('skip-license-issues', {
+      demandOption: false,
+      default: false,
+      describe: 'Skip scanning for license issues',
+      type: 'boolean',
+    })
+    .option('skip-meta-issues', {
+      demandOption: false,
+      default: false,
+      describe: 'Skip scanning for meta issues',
+      type: 'boolean',
+    })
     .option('skip-tree', {
       demandOption: false,
       default: false,
@@ -190,6 +202,14 @@ exports.handler = async (argv) => {
       appPath,
       includeDev:
         typeof fileConfig.includeDev !== 'undefined' ? fileConfig.includeDev : argv.includeDev,
+      skipLicenseIssues:
+        typeof fileConfig.skipLicenseIssues !== 'undefined'
+          ? fileConfig.skipLicenseIssues
+          : argv.skipLicenseIssues,
+      skipMetaIssues:
+        typeof fileConfig.skipMetaIssues !== 'undefined'
+          ? fileConfig.skipMetaIssues
+          : argv.skipMetaIssues,
       showVersions:
         typeof fileConfig.showVersions !== 'undefined'
           ? fileConfig.showVersions

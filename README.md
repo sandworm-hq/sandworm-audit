@@ -112,6 +112,10 @@ Options:
       --fo, --fail-on         Fail policy JSON string   [string] [default: "[]"]
   -s, --summary               Print a summary of the audit results to the
                               console                  [boolean] [default: true]
+      --skip-license-issues   Skip scanning for license issues
+                                                      [boolean] [default: false]
+      --skip-meta-issues      Skip scanning for meta issues
+                                                      [boolean] [default: false]
       --skip-tree             Don't output the dependency tree chart
                                                       [boolean] [default: false]
       --skip-treemap          Don't output the dependency treemap chart
