@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.39.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.38.1...audit-v1.39.0) (2023-05-03)
+
+
+### Features
+
+* add audit configuration info to json report ([9faf902](https://github.com/sandworm-hq/sandworm-audit/commit/9faf9020c17a546f81e0dc7039a79bcaa1c9d3b8))
+* configs to skip license/meta issue checks ([eb5064c](https://github.com/sandworm-hq/sandworm-audit/commit/eb5064ccdeb464eebaa4df3f865ff545fb67b271))
+
 ## [1.38.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.38.0...audit-v1.38.1) (2023-04-27)
 
 
