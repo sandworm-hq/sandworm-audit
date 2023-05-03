@@ -180,25 +180,7 @@ exports.handler = async (argv) => {
       }
     }
 
-    // *****************
-    // Perform the audit
-    // *****************
-    const {
-      dependencyGraph,
-      svgs,
-      csv,
-      dependencyVulnerabilities,
-      rootVulnerabilities,
-      licenseUsage,
-      licenseIssues,
-      metaIssues,
-      resolvedIssues,
-      resolvedIssuesAlerts,
-      resolvedIssuesCount,
-      name,
-      version,
-      errors,
-    } = await getReport({
+    const configuration = {
       appPath,
       includeDev:
         typeof fileConfig.includeDev !== 'undefined' ? fileConfig.includeDev : argv.includeDev,
@@ -233,7 +215,27 @@ exports.handler = async (argv) => {
               'csv',
           ].filter((o) => o),
       onProgress: onProgress({ora}),
-    });
+    };
+
+    // *****************
+    // Perform the audit
+    // *****************
+    const {
+      dependencyGraph,
+      svgs,
+      csv,
+      dependencyVulnerabilities,
+      rootVulnerabilities,
+      licenseUsage,
+      licenseIssues,
+      metaIssues,
+      resolvedIssues,
+      resolvedIssuesAlerts,
+      resolvedIssuesCount,
+      name,
+      version,
+      errors,
+    } = await getReport(configuration);
 
     // ********************
     // Write output to disk
@@ -263,22 +265,24 @@ exports.handler = async (argv) => {
       !(typeof fileConfig.skipReport !== 'undefined' ? !!fileConfig.skipReport : argv.skipReport);
     if (shouldWriteReport) {
       const {version: sandwormVersion} = await loadManifest(path.join(__dirname, '../../..'));
+      delete configuration.appPath;
       const report = {
+        name,
+        version,
         createdAt: Date.now(),
         system: {
           sandwormVersion,
           nodeVersion: process.versions.node,
           ...(dependencyGraph.root.meta || {}),
         },
-        name,
-        version,
+        configuration,
         rootVulnerabilities,
         dependencyVulnerabilities,
         licenseUsage,
         licenseIssues,
         metaIssues,
         resolvedIssues,
-        errors,
+        errors: errors.map((e) => e.message || e),
       };
       const reportOutputPath = path.join(outputPath, filenames.json);
       await fs.writeFile(reportOutputPath, JSON.stringify(report, null, 2));
