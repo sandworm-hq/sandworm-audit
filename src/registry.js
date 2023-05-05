@@ -5,6 +5,12 @@ const DEFAULT_REGISTRY_URL = 'https://registry.npmjs.org/';
 let registriesInfo = [];
 let fetch;
 
+const setFetch = async () => {
+  if (!fetch) {
+    fetch = (await import('node-fetch')).default;
+  }
+};
+
 const replaceEnvVars = (str) =>
   str.replace(/\${([^}]+)}/g, (match, variableName) => process.env[variableName] || '');
 
@@ -94,10 +100,7 @@ const getRegistryData = async (packageName, packageVersion) => {
   const registryInfo = getRegistryInfoForPackage(packageName);
   const packageUrl = new URL(`/${packageName}`, registryInfo?.url || DEFAULT_REGISTRY_URL);
 
-  if (!fetch) {
-    fetch = (await import('node-fetch')).default;
-  }
-
+  await setFetch();
   const responseRaw = await fetch(packageUrl.href, {
     headers: {
       ...(registryInfo?.token && {Authorization: `Bearer ${registryInfo.token}`}),
@@ -155,6 +158,7 @@ const getRegistryDataMultiple = async (packages, onProgress = () => {}) => {
 const getRegistryAudit = async (packageName, packageVersion, packageGraph) => {
   const registryInfo = getRegistryInfoForPackage(packageName);
   const url = new URL('/-/npm/v1/security/audits', registryInfo?.url || DEFAULT_REGISTRY_URL);
+  await setFetch();
   const responseRaw = await fetch(url.href, {
     method: 'post',
     body: JSON.stringify({
