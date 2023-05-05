@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.39.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.39.0...audit-v1.39.1) (2023-05-05)
+
+
+### Bug Fixes
+
+* `normalizeLicense('null')` crash ([96e1afc](https://github.com/sandworm-hq/sandworm-audit/commit/96e1afce8932985000b313ff28772c52f8cde2a1))
+
 ## [1.39.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.38.1...audit-v1.39.0) (2023-05-03)
 
 
