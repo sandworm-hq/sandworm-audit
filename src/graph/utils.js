@@ -226,7 +226,7 @@ const normalizeLicense = (rawLicense) => {
     } else {
       license = `(${licenseData.map(({type, name}) => type || name).join(' OR ')})`;
     }
-  } else if (typeof licenseData === 'object') {
+  } else if (typeof licenseData === 'object' && licenseData !== null) {
     // Some older packages use an object
     // {
     //   "license" : {
