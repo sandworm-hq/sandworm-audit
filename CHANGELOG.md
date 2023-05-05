@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.39.2](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.39.1...audit-v1.39.2) (2023-05-05)
+
+
+### Bug Fixes
+
+* using `fetch` without loading it ([d65aa9d](https://github.com/sandworm-hq/sandworm-audit/commit/d65aa9d31af9539e56efacb51c60d29620e15c45))
+
 ## [1.39.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.39.0...audit-v1.39.1) (2023-05-05)
 
 
