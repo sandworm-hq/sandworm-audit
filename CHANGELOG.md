@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.41.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.40.0...audit-v1.41.0) (2023-05-10)
+
+
+### Features
+
+* include stack details in error logging ([d910d2a](https://github.com/sandworm-hq/sandworm-audit/commit/d910d2a34ccf377b0035eb3a73cc293b77705260))
+
 ## [1.40.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.39.2...audit-v1.40.0) (2023-05-10)
 
 
