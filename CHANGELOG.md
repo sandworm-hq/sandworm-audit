@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.40.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.39.2...audit-v1.40.0) (2023-05-10)
+
+
+### Features
+
+* better vulnerability report retrieval errors ([2ce3e10](https://github.com/sandworm-hq/sandworm-audit/commit/2ce3e10ba70d11efc848e6f408daf69e66dfaed4))
+
 ## [1.39.2](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.39.1...audit-v1.39.2) (2023-05-05)
 
 
