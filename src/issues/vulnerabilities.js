@@ -42,7 +42,7 @@ const fromNpm = (appPath, packageGraph) =>
 
           resolve(reports);
         } catch (error) {
-          reject(error);
+          reject(new Error(`${error.message} => ${stdout}`));
         }
       }
     });
@@ -112,7 +112,7 @@ const fromYarnOrPnpm = (appPath, packageGraph, usePnpm = false) =>
 
             resolve(reports);
           } catch (error) {
-            reject(error);
+            reject(new Error(`${error.message} => ${stdout}`));
           }
         }
       },
@@ -131,18 +131,22 @@ const getDependencyVulnerabilities = async ({
 }) => {
   let vulnerabilities;
 
-  if (packageManager === 'npm') {
-    onProgress('Getting vulnerability report from npm');
-    vulnerabilities = await fromNpm(appPath, packageGraph);
-  } else if (packageManager === 'yarn-classic') {
-    onProgress('Getting vulnerability report from yarn');
-    vulnerabilities = await fromYarnClassic(appPath, packageGraph);
-  } else if (packageManager === 'yarn') {
-    onProgress('Getting vulnerability report from yarn');
-    vulnerabilities = await fromYarn(appPath, packageGraph);
-  } else if (packageManager === 'pnpm') {
-    onProgress('Getting vulnerability report from pnpm');
-    vulnerabilities = await fromPnpm(appPath, packageGraph);
+  try {
+    if (packageManager === 'npm') {
+      onProgress('Getting vulnerability report from npm');
+      vulnerabilities = await fromNpm(appPath, packageGraph);
+    } else if (packageManager === 'yarn-classic') {
+      onProgress('Getting vulnerability report from yarn');
+      vulnerabilities = await fromYarnClassic(appPath, packageGraph);
+    } else if (packageManager === 'yarn') {
+      onProgress('Getting vulnerability report from yarn');
+      vulnerabilities = await fromYarn(appPath, packageGraph);
+    } else if (packageManager === 'pnpm') {
+      onProgress('Getting vulnerability report from pnpm');
+      vulnerabilities = await fromPnpm(appPath, packageGraph);
+    }
+  } catch (error) {
+    throw new Error(`Error getting vulnerability report from ${packageManager}: ${error.message}`);
   }
 
   return vulnerabilities;
