@@ -342,7 +342,9 @@ exports.handler = async (argv) => {
       logger.log('✨ Done');
     } else {
       logger.log('✨ Done, but with errors:');
-      errors.forEach((error) => logger.logColor(logger.colors.RED, `❌ ${error}`));
+      errors.forEach((error) => {
+        logger.logColor(logger.colors.RED, `❌ ${error.stack || error}`);
+      });
       logger.logColor(logger.colors.RED, '❌ Failing because of errors');
       process.exit(1);
     }
