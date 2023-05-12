@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.42.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.41.0...audit-v1.42.0) (2023-05-12)
+
+
+### Features
+
+* root project vulnerability scan now optional ([ffc121d](https://github.com/sandworm-hq/sandworm-audit/commit/ffc121d98413005fc685175f18211ce3ff12143e))
+
 ## [1.41.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.40.0...audit-v1.41.0) (2023-05-10)
 
 
