@@ -94,6 +94,12 @@ exports.builder = (yargs) =>
       hidden: true,
       type: 'boolean',
     })
+    .option('root-vulnerabilites', {
+      demandOption: false,
+      default: false,
+      describe: 'Include vulnerabilities for the root project',
+      type: 'boolean',
+    })
     .option('skip-license-issues', {
       demandOption: false,
       default: false,
@@ -198,6 +204,10 @@ exports.handler = async (argv) => {
           : argv.showVersions,
       rootIsShell:
         typeof fileConfig.rootIsShell !== 'undefined' ? fileConfig.rootIsShell : argv.rootIsShell,
+      includeRootVulnerabilities:
+        typeof fileConfig.includeRootVulnerabilities !== 'undefined'
+          ? fileConfig.includeRootVulnerabilities
+          : argv.rootVulnerabilities,
       maxDepth: fileConfig.maxDepth || argv.maxDepth,
       licensePolicy:
         fileConfig.licensePolicy || (argv.licensePolicy && JSON.parse(argv.licensePolicy)),

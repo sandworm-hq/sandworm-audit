@@ -23,7 +23,7 @@ const getReport = async ({
   rootIsShell = false,
   skipLicenseIssues = false,
   skipMetaIssues = false,
-  skipRootAdvisories = false,
+  includeRootVulnerabilities = false,
   showVersions = false,
   width = 1500,
 } = {}) => {
@@ -81,15 +81,21 @@ const getReport = async ({
     errors.push(error);
   }
 
-  if (!skipRootAdvisories) {
-    try {
-      rootVulnerabilities = await getRegistryAudit(
-        packageGraph.name,
-        packageGraph.version,
-        packageGraph,
+  if (includeRootVulnerabilities) {
+    if (!packageGraph.name || !packageGraph.version) {
+      errors.push(
+        new Error('Cannot scan root vulnerabilities: root package name and version are required.'),
       );
-    } catch (error) {
-      errors.push(error);
+    } else {
+      try {
+        rootVulnerabilities = await getRegistryAudit(
+          packageGraph.name,
+          packageGraph.version,
+          packageGraph,
+        );
+      } catch (error) {
+        errors.push(error);
+      }
     }
   }
   onProgress({type: 'end', stage: 'vulnerabilities'});
