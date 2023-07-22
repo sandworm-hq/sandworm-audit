@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.42.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.42.0...audit-v1.42.1) (2023-07-22)
+
+
+### Bug Fixes
+
+* add `type` to vulnerability report json ([1f5a84e](https://github.com/sandworm-hq/sandworm-audit/commit/1f5a84ef30e9b495e66a7a9a1d9f3d2989eac673))
+
 ## [1.42.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.41.0...audit-v1.42.0) (2023-05-12)
 
 
