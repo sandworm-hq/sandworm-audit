@@ -26,6 +26,7 @@ const fromNpm = (appPath, packageGraph) =>
                     v.url.replace('https://github.com/advisories/', ''),
                   name: v.name,
                   title: v.title,
+                  type: 'vulnerability',
                   // overview missing here,
                   url: v.url,
                   severity: v.severity,
