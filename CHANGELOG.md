@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.43.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.43.0...audit-v1.43.1) (2023-07-27)
+
+
+### Bug Fixes
+
+* issue path limit ([8271213](https://github.com/sandworm-hq/sandworm-audit/commit/827121308d52a9d40f980faa062296d8be8bd2df))
+
 ## [1.43.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.42.1...audit-v1.43.0) (2023-07-27)
 
 
