@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.43.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.42.1...audit-v1.43.0) (2023-07-27)
+
+
+### Features
+
+* limit issue path count ([da8247f](https://github.com/sandworm-hq/sandworm-audit/commit/da8247fb5bdfe36feeaddab1e2f74c650f11b690))
+
 ## [1.42.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.42.0...audit-v1.42.1) (2023-07-22)
 
 
