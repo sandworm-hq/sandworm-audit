@@ -50,6 +50,9 @@ const getDisplayPaths = (paths) => paths.map((path) => path.map(({name}) => name
 
 const getFindings = ({packageGraph, packageName, range, allPathsAffected = true}) => {
   const allPaths = getPathsForPackage(packageGraph, packageName, range);
+  // Paths can grow exponentially in complex dependency graphs
+  // Only keep a maximum of 50 paths in the report
+  allPaths.splice(50);
   const affects = allPathsAffected
     ? getAllPackagesFromPaths(allPaths)
     : getTargetPackagesFromPaths(allPaths);
