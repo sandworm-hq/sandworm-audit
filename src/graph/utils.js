@@ -299,6 +299,27 @@ const addDependencyGraphData = ({root, processedNodes = [], packageData = []}) =
   return root;
 };
 
+const seedNodes = ({initialNodes, allPackages, placeholders}) => {
+  initialNodes.forEach((nodeManifest) => {
+    const node = makeNode({
+      name: nodeManifest.name,
+      version: nodeManifest.version,
+      engines: nodeManifest.engines,
+    });
+
+    processDependenciesForPackage({
+      dependencies: nodeManifest,
+      newPackage: node,
+      allPackages,
+      placeholders,
+    });
+
+    processPlaceholders({newPackage: node, placeholders});
+
+    allPackages.push(node);
+  });
+};
+
 module.exports = {
   SEMVER_REGEXP,
   makeNode,
@@ -308,4 +329,5 @@ module.exports = {
   postProcessGraph,
   addDependencyGraphData,
   normalizeLicense,
+  seedNodes,
 };

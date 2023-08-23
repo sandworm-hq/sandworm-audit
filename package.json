@@ -33,6 +33,7 @@
     "@yarnpkg/lockfile": "1.1.0",
     "@yarnpkg/parsers": "3.0.0-rc.39",
     "d3-node": "3.0.0",
+    "fast-glob": "^3.3.1",
     "ini": "^4.0.0",
     "node-fetch": "^3.3.1",
     "ora": "6.1.2",

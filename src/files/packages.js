@@ -27,6 +27,19 @@ const getFolderSize = (folderPath) =>
     }
   });
 
+const getPackageSize = async (packagePath) => {
+  try {
+    let totalSize = await getFolderSize(packagePath);
+    const modulesPath = path.join(packagePath, 'node_modules');
+    if (fs.existsSync(modulesPath)) {
+      totalSize -= await getFolderSize(modulesPath);
+    }
+    return totalSize;
+  } catch (error) {
+    return undefined;
+  }
+};
+
 const loadInstalledPackages = async (rootPath, subPath = '') => {
   let packageAtRootData;
   const currentPath = path.join(rootPath, subPath);
@@ -40,15 +53,7 @@ const loadInstalledPackages = async (rootPath, subPath = '') => {
   } catch (error) {}
 
   if (packageAtRootData) {
-    try {
-      let totalSize = await getFolderSize(currentPath);
-      const modulesPath = path.join(currentPath, 'node_modules');
-      if (fs.existsSync(modulesPath)) {
-        totalSize -= await getFolderSize(modulesPath);
-      }
-      packageAtRootData.size = totalSize;
-      // eslint-disable-next-line no-empty
-    } catch (error) {}
+    packageAtRootData.size = await getPackageSize(currentPath);
   }
 
   const subdirectories = (await fs.promises.readdir(currentPath, {withFileTypes: true}))
@@ -65,4 +70,4 @@ const loadInstalledPackages = async (rootPath, subPath = '') => {
   return packageAtRootData ? [packageAtRootData, ...allChildren] : allChildren;
 };
 
-module.exports = {loadInstalledPackages};
+module.exports = {loadInstalledPackages, getPackageSize};

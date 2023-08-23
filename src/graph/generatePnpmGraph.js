@@ -3,6 +3,7 @@ const {
   processPlaceholders,
   makeNode,
   SEMVER_REGEXP,
+  seedNodes,
 } = require('./utils');
 
 const parsePath = (path) => {
@@ -22,23 +23,17 @@ const parsePath = (path) => {
   return {name, version};
 };
 
-const generatePnpmGraph = ({data, manifest}) => {
+const generatePnpmGraph = ({data, manifest, workspace}) => {
   const allPackages = [];
   const placeholders = [];
-  const root = makeNode({
-    name: manifest.name,
-    version: manifest.version,
-    engines: manifest.engines,
-  });
 
-  processDependenciesForPackage({
-    dependencies: {dependencies: manifest.dependencies, devDependencies: manifest.devDependencies},
-    newPackage: root,
+  seedNodes({
+    initialNodes: [manifest, ...(workspace?.workspaceProjects || [])],
     allPackages,
     placeholders,
   });
 
-  allPackages.push(root);
+  const root = allPackages[0];
 
   Object.entries(data).forEach(([id, packageData]) => {
     const {

@@ -1,4 +1,9 @@
-const {processDependenciesForPackage, processPlaceholders, makeNode} = require('./utils');
+const {
+  processDependenciesForPackage,
+  processPlaceholders,
+  makeNode,
+  seedNodes,
+} = require('./utils');
 
 const packageNameFromPath = (path) => {
   // TODO: For locally linked packages this might not include a `node_modules` string
@@ -6,10 +11,17 @@ const packageNameFromPath = (path) => {
   return parts[parts.length - 1].slice(1);
 };
 
-const generateNpmGraph = ({packages}) => {
+const generateNpmGraph = ({packages, manifest, workspace}) => {
   const allPackages = [];
   const placeholders = [];
-  let root = null;
+
+  seedNodes({
+    initialNodes: [manifest, ...(workspace?.workspaceProjects || [])],
+    allPackages,
+    placeholders,
+  });
+
+  const root = allPackages[0];
 
   Object.entries(packages).forEach(([packageLocation, packageData]) => {
     const {name: originalName, version, resolved, integrity} = packageData;
@@ -21,10 +33,6 @@ const generateNpmGraph = ({packages}) => {
       ...(resolved && {resolved}),
       ...(integrity && {integrity}),
     });
-
-    if (packageLocation === '') {
-      root = newPackage;
-    }
 
     processDependenciesForPackage({
       dependencies: packageData,

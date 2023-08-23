@@ -1,5 +1,6 @@
 const {UsageError} = require('../errors');
 const {loadLockfile, loadManifest, loadInstalledPackages} = require('../files');
+const {loadWorkspace} = require('../files/workspace');
 const {getRegistryDataMultiple} = require('../registry');
 const generateNpmGraph = require('./generateNpmGraph');
 const generatePnpmGraph = require('./generatePnpmGraph');
@@ -10,7 +11,16 @@ const generateGraphPromise = async (
   appPath,
   {packageData, loadDataFrom = false, rootIsShell = false, includeDev = false, onProgress} = {},
 ) => {
-  const lockfile = await loadLockfile(appPath);
+  const workspace = await loadWorkspace(appPath);
+  let lockfile = await loadLockfile(appPath);
+
+  if (!lockfile && workspace) {
+    lockfile = await loadLockfile(workspace.path);
+  }
+
+  if (!lockfile) {
+    throw new UsageError('No lockfile found');
+  }
 
   if (lockfile.error) {
     throw new Error(lockfile.error);
@@ -31,21 +41,28 @@ const generateGraphPromise = async (
         'Npm v1 lockfiles are not supported. Please upgrade your lockfile to v2.',
       );
     }
-    graph = await generateNpmGraph(lockfile.data);
+    graph = await generateNpmGraph({
+      packages: lockfile.data.packages,
+      manifest,
+      workspace,
+    });
   } else if (lockfile.manager === 'yarn-classic') {
     graph = await generateYarnGraph({
       data: lockfile.data,
       manifest,
+      workspace,
     });
   } else if (lockfile.manager === 'yarn') {
     graph = await generateYarnGraph({
       data: lockfile.data,
       manifest,
+      workspace,
     });
   } else if (lockfile.manager === 'pnpm') {
     graph = await generatePnpmGraph({
       data: lockfile.data?.packages || {},
       manifest,
+      workspace,
     });
   }
 
