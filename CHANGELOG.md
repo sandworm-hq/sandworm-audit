@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.44.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.43.1...audit-v1.44.0) (2023-08-23)
+
+
+### Features
+
+* basic support for workspaces ([2e0868e](https://github.com/sandworm-hq/sandworm-audit/commit/2e0868e2ab110052079d4cb6c64b2a3cd018662d))
+
 ## [1.43.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.43.0...audit-v1.43.1) (2023-07-27)
 
 
