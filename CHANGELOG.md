@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.45.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.44.0...audit-v1.45.0) (2023-08-23)
+
+
+### Features
+
+* support pnpm workspaces ([d22b946](https://github.com/sandworm-hq/sandworm-audit/commit/d22b9464fe27f26f9c2406d51a671b9eaceb7a16))
+
 ## [1.44.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.43.1...audit-v1.44.0) (2023-08-23)
 
 
