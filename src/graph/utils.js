@@ -1,4 +1,5 @@
 const semverLib = require('semver');
+const {aggregateDependenciesWithType} = require('../charts/utils');
 
 const SEMVER_REGEXP =
   /(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?/;
@@ -169,13 +170,7 @@ const postProcessGraph = ({root, processedNodes = [], flags = {}, depth = 0}) =>
     // Flags may mutate during the recursive processing
     // Make a copy of the flags before we start
     const rootFlags = {...root.flags};
-    [
-      ...Object.values(root.dependencies || {}).map((dep) => ['prod', dep]),
-      ...Object.values(root.devDependencies || {}).map((dep) => ['dev', dep]),
-      ...Object.values(root.optionalDependencies || {}).map((dep) => ['optional', dep]),
-      ...Object.values(root.peerDependencies || {}).map((dep) => ['peer', dep]),
-      ...Object.values(root.bundledDependencies || {}).map((dep) => ['bundled', dep]),
-    ].forEach(([rel, dep]) => {
+    aggregateDependenciesWithType(root, true).forEach(([rel, dep]) => {
       const newFlags = {
         ...(rootFlags.prod && {prod: true}),
         ...((rootFlags.dev || rel === 'dev') && {dev: true}),

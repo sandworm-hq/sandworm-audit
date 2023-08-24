@@ -8,7 +8,15 @@ const getUid = (type) => {
   return {id: uid, href: `url(#${uid})`};
 };
 
-const getModuleName = (d) => `${d.data.name}@${d.data.version}`;
+const moduleNamePrefix = {
+  optional: '🅞 ',
+  peer: '🅟 ',
+  dev: '🅓 ',
+  bundled: '🅑 ',
+};
+
+const getModuleName = (d, showVersion = true) =>
+  `${moduleNamePrefix[d.data.rel] || ''}${d.data.name}${showVersion ? `@${d.data.version}` : ''}`;
 
 const humanFileSize = (size) => {
   const i = size === 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
@@ -86,20 +94,29 @@ const aggregateDependencies = (node, includeDev = false) => [
   ...(includeDev ? Object.values(node.devDependencies || {}) : []),
 ];
 
-const processGraph = (node, options = {}, depth = 0, history = []) => {
+const aggregateDependenciesWithType = (node, includeDev = false) => [
+  ...Object.values(node.dependencies || {}).map((dep) => ['prod', dep]),
+  ...Object.values(node.optionalDependencies || {}).map((dep) => ['optional', dep]),
+  ...Object.values(node.peerDependencies || {}).map((dep) => ['peer', dep]),
+  ...Object.values(node.bundledDependencies || {}).map((dep) => ['bundled', dep]),
+  ...(includeDev ? Object.values(node.devDependencies || {}).map((dep) => ['dev', dep]) : []),
+];
+
+const processGraph = (node, options = {}, depth = 0, history = [], rel = null) => {
   const {maxDepth = Infinity, includeDev = false, postprocess = (n) => n} = options;
   const dependencies =
     depth >= maxDepth
       ? []
-      : aggregateDependencies(node, includeDev)
-          .filter((n) => !history.includes(n))
-          .map((n) => processGraph(n, options, depth + 1, [...history, node]));
+      : aggregateDependenciesWithType(node, includeDev)
+          .filter(([, n]) => !history.includes(n))
+          .map(([r, n]) => processGraph(n, options, depth + 1, [...history, node], r));
 
   return postprocess({
     name: node.name,
     version: node.version,
     license: node.license,
     size: node.size,
+    rel,
     children: dependencies,
   });
 };
@@ -142,6 +159,7 @@ module.exports = {
   addIssues,
   addLicenseData,
   aggregateDependencies,
+  aggregateDependenciesWithType,
   processGraph,
   getReportsForNode,
   getIssueLevel,

@@ -84,6 +84,18 @@ const buildTree = (
     }
     return 'black';
   };
+  const lineDashStyle = (target) => {
+    switch (target.data.rel) {
+      case 'optional':
+        return '4 6';
+      case 'peer':
+        return '4 1';
+      case 'dev':
+        return '5 10';
+      default:
+        return undefined;
+    }
+  };
 
   // Compute the layout.
   const padding = 1;
@@ -130,7 +142,8 @@ const buildTree = (
         .x((d) => d.y)
         .y((d) => d.x),
     )
-    .attr('stroke', ({source, target}) => lineColor(source, target));
+    .attr('stroke', ({source, target}) => lineColor(source, target))
+    .attr('stroke-dasharray', ({target}) => lineDashStyle(target));
 
   const node = svg
     .append('g')
@@ -163,7 +176,7 @@ const buildTree = (
     .attr('fill', textColor)
     .attr('stroke-width', 3)
     .attr('stroke', strokeColor)
-    .text((d) => (showVersions ? getModuleName(d) : d.data.name));
+    .text((d) => getModuleName(d, showVersions));
 
   addTooltips(svg);
 
