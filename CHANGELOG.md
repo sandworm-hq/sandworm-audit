@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.46.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.45.0...audit-v1.46.0) (2023-08-25)
+
+
+### Features
+
+* label dependency relations in charts ([98fc1e8](https://github.com/sandworm-hq/sandworm-audit/commit/98fc1e8e2a1576d522a8dcc998d80109667ac10b))
+* support npm v1 lockfiles ([f5da842](https://github.com/sandworm-hq/sandworm-audit/commit/f5da842826a9bb9c6cea6ab9e99aba8d58bc834a))
+
 ## [1.45.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.44.0...audit-v1.45.0) (2023-08-23)
 
 
