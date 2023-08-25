@@ -36,13 +36,9 @@ const generateGraphPromise = async (
   let errors = [];
 
   if (lockfile.manager === 'npm') {
-    if (lockfile.lockfileVersion === 1) {
-      throw new UsageError(
-        'Npm v1 lockfiles are not supported. Please upgrade your lockfile to v2.',
-      );
-    }
     graph = await generateNpmGraph({
-      packages: lockfile.data.packages,
+      lockfileVersion: lockfile.lockfileVersion,
+      data: lockfile.data,
       manifest,
       workspace,
     });

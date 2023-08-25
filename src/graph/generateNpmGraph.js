@@ -11,7 +11,7 @@ const packageNameFromPath = (path) => {
   return parts[parts.length - 1].slice(1);
 };
 
-const generateNpmGraph = ({packages, manifest, workspace}) => {
+const generateNpmGraph = ({lockfileVersion, data, manifest, workspace}) => {
   const allPackages = [];
   const placeholders = [];
 
@@ -23,28 +23,62 @@ const generateNpmGraph = ({packages, manifest, workspace}) => {
 
   const root = allPackages[0];
 
-  Object.entries(packages).forEach(([packageLocation, packageData]) => {
-    const {name: originalName, version, resolved, integrity} = packageData;
-    const name = originalName || packageNameFromPath(packageLocation);
+  if (lockfileVersion === 1) {
+    const processNode = ([packageName, packageData]) => {
+      const {version: packageVersion, resolved, integrity} = packageData;
 
-    const newPackage = makeNode({
-      name,
-      version,
-      ...(resolved && {resolved}),
-      ...(integrity && {integrity}),
+      if (
+        !allPackages.find(({name, version}) => name === packageName && version === packageVersion)
+      ) {
+        const newPackage = makeNode({
+          name: packageName,
+          version: packageVersion,
+          ...(resolved && {resolved}),
+          ...(integrity && {integrity}),
+        });
+
+        processDependenciesForPackage({
+          dependencies: {dependencies: packageData.requires},
+          newPackage,
+          allPackages,
+          placeholders,
+        });
+
+        processPlaceholders({newPackage, placeholders});
+
+        allPackages.push(newPackage);
+      }
+
+      if (packageData.dependencies) {
+        Object.entries(packageData.dependencies).forEach(processNode);
+      }
+    };
+
+    processNode([data.name, data]);
+  } else {
+    Object.entries(data.packages).forEach(([packageLocation, packageData]) => {
+      const {name: originalName, version, resolved, integrity} = packageData;
+      const name = originalName || packageNameFromPath(packageLocation);
+
+      const newPackage = makeNode({
+        name,
+        version,
+        ...(resolved && {resolved}),
+        ...(integrity && {integrity}),
+      });
+
+      processDependenciesForPackage({
+        dependencies: packageData,
+        newPackage,
+        allPackages,
+        placeholders,
+      });
+
+      processPlaceholders({newPackage, placeholders});
+
+      allPackages.push(newPackage);
     });
-
-    processDependenciesForPackage({
-      dependencies: packageData,
-      newPackage,
-      allPackages,
-      placeholders,
-    });
-
-    processPlaceholders({newPackage, placeholders});
-
-    allPackages.push(newPackage);
-  });
+  }
 
   return {root, allPackages};
 };
