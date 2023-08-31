@@ -25,6 +25,7 @@ const buildTree = (
     issues = [],
     maxDepth = Infinity,
     includeDev = false,
+    forceBuildLargeTrees = false,
   } = {},
 ) => {
   const d3n = new D3Node();
@@ -34,6 +35,13 @@ const buildTree = (
   const descendants = root.descendants();
 
   if (descendants.length > 100000) {
+    if (!forceBuildLargeTrees) {
+      logger.log(
+        `\n\n⚠️ Your dependency tree has a very large number of nodes (${descendants.length}) and was skipped from the output.`,
+      );
+      return null;
+    }
+
     logger.log(
       `\n\n⚠️ Your dependency tree has a very large number of nodes (${descendants.length}).`,
     );

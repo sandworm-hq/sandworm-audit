@@ -121,6 +121,8 @@ Options:
                                                       [boolean] [default: false]
       --skip-tree             Don't output the dependency tree chart
                                                       [boolean] [default: false]
+      --force-tree            Force build large dependency tree charts
+                                                      [boolean] [default: false]
       --skip-treemap          Don't output the dependency treemap chart
                                                       [boolean] [default: false]
       --skip-csv              Don't output the dependency csv file

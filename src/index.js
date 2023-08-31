@@ -24,6 +24,7 @@ const getReport = async ({
   skipLicenseIssues = false,
   skipMetaIssues = false,
   includeRootVulnerabilities = false,
+  forceBuildLargeTrees = false,
   showVersions = false,
   width = 1500,
 } = {}) => {
@@ -148,6 +149,7 @@ const getReport = async ({
     maxDepth,
     issues: filteredIssues,
     includeDev,
+    forceBuildLargeTrees,
     onProgress: (message) => onProgress({type: 'update', stage: 'chart', message}),
   };
 

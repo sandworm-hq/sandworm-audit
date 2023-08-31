@@ -118,6 +118,12 @@ exports.builder = (yargs) =>
       describe: "Don't output the dependency tree chart",
       type: 'boolean',
     })
+    .option('force-tree', {
+      demandOption: false,
+      default: false,
+      describe: 'Force build large dependency tree charts',
+      type: 'boolean',
+    })
     .option('skip-treemap', {
       demandOption: false,
       default: false,
@@ -213,6 +219,10 @@ exports.handler = async (argv) => {
         fileConfig.licensePolicy || (argv.licensePolicy && JSON.parse(argv.licensePolicy)),
       minDisplayedSeverity: fileConfig.minDisplayedSeverity || argv.minSeverity,
       loadDataFrom: fileConfig.loadDataFrom || argv.from,
+      forceBuildLargeTrees:
+        typeof fileConfig.forceBuildLargeTrees !== 'undefined'
+          ? fileConfig.forceBuildLargeTrees
+          : argv.forceTree,
       output: skipOutput
         ? []
         : [
