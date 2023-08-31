@@ -97,6 +97,10 @@ const generateGraphPromise = async (
     }
   }
 
+  if (workspace) {
+    additionalPackageData = additionalPackageData.concat(workspace.workspaceProjects);
+  }
+
   if (additionalPackageData) {
     addDependencyGraphData({root: processedRoot, packageData: additionalPackageData});
   }
