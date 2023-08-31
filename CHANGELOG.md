@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.48.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.47.0...audit-v1.48.0) (2023-08-31)
+
+
+### Features
+
+* skip missing repo check for workspace ([01db288](https://github.com/sandworm-hq/sandworm-audit/commit/01db288ed62e04206eeab4a5759e246a740ba6e1))
+* use workspace packages metadata ([eb98635](https://github.com/sandworm-hq/sandworm-audit/commit/eb9863501ff9ab4132515d301e00a79cdabb069e))
+
 ## [1.47.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.46.0...audit-v1.47.0) (2023-08-31)
 
 
