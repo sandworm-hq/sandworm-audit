@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.47.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.46.0...audit-v1.47.0) (2023-08-31)
+
+
+### Features
+
+* configurable build for large trees ([5a7623b](https://github.com/sandworm-hq/sandworm-audit/commit/5a7623bd58ab4b26317670be3cc434e2012eda20))
+
 ## [1.46.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.45.0...audit-v1.46.0) (2023-08-25)
 
 
