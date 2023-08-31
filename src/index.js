@@ -125,6 +125,7 @@ const getReport = async ({
       metaIssues = await getMetaIssues({
         dependencies: includeDev ? dGraph.all : dGraph.prodDependencies,
         packageGraph,
+        workspace: dGraph.workspace,
       });
     } catch (error) {
       errors.push(error);

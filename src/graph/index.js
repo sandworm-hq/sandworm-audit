@@ -113,6 +113,7 @@ const generateGraphPromise = async (
         packageManagerVersion: lockfile.managerVersion,
       },
     }),
+    workspace,
     all: allConnectedPackages,
     devDependencies,
     prodDependencies,

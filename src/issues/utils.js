@@ -183,6 +183,12 @@ const validateResolvedIssues = (resolvedIssues = [], currentIssues = []) => {
   }, []);
 };
 
+const isWorkspaceProject = (workspace, {name, version}) =>
+  (workspace?.workspaceProjects || []).find(
+    ({name: projectName, version: projectVersion}) =>
+      projectName === name && projectVersion === version,
+  );
+
 module.exports = {
   getFindings,
   reportFromAdvisory,
@@ -192,4 +198,5 @@ module.exports = {
   allIssuesFromReport,
   validateResolvedIssues,
   resolutionIdMatchesIssueId,
+  isWorkspaceProject,
 };

@@ -1,9 +1,9 @@
-const {getFindings, makeSandwormIssueId} = require('./utils');
+const {getFindings, makeSandwormIssueId, isWorkspaceProject} = require('./utils');
 
 const INSTALL_SCRIPT_NAME = ['preinstall', 'install', 'postinstall'];
 
 module.exports = {
-  getMetaIssues: ({dependencies = [], packageGraph}) => {
+  getMetaIssues: ({dependencies = [], packageGraph, workspace}) => {
     const issues = [];
 
     dependencies.forEach((dep) => {
@@ -39,7 +39,10 @@ module.exports = {
         }
       });
 
-      if (!dep.repository || Object.keys(dep.repository).length === 0) {
+      if (
+        (!dep.repository || Object.keys(dep.repository).length === 0) &&
+        !isWorkspaceProject(workspace, dep)
+      ) {
         issues.push({
           severity: 'moderate',
           title: 'Package has no specified source code repository',
