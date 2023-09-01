@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.48.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.48.0...audit-v1.48.1) (2023-09-01)
+
+
+### Bug Fixes
+
+* workspace additional data issue ([2b1c6f3](https://github.com/sandworm-hq/sandworm-audit/commit/2b1c6f3a4bb3259dc0e6dd60fbf4b9d2f3a91fd9))
+
 ## [1.48.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.47.0...audit-v1.48.0) (2023-08-31)
 
 
