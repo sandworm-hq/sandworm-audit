@@ -98,7 +98,7 @@ const generateGraphPromise = async (
   }
 
   if (workspace) {
-    additionalPackageData = additionalPackageData.concat(workspace.workspaceProjects);
+    additionalPackageData = (additionalPackageData || []).concat(workspace.workspaceProjects);
   }
 
   if (additionalPackageData) {
