@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.48.3](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.48.2...audit-v1.48.3) (2023-09-02)
+
+
+### Bug Fixes
+
+* load locally installed workspace module data ([ba02ea9](https://github.com/sandworm-hq/sandworm-audit/commit/ba02ea926e07209e885d11c086d509e4deb82dc0))
+
 ## [1.48.2](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.48.1...audit-v1.48.2) (2023-09-02)
 
 
