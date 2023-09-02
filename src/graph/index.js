@@ -86,7 +86,7 @@ const generateGraphPromise = async (
 
   if (!packageData && loadDataFrom) {
     if (loadDataFrom === 'disk') {
-      additionalPackageData = await loadInstalledPackages(appPath);
+      additionalPackageData = await loadInstalledPackages(workspace?.path || appPath);
     } else if (loadDataFrom === 'registry') {
       const {data, errors: registryErrors} = await getRegistryDataMultiple(
         includeDev ? allConnectedPackages : prodDependencies,
