@@ -24,6 +24,8 @@ const loadWorkspace = async (startPath) => {
 
     if (Array.isArray(manifest.workspaces)) {
       packagePaths = manifest.workspaces;
+    } else if (Array.isArray(manifest.workspaces?.packages)) {
+      packagePaths = manifest.workspaces.packages;
     }
   }
 
