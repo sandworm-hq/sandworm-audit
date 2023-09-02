@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.48.2](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.48.1...audit-v1.48.2) (2023-09-02)
+
+
+### Bug Fixes
+
+* support yarn alternative workspaces object ([448e3d3](https://github.com/sandworm-hq/sandworm-audit/commit/448e3d300010e049f73189a617a883ebaa37fba7)), closes [#131](https://github.com/sandworm-hq/sandworm-audit/issues/131)
+
 ## [1.48.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.48.0...audit-v1.48.1) (2023-09-01)
 
 
