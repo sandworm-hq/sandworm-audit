@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.50.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.49.0...audit-v1.50.0) (2023-09-04)
+
+
+### Features
+
+* better registry api fetch ([d60866b](https://github.com/sandworm-hq/sandworm-audit/commit/d60866be0d55aabdd3bc905ca992dba5f386e6b4))
+
 ## [1.49.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.48.3...audit-v1.49.0) (2023-09-04)
 
 
