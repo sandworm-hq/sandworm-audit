@@ -3,12 +3,34 @@ const {loadNpmConfigs} = require('./files');
 
 const DEFAULT_REGISTRY_URL = 'https://registry.npmjs.org/';
 let registriesInfo = [];
-let fetch;
 
-const setFetch = async () => {
-  if (!fetch) {
-    fetch = (await import('node-fetch')).default;
+// eslint-disable-next-line no-promise-executor-return
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const fetchRetry = async (url, opts) => {
+  let retryCount = 3;
+  const fetch = (await import('node-fetch')).default;
+
+  while (retryCount > 0) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      const responseRaw = await fetch(url, opts);
+      if (!responseRaw.ok) {
+        throw new Error(`Error ${responseRaw.status} from registry: ${responseRaw.statusText}`);
+      } else {
+        return responseRaw;
+      }
+    } catch (e) {
+      retryCount -= 1;
+      if (retryCount === 0) {
+        throw e;
+      }
+      // eslint-disable-next-line no-await-in-loop
+      await sleep(1000);
+    }
   }
+
+  throw new Error();
 };
 
 const replaceEnvVars = (str) =>
@@ -100,8 +122,7 @@ const getRegistryData = async (packageName, packageVersion) => {
   const registryInfo = getRegistryInfoForPackage(packageName);
   const packageUrl = new URL(`/${packageName}`, registryInfo?.url || DEFAULT_REGISTRY_URL);
 
-  await setFetch();
-  const responseRaw = await fetch(packageUrl.href, {
+  const responseRaw = await fetchRetry(packageUrl.href, {
     headers: {
       ...(registryInfo?.token && {Authorization: `Bearer ${registryInfo.token}`}),
     },
@@ -158,8 +179,7 @@ const getRegistryDataMultiple = async (packages, onProgress = () => {}) => {
 const getRegistryAudit = async (packageName, packageVersion, packageGraph) => {
   const registryInfo = getRegistryInfoForPackage(packageName);
   const url = new URL('/-/npm/v1/security/audits', registryInfo?.url || DEFAULT_REGISTRY_URL);
-  await setFetch();
-  const responseRaw = await fetch(url.href, {
+  const responseRaw = await fetchRetry(url.href, {
     method: 'post',
     body: JSON.stringify({
       name: 'sandworm-prompt',
