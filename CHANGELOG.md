@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.49.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.48.3...audit-v1.49.0) (2023-09-04)
+
+
+### Features
+
+* better package metadata retrieval ([3cce2e7](https://github.com/sandworm-hq/sandworm-audit/commit/3cce2e7311c6fb7e28503ec9cbbece091969f21b))
+
 ## [1.48.3](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.48.2...audit-v1.48.3) (2023-09-02)
 
 
