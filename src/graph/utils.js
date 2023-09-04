@@ -235,18 +235,41 @@ const normalizeLicense = (rawLicense) => {
   return license;
 };
 
-const addDependencyGraphData = ({root, processedNodes = [], packageData = []}) => {
+const addDependencyGraphData = async ({
+  root,
+  processedNodes = [],
+  packageData = [],
+  loadDataFrom = false,
+  includeDev = false,
+  getRegistryData,
+  onProgress,
+}) => {
   if (!root) {
     return root;
   }
+
+  let errors = [];
 
   if (!processedNodes.includes(root)) {
     // eslint-disable-next-line no-param-reassign
     processedNodes.push(root);
 
-    const currentPackageData = packageData.find(
+    let currentPackageData = packageData.find(
       ({name, version}) => root.name === name && root.version === version,
     );
+    const shouldLoadMetadata = includeDev || root.flags.prod;
+
+    if (!currentPackageData && loadDataFrom === 'registry' && shouldLoadMetadata) {
+      try {
+        currentPackageData = await getRegistryData(root.name, root.version);
+      } catch (e) {
+        errors.push(e);
+      }
+    }
+
+    if (shouldLoadMetadata) {
+      onProgress?.();
+    }
 
     if (currentPackageData) {
       const license = normalizeLicense(currentPackageData.licenses || currentPackageData.license);
@@ -276,22 +299,30 @@ const addDependencyGraphData = ({root, processedNodes = [], packageData = []}) =
       });
     }
 
-    [
-      ...Object.values(root.dependencies || {}),
-      ...Object.values(root.devDependencies || {}),
-      ...Object.values(root.optionalDependencies || {}),
-      ...Object.values(root.peerDependencies || {}),
-      ...Object.values(root.bundledDependencies || {}),
-    ].forEach((dep) =>
-      addDependencyGraphData({
-        root: dep,
-        processedNodes,
-        packageData,
+    await Promise.all(
+      [
+        ...Object.values(root.dependencies || {}),
+        ...Object.values(root.devDependencies || {}),
+        ...Object.values(root.optionalDependencies || {}),
+        ...Object.values(root.peerDependencies || {}),
+        ...Object.values(root.bundledDependencies || {}),
+      ].map(async (dep) => {
+        errors = errors.concat(
+          await addDependencyGraphData({
+            root: dep,
+            processedNodes,
+            packageData,
+            loadDataFrom,
+            includeDev,
+            getRegistryData,
+            onProgress,
+          }),
+        );
       }),
     );
   }
 
-  return root;
+  return errors;
 };
 
 const seedNodes = ({initialNodes, allPackages, placeholders}) => {

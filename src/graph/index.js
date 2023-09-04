@@ -1,11 +1,11 @@
 const {UsageError} = require('../errors');
 const {loadLockfile, loadManifest, loadInstalledPackages} = require('../files');
 const {loadWorkspace} = require('../files/workspace');
-const {getRegistryDataMultiple} = require('../registry');
 const generateNpmGraph = require('./generateNpmGraph');
 const generatePnpmGraph = require('./generatePnpmGraph');
 const generateYarnGraph = require('./generateYarnGraph');
 const {postProcessGraph, addDependencyGraphData} = require('./utils');
+const {getRegistryData} = require('../registry');
 
 const generateGraphPromise = async (
   appPath,
@@ -82,28 +82,34 @@ const generateGraphPromise = async (
   const devDependencies = allConnectedPackages.filter(({flags}) => flags.dev);
   const prodDependencies = allConnectedPackages.filter(({flags}) => flags.prod);
 
-  let additionalPackageData = packageData;
-
-  if (!packageData && loadDataFrom) {
-    if (loadDataFrom === 'disk') {
-      additionalPackageData = await loadInstalledPackages(workspace?.path || appPath);
-    } else if (loadDataFrom === 'registry') {
-      const {data, errors: registryErrors} = await getRegistryDataMultiple(
-        includeDev ? allConnectedPackages : prodDependencies,
-        onProgress,
-      );
-      additionalPackageData = data;
-      errors = [...errors, ...registryErrors];
-    }
-  }
+  let additionalPackageData = packageData || [];
 
   if (workspace) {
-    additionalPackageData = (additionalPackageData || []).concat(workspace.workspaceProjects);
+    additionalPackageData = additionalPackageData.concat(workspace.workspaceProjects);
   }
 
-  if (additionalPackageData) {
-    addDependencyGraphData({root: processedRoot, packageData: additionalPackageData});
+  if (loadDataFrom === 'disk') {
+    additionalPackageData = additionalPackageData.concat(
+      await loadInstalledPackages(workspace?.path || appPath),
+    );
   }
+
+  let currentCount = 0;
+  const totalCount = includeDev ? allConnectedPackages.length : prodDependencies.length;
+  const registryErrors = await addDependencyGraphData({
+    root: processedRoot,
+    packageData: additionalPackageData,
+    loadDataFrom,
+    includeDev,
+    getRegistryData,
+    onProgress: () =>
+      onProgress?.(
+        // eslint-disable-next-line no-plusplus
+        `${currentCount++}/${totalCount}`,
+      ),
+  });
+
+  errors = [...errors, ...registryErrors];
 
   return {
     root: Object.assign(processedRoot || {}, {
