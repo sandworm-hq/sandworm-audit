@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.51.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.51.0...audit-v1.51.1) (2023-09-08)
+
+
+### Bug Fixes
+
+* load composer root packages with no version ([65dad8e](https://github.com/sandworm-hq/sandworm-audit/commit/65dad8e5abeb82b40552925eb1f9ab4718d426f5))
+
 ## [1.51.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.50.0...audit-v1.51.0) (2023-09-08)
 
 
