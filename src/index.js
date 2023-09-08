@@ -70,6 +70,7 @@ const getReport = async ({
       appPath,
       packageManager: packageGraph.meta.packageManager,
       packageGraph,
+      includeDev,
       onProgress: (message) => onProgress({type: 'update', stage: 'vulnerabilities', message}),
     });
 
@@ -89,11 +90,13 @@ const getReport = async ({
       );
     } else {
       try {
-        rootVulnerabilities = await getRegistryAudit(
-          packageGraph.name,
-          packageGraph.version,
+        rootVulnerabilities = await getRegistryAudit({
+          packageManager: packageGraph.meta.packageManager,
+          packageName: packageGraph.name,
+          packageVersion: packageGraph.version,
           packageGraph,
-        );
+          includeDev,
+        });
       } catch (error) {
         errors.push(error);
       }
@@ -111,7 +114,12 @@ const getReport = async ({
         defaultCategories,
         userCategories,
       });
-      licenseIssues = await getLicenseIssues({licenseUsage, packageGraph, licensePolicy});
+      licenseIssues = await getLicenseIssues({
+        licenseUsage,
+        packageGraph,
+        licensePolicy,
+        includeDev,
+      });
     } catch (error) {
       errors.push(error);
     }
@@ -126,6 +134,7 @@ const getReport = async ({
         dependencies: includeDev ? dGraph.all : dGraph.prodDependencies,
         packageGraph,
         workspace: dGraph.workspace,
+        includeDev,
       });
     } catch (error) {
       errors.push(error);

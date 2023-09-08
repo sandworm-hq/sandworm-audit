@@ -7,11 +7,11 @@ const {parseSyml} = require('@yarnpkg/parsers');
 
 const getCommandVersion = (command) =>
   new Promise((resolve) => {
-    exec(`${command} -v`, (err, stdout, stderr) => {
+    exec(`${command} --version`, (err, stdout, stderr) => {
       if (stderr || err) {
         resolve(null);
       } else {
-        resolve(stdout?.replace?.('\n', ''));
+        resolve(stdout?.replace?.('\n', '').match?.(/\d+(\.\d+)+/)?.[0]);
       }
     });
   });
@@ -98,13 +98,35 @@ const loadLockfiles = async (appPath) => {
     }
   }
 
+  // COMPOSER
+  try {
+    const lockfileContent = await fs.promises.readFile(path.join(appPath, 'composer.lock'), {
+      encoding: 'utf-8',
+    });
+    try {
+      const lockfileData = JSON.parse(lockfileContent);
+      lockfiles.composer = {
+        manager: 'composer',
+        managerVersion: await getCommandVersion('composer'),
+        data: lockfileData,
+        lockfileVersion: 1,
+      };
+    } catch (err) {
+      lockfiles.composer = {
+        manager: 'composer',
+        error: `Could not parse composer.lock: ${err.message}`,
+      };
+    }
+    // eslint-disable-next-line no-empty
+  } catch {}
+
   return lockfiles;
 };
 
 const loadLockfile = async (appPath) => {
   const lockfiles = await loadLockfiles(appPath);
 
-  return lockfiles.npm || lockfiles.yarn || lockfiles.pnpm;
+  return lockfiles.npm || lockfiles.yarn || lockfiles.pnpm || lockfiles.composer;
 };
 
 module.exports = {

@@ -1,11 +1,12 @@
 const {UsageError} = require('../errors');
 const {loadLockfile, loadManifest, loadInstalledPackages} = require('../files');
 const {loadWorkspace} = require('../files/workspace');
+const {postProcessGraph, addDependencyGraphData} = require('./utils');
+const {getRegistryData} = require('../registry');
 const generateNpmGraph = require('./generateNpmGraph');
 const generatePnpmGraph = require('./generatePnpmGraph');
 const generateYarnGraph = require('./generateYarnGraph');
-const {postProcessGraph, addDependencyGraphData} = require('./utils');
-const {getRegistryData} = require('../registry');
+const generateComposerGraph = require('./generateComposerGraph');
 
 const generateGraphPromise = async (
   appPath,
@@ -42,13 +43,7 @@ const generateGraphPromise = async (
       manifest,
       workspace,
     });
-  } else if (lockfile.manager === 'yarn-classic') {
-    graph = await generateYarnGraph({
-      data: lockfile.data,
-      manifest,
-      workspace,
-    });
-  } else if (lockfile.manager === 'yarn') {
+  } else if (lockfile.manager === 'yarn' || lockfile.manager === 'yarn-classic') {
     graph = await generateYarnGraph({
       data: lockfile.data,
       manifest,
@@ -59,6 +54,11 @@ const generateGraphPromise = async (
       data: lockfile.data?.packages || {},
       manifest,
       workspace,
+    });
+  } else if (lockfile.manager === 'composer') {
+    graph = await generateComposerGraph({
+      data: lockfile.data,
+      manifest,
     });
   }
 
@@ -89,8 +89,18 @@ const generateGraphPromise = async (
   }
 
   if (loadDataFrom === 'disk') {
+    const managersToPackageType = {
+      npm: 'npm',
+      yarn: 'npm',
+      'yarn-classic': 'npm',
+      pnpm: 'npm',
+      composer: 'composer',
+    };
+    const installedPackages = await loadInstalledPackages(workspace?.path || appPath);
     additionalPackageData = additionalPackageData.concat(
-      await loadInstalledPackages(workspace?.path || appPath),
+      installedPackages.filter(
+        ({packageType}) => packageType === managersToPackageType[lockfile.manager],
+      ),
     );
   }
 
@@ -99,6 +109,7 @@ const generateGraphPromise = async (
   const registryErrors = await addDependencyGraphData({
     root: processedRoot,
     packageData: additionalPackageData,
+    packageManager: lockfile.manager,
     loadDataFrom,
     includeDev,
     getRegistryData,

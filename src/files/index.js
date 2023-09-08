@@ -18,11 +18,33 @@ const outputFilenames = (name, version) => {
   };
 };
 
+const loadManifest = (appPath) => {
+  const javascriptManifestPath = path.join(appPath, 'package.json');
+  const phpManifestPath = path.join(appPath, 'composer.json');
+
+  if (fs.existsSync(javascriptManifestPath)) {
+    const manifest = loadJsonFile(javascriptManifestPath);
+    return {
+      ...manifest,
+      language: 'javascript',
+    };
+  }
+  if (fs.existsSync(phpManifestPath)) {
+    const manifest = loadJsonFile(phpManifestPath);
+    return {
+      ...manifest,
+      language: 'php',
+    };
+  }
+
+  return null;
+};
+
 module.exports = {
   RESOLVED_ISSUES_FILENAME,
   ...lockfiles,
   ...packages,
-  loadManifest: (appPath) => loadJsonFile(path.join(appPath, 'package.json')),
+  loadManifest,
   loadNpmConfigs,
   loadResolvedIssues: (appPath) => loadJsonFile(path.join(appPath, RESOLVED_ISSUES_FILENAME)) || [],
   saveResolvedIssues: (appPath, content) =>

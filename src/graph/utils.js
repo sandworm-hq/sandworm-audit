@@ -78,7 +78,13 @@ const makeNode = (data) => ({
   },
 });
 
-const processDependenciesForPackage = ({dependencies, newPackage, allPackages, placeholders}) => {
+const processDependenciesForPackage = ({
+  dependencies,
+  newPackage,
+  allPackages,
+  placeholders,
+  altTilde = false,
+}) => {
   Object.entries({
     ...(dependencies.dependencies && {dependencies: dependencies.dependencies}),
     ...(dependencies.devDependencies && {devDependencies: dependencies.devDependencies}),
@@ -100,8 +106,24 @@ const processDependenciesForPackage = ({dependencies, newPackage, allPackages, p
           `${originalDependencyName}@${originalSemverRule.split('_')[0].split('(')[0]}`,
         );
 
+        let processedSemverRule = semverRule;
+        // By default, semver expands ~1.2 to 1.2.x
+        // But composer expands it to >=1.2 <2.0.0
+        // Setting altTilde to true enables support for the latter
+        if (altTilde) {
+          const pattern = semverRule.match(/~(\d+)\.(\d+)/);
+          if (pattern) {
+            processedSemverRule = `>=${pattern[1]}.${pattern[2]} <${pattern[1] + 1}.0.0`;
+          }
+        }
+
+        // Composer allows rules like "^3.4|^4.4|^5.0"
+        // Semver needs us to expand all single | to ||
+        processedSemverRule = processedSemverRule.replace(/(?<!\|)\|(?!\|)/g, '||');
+
         const dependencyPackage = allPackages.find(
-          (pkg) => pkg.name === dependencyName && semverLib.satisfies(pkg.version, semverRule),
+          (pkg) =>
+            pkg.name === dependencyName && semverLib.satisfies(pkg.version, processedSemverRule),
         );
 
         if (dependencyPackage) {
@@ -111,7 +133,7 @@ const processDependenciesForPackage = ({dependencies, newPackage, allPackages, p
         } else {
           placeholders.push({
             dependencyName,
-            semverRule,
+            semverRule: processedSemverRule,
             targetPackage: newPackage,
             dependencyType,
           });
@@ -239,6 +261,7 @@ const addDependencyGraphData = async ({
   root,
   processedNodes = [],
   packageData = [],
+  packageManager,
   loadDataFrom = false,
   includeDev = false,
   getRegistryData,
@@ -261,7 +284,7 @@ const addDependencyGraphData = async ({
 
     if (!currentPackageData && loadDataFrom === 'registry' && shouldLoadMetadata) {
       try {
-        currentPackageData = await getRegistryData(root.name, root.version);
+        currentPackageData = await getRegistryData(packageManager, root.name, root.version);
       } catch (e) {
         errors.push(e);
       }
@@ -312,6 +335,7 @@ const addDependencyGraphData = async ({
             root: dep,
             processedNodes,
             packageData,
+            packageManager,
             loadDataFrom,
             includeDev,
             getRegistryData,
@@ -325,7 +349,7 @@ const addDependencyGraphData = async ({
   return errors;
 };
 
-const seedNodes = ({initialNodes, allPackages, placeholders}) => {
+const seedNodes = ({initialNodes, allPackages, placeholders, altTilde}) => {
   initialNodes.forEach((nodeManifest) => {
     const node = makeNode({
       name: nodeManifest.name,
@@ -338,6 +362,7 @@ const seedNodes = ({initialNodes, allPackages, placeholders}) => {
       newPackage: node,
       allPackages,
       placeholders,
+      altTilde,
     });
 
     processPlaceholders({newPackage: node, placeholders});

@@ -1,6 +1,7 @@
 const {exec} = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const {normalizeComposerManifest} = require('../registry/utils');
 
 const packageSizeCache = {};
 
@@ -41,19 +42,56 @@ const getPackageSize = async (packagePath) => {
 };
 
 const loadInstalledPackages = async (rootPath, subPath = '') => {
-  let packageAtRootData;
   const currentPath = path.join(rootPath, subPath);
-  try {
-    const manifestContent = await fs.promises.readFile(path.join(currentPath, 'package.json'), {
-      encoding: 'utf-8',
-    });
-    packageAtRootData = JSON.parse(manifestContent);
-    packageAtRootData.relativePath = subPath;
-    // eslint-disable-next-line no-empty
-  } catch (error) {}
+  const currentDirname = currentPath.split(path.sep).pop();
+  const manifestFilenames = {
+    npm: 'package.json',
+    composer: 'composer.json',
+  };
 
-  if (packageAtRootData) {
-    packageAtRootData.size = await getPackageSize(currentPath);
+  let packagesAtRoot = (
+    await Promise.all(
+      Object.entries(manifestFilenames).map(async ([manager, manifestFilename]) => {
+        try {
+          const manifestContent = await fs.promises.readFile(
+            path.join(currentPath, manifestFilename),
+            {
+              encoding: 'utf-8',
+            },
+          );
+          const packageAtRootData = JSON.parse(manifestContent);
+          packageAtRootData.relativePath = subPath;
+          packageAtRootData.packageType = manager;
+          packageAtRootData.size = await getPackageSize(currentPath);
+
+          return packageAtRootData;
+          // eslint-disable-next-line no-empty
+        } catch (error) {
+          return null;
+        }
+      }),
+    )
+  ).filter((m) => m && m.name && m.version);
+
+  if (currentDirname === 'composer' && fs.existsSync(path.join(currentPath, 'installed.json'))) {
+    try {
+      const composerInstalledData = await fs.promises.readFile(
+        path.join(currentPath, 'installed.json'),
+        {
+          encoding: 'utf-8',
+        },
+      );
+      const composerInstalled = JSON.parse(composerInstalledData);
+      packagesAtRoot = await Promise.all(
+        (composerInstalled.packages || []).map(async (p) => ({
+          ...normalizeComposerManifest(p),
+          relativePath: path.join(subPath, p['install-path']),
+          packageType: 'composer',
+          size: await getPackageSize(path.join(currentPath, p['install-path'])),
+        })),
+      );
+      // eslint-disable-next-line no-empty
+    } catch (error) {}
   }
 
   const subdirectories = (await fs.promises.readdir(currentPath, {withFileTypes: true}))
@@ -67,7 +105,7 @@ const loadInstalledPackages = async (rootPath, subPath = '') => {
     return [...children, ...subDirChildren];
   }, Promise.resolve([]));
 
-  return packageAtRootData ? [packageAtRootData, ...allChildren] : allChildren;
+  return [...packagesAtRoot, ...allChildren];
 };
 
 module.exports = {loadInstalledPackages, getPackageSize};

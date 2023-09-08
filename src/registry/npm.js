@@ -1,37 +1,9 @@
-const {reportFromAdvisory} = require('./issues/utils');
-const {loadNpmConfigs} = require('./files');
+const fetch = require('../fetch');
+const {loadNpmConfigs} = require('../files');
+const {reportFromNpmAdvisory} = require('../issues/utils');
 
 const DEFAULT_REGISTRY_URL = 'https://registry.npmjs.org/';
 let registriesInfo = [];
-
-// eslint-disable-next-line no-promise-executor-return
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const fetchRetry = async (url, opts) => {
-  let retryCount = 3;
-  const fetch = (await import('node-fetch')).default;
-
-  while (retryCount > 0) {
-    try {
-      // eslint-disable-next-line no-await-in-loop
-      const responseRaw = await fetch(url, opts);
-      if (!responseRaw.ok) {
-        throw new Error(`Error ${responseRaw.status} from registry: ${responseRaw.statusText}`);
-      } else {
-        return responseRaw;
-      }
-    } catch (e) {
-      retryCount -= 1;
-      if (retryCount === 0) {
-        throw e;
-      }
-      // eslint-disable-next-line no-await-in-loop
-      await sleep(1000);
-    }
-  }
-
-  throw new Error();
-};
 
 const replaceEnvVars = (str) =>
   str.replace(/\${([^}]+)}/g, (match, variableName) => process.env[variableName] || '');
@@ -95,11 +67,11 @@ const getRegistriesInfo = (appPath) => {
   return registries.map((reg) => ({...reg, url: new URL(reg.url)}));
 };
 
-const setupRegistries = (appPath) => {
+const setupNpmRegistries = (appPath) => {
   registriesInfo = getRegistriesInfo(appPath);
 };
 
-const getRegistryInfoForPackage = (packageName) => {
+const getNpmRegistryInfoForPackage = (packageName) => {
   if (packageName.includes('/')) {
     const [packageOrg] = packageName.split('/');
     const orgRegistry = registriesInfo.find(({org}) => org === packageOrg);
@@ -112,74 +84,10 @@ const getRegistryInfoForPackage = (packageName) => {
   return registriesInfo.find(({org}) => org === 'default');
 };
 
-const getRegistryData = async (packageName, packageVersion) => {
-  if (typeof packageName !== 'string' || !['string', 'undefined'].includes(typeof packageVersion)) {
-    throw new Error(
-      `getRegistryData: invalid arguments given (${packageName} / ${packageVersion})`,
-    );
-  }
-
-  const registryInfo = getRegistryInfoForPackage(packageName);
-  const packageUrl = new URL(`/${packageName}`, registryInfo?.url || DEFAULT_REGISTRY_URL);
-
-  const responseRaw = await fetchRetry(packageUrl.href, {
-    headers: {
-      ...(registryInfo?.token && {Authorization: `Bearer ${registryInfo.token}`}),
-    },
-  });
-  const response = await responseRaw.json();
-  const requestedVersion = packageVersion || response['dist-tags']?.latest;
-
-  return {
-    ...response,
-    ...(response.versions?.[requestedVersion] || {}),
-    published: response.time?.[requestedVersion],
-    size: response.versions?.[requestedVersion]?.dist?.unpackedSize,
-    versions: undefined,
-    time: undefined,
-  };
-};
-
-const getRegistryDataMultiple = async (packages, onProgress = () => {}) => {
-  const totalCount = packages.length;
-  let currentCount = 0;
-  const errors = [];
-  const data = [];
-  const threadCount = 10;
-  const packageQueue = [...packages];
-
-  await Promise.all(
-    [...Array(threadCount).keys()].map(async () => {
-      let currentPackage;
-      // eslint-disable-next-line no-cond-assign
-      while ((currentPackage = packageQueue.pop())) {
-        try {
-          const {name, version} = currentPackage;
-          // eslint-disable-next-line no-await-in-loop
-          const packageData = await getRegistryData(name, version);
-
-          currentCount += 1;
-          onProgress?.(`${currentCount}/${totalCount}`);
-          data.push(packageData);
-        } catch (error) {
-          errors.push(error);
-        }
-      }
-
-      return data;
-    }),
-  );
-
-  return {
-    data,
-    errors,
-  };
-};
-
-const getRegistryAudit = async (packageName, packageVersion, packageGraph) => {
-  const registryInfo = getRegistryInfoForPackage(packageName);
+const getNpmRegistryAudit = async ({packageName, packageVersion, packageGraph, includeDev}) => {
+  const registryInfo = getNpmRegistryInfoForPackage(packageName);
   const url = new URL('/-/npm/v1/security/audits', registryInfo?.url || DEFAULT_REGISTRY_URL);
-  const responseRaw = await fetchRetry(url.href, {
+  const responseRaw = await fetch(url.href, {
     method: 'post',
     body: JSON.stringify({
       name: 'sandworm-prompt',
@@ -198,21 +106,37 @@ const getRegistryAudit = async (packageName, packageVersion, packageGraph) => {
       ...(registryInfo?.token && {Authorization: `Bearer ${registryInfo.token}`}),
     },
   });
-
-  if (!responseRaw.ok) {
-    throw new Error(`Error ${responseRaw.status} from registry: ${responseRaw.statusText}`);
-  }
-
   const response = await responseRaw.json();
 
   return Object.values(response.advisories || {}).map((advisory) =>
-    reportFromAdvisory(advisory, packageGraph),
+    reportFromNpmAdvisory(advisory, packageGraph, includeDev),
   );
 };
 
+const getNpmRegistryData = async (packageName, packageVersion) => {
+  const registryInfo = getNpmRegistryInfoForPackage(packageName);
+  const packageUrl = new URL(`/${packageName}`, registryInfo?.url || DEFAULT_REGISTRY_URL);
+
+  const responseRaw = await fetch(packageUrl.href, {
+    headers: {
+      ...(registryInfo?.token && {Authorization: `Bearer ${registryInfo.token}`}),
+    },
+  });
+  const response = await responseRaw.json();
+  const requestedVersion = packageVersion || response['dist-tags']?.latest;
+
+  return {
+    ...response,
+    ...(response.versions?.[requestedVersion] || {}),
+    published: response.time?.[requestedVersion],
+    size: response.versions?.[requestedVersion]?.dist?.unpackedSize,
+    versions: undefined,
+    time: undefined,
+  };
+};
+
 module.exports = {
-  setupRegistries,
-  getRegistryData,
-  getRegistryDataMultiple,
-  getRegistryAudit,
+  setupNpmRegistries,
+  getNpmRegistryAudit,
+  getNpmRegistryData,
 };

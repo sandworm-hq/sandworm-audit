@@ -3,7 +3,7 @@ const {getFindings, makeSandwormIssueId, isWorkspaceProject} = require('./utils'
 const INSTALL_SCRIPT_NAME = ['preinstall', 'install', 'postinstall'];
 
 module.exports = {
-  getMetaIssues: ({dependencies = [], packageGraph, workspace}) => {
+  getMetaIssues: ({dependencies = [], packageGraph, workspace, includeDev}) => {
     const issues = [];
 
     dependencies.forEach((dep) => {
@@ -100,6 +100,7 @@ module.exports = {
         packageGraph,
         packageName: issue.name,
         range: issue.version,
+        includeDev,
       }),
       type: 'meta',
     }));

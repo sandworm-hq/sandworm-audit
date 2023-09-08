@@ -147,7 +147,12 @@ const getLicenseUsage = ({dependencies = [], defaultCategories, userCategories})
   return licenseUsage.sort((a, b) => b.dependencies.length - a.dependencies.length);
 };
 
-const getLicenseIssues = ({licenseUsage, packageGraph, licensePolicy = DEFAULT_POLICY}) => {
+const getLicenseIssues = ({
+  licenseUsage,
+  packageGraph,
+  licensePolicy = DEFAULT_POLICY,
+  includeDev,
+}) => {
   const issues = [];
 
   licenseUsage.forEach(({string, meta, dependencies}) => {
@@ -268,6 +273,7 @@ const getLicenseIssues = ({licenseUsage, packageGraph, licensePolicy = DEFAULT_P
             packageGraph,
             packageName: name,
             range: version,
+            includeDev,
           }),
           type: 'license',
         })),

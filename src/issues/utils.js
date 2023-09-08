@@ -2,8 +2,9 @@ const semverSatisfies = require('semver/functions/satisfies');
 const {aggregateDependencies} = require('../charts/utils');
 const {UsageError} = require('../errors');
 const {SEMVER_REGEXP} = require('../graph/utils');
+const fromGitHub = require('./vulnerabilities/github');
 
-const getPathsForPackage = (packageGraph, packageName, semver) => {
+const getPathsForPackage = (packageGraph, packageName, semver, includeDev) => {
   const parse = (node, currentPath = [], depth = 0, seenNodes = []) => {
     if (seenNodes.includes(node)) {
       return [];
@@ -21,7 +22,7 @@ const getPathsForPackage = (packageGraph, packageName, semver) => {
       return [newPath];
     }
 
-    return aggregateDependencies(node, true).reduce(
+    return aggregateDependencies(node, includeDev).reduce(
       (agg, subnode) => agg.concat(parse(subnode, newPath, depth + 1, [...seenNodes, node])),
       [],
     );
@@ -48,8 +49,14 @@ const getTargetPackagesFromPaths = (paths) =>
 
 const getDisplayPaths = (paths) => paths.map((path) => path.map(({name}) => name).join('>'));
 
-const getFindings = ({packageGraph, packageName, range, allPathsAffected = true}) => {
-  const allPaths = getPathsForPackage(packageGraph, packageName, range);
+const getFindings = ({
+  packageGraph,
+  packageName,
+  range,
+  allPathsAffected = true,
+  includeDev = true,
+}) => {
+  const allPaths = getPathsForPackage(packageGraph, packageName, range, includeDev);
   const affects = allPathsAffected
     ? getAllPackagesFromPaths(allPaths)
     : getTargetPackagesFromPaths(allPaths);
@@ -68,11 +75,12 @@ const getFindings = ({packageGraph, packageName, range, allPathsAffected = true}
   };
 };
 
-const reportFromAdvisory = (advisory, packageGraph) => ({
+const reportFromNpmAdvisory = (advisory, packageGraph, includeDev) => ({
   findings: getFindings({
     packageGraph,
     packageName: advisory.module_name,
     range: advisory.vulnerable_versions,
+    includeDev,
   }),
   githubAdvisoryId: advisory.github_advisory_id,
   id: advisory.id,
@@ -85,6 +93,44 @@ const reportFromAdvisory = (advisory, packageGraph) => ({
   recommendation: advisory.recommendation,
   advisory,
 });
+
+const reportFromComposerAdvisory = async (advisory, packageGraph, includeDev) => {
+  // composer affected ranges look like "affectedVersions": ">=1.0.0,<1.44.7|>=2.0.0,<2.15.3|>=3.0.0,<3.4.3",
+  // massage this to fit what semver expects
+  const range = advisory.affectedVersions.replaceAll(',', ' ').replaceAll('|', ' || ');
+  const report = {
+    findings: getFindings({
+      packageGraph,
+      packageName: advisory.packageName,
+      range,
+      includeDev,
+    }),
+    id: advisory.advisoryId,
+    sources: advisory.sources,
+    githubAdvisoryId: advisory.sources.find(({name}) => name === 'GitHub')?.remoteId,
+    name: advisory.packageName,
+    title: advisory.title,
+    type: 'vulnerability',
+    // overview missing here,
+    url: advisory.link,
+    severity: 'high',
+    range,
+    advisory,
+  };
+
+  if (report.githubAdvisoryId) {
+    try {
+      const ghAdvisory = await fromGitHub(report.githubAdvisoryId);
+      Object.assign(report, {
+        severity: ghAdvisory.severity === 'medium' ? 'moderate' : ghAdvisory.severity,
+        advisory: ghAdvisory,
+      });
+      // eslint-disable-next-line no-empty
+    } catch (error) {}
+  }
+
+  return report;
+};
 
 const allIssuesFromReport = (report) => [
   ...(report.rootVulnerabilities || []),
@@ -191,7 +237,8 @@ const isWorkspaceProject = (workspace, {name, version}) =>
 
 module.exports = {
   getFindings,
-  reportFromAdvisory,
+  reportFromNpmAdvisory,
+  reportFromComposerAdvisory,
   getUniqueIssueId,
   makeSandwormIssueId,
   excludeResolved,
