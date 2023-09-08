@@ -13,13 +13,13 @@ Beautiful Security & License Compliance Reports For Your App's Dependencies 🪱
 ## Summary
 
 - Free & open source command-line tool
-- Works with any modern JavaScript package manager
-- Scans your project & dependencies for vulnerabilities, license, and misc issues
-- Supports workspaces
+- Works with [npm](http://npmjs.com/), [Yarn](https://yarnpkg.com/), [pnpm](https://pnpm.io/), and [Composer](https://getcomposer.org/)
+- Scans your project & dependencies for vulnerabilities, license, and metadata issues
+- Supports npm/Yarn/pnpm workspaces
 - Supports [marking issues as resolved](https://docs.sandworm.dev/audit/resolving-issues)
 - Supports [custom license policies](https://docs.sandworm.dev/audit/license-policies)
 - [Configurable fail conditions](https://docs.sandworm.dev/audit/fail-policies) for CI / GIT hook workflows
-- Can connect to [private/custom registries](https://docs.sandworm.dev/audit/custom-registries)
+- Can connect to [private/custom npm registries](https://docs.sandworm.dev/audit/custom-registries)
 - Outputs:
   - JSON issue & license usage reports
   - Easy to grok SVG dependency tree & treemap visualizations
@@ -71,9 +71,6 @@ Beautiful Security & License Compliance Reports For Your App's Dependencies 🪱
 
 > **Note**
 > Sandworm Audit requires Node 14.19+.
-
-> **Note**
-> When using npm, Sandworm Audit supports lockfile versions 2 and 3 (npm 7+).
 
 Install `sandworm-audit` globally via your favorite package manager:
 
