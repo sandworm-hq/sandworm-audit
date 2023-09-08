@@ -49,7 +49,7 @@ const loadInstalledPackages = async (rootPath, subPath = '') => {
     composer: 'composer.json',
   };
 
-  let packagesAtRoot = (
+  const packagesAtRoot = (
     await Promise.all(
       Object.entries(manifestFilenames).map(async ([manager, manifestFilename]) => {
         try {
@@ -59,53 +59,73 @@ const loadInstalledPackages = async (rootPath, subPath = '') => {
               encoding: 'utf-8',
             },
           );
-          const packageAtRootData = JSON.parse(manifestContent);
+          let packageAtRootData = JSON.parse(manifestContent);
+
+          if (manager === 'composer') {
+            packageAtRootData = normalizeComposerManifest(packageAtRootData);
+          }
+
           packageAtRootData.relativePath = subPath;
           packageAtRootData.packageType = manager;
+          packageAtRootData.isDependency = subPath.includes('node_modules');
+          // Composer is handled separately below
           packageAtRootData.size = await getPackageSize(currentPath);
 
           return packageAtRootData;
-          // eslint-disable-next-line no-empty
         } catch (error) {
           return null;
         }
       }),
     )
-  ).filter((m) => m && m.name && m.version);
+  ).filter((p) => p);
 
-  if (currentDirname === 'composer' && fs.existsSync(path.join(currentPath, 'installed.json'))) {
+  if (
+    currentDirname === 'vendor' &&
+    fs.existsSync(path.join(currentPath, 'composer', 'installed.json'))
+  ) {
     try {
       const composerInstalledData = await fs.promises.readFile(
-        path.join(currentPath, 'installed.json'),
+        path.join(currentPath, 'composer', 'installed.json'),
         {
           encoding: 'utf-8',
         },
       );
       const composerInstalled = JSON.parse(composerInstalledData);
-      packagesAtRoot = await Promise.all(
-        (composerInstalled.packages || []).map(async (p) => ({
+      const composerVendorPackages = await Promise.all(
+        (Array.isArray(composerInstalled)
+          ? composerInstalled
+          : composerInstalled.packages || []
+        ).map(async (p) => ({
           ...normalizeComposerManifest(p),
-          relativePath: path.join(subPath, p['install-path']),
+          relativePath: p['install-path']
+            ? path.join(subPath, 'composer', p['install-path'])
+            : undefined,
           packageType: 'composer',
-          size: await getPackageSize(path.join(currentPath, p['install-path'])),
+          isDependency: true,
+          size: p['install-path']
+            ? await getPackageSize(path.join(currentPath, 'composer', p['install-path']))
+            : undefined,
         })),
       );
-      // eslint-disable-next-line no-empty
-    } catch (error) {}
+
+      return [...packagesAtRoot, ...composerVendorPackages];
+    } catch (error) {
+      return packagesAtRoot;
+    }
+  } else {
+    const subdirectories = (await fs.promises.readdir(currentPath, {withFileTypes: true}))
+      .filter((dirent) => dirent.isDirectory())
+      .map((dirent) => dirent.name);
+
+    const allChildren = await subdirectories.reduce(async (previous, subdir) => {
+      const children = await previous;
+      const subDirChildren = await loadInstalledPackages(rootPath, path.join(subPath, subdir));
+
+      return [...children, ...subDirChildren];
+    }, Promise.resolve([]));
+
+    return [...packagesAtRoot, ...allChildren];
   }
-
-  const subdirectories = (await fs.promises.readdir(currentPath, {withFileTypes: true}))
-    .filter((dirent) => dirent.isDirectory())
-    .map((dirent) => dirent.name);
-
-  const allChildren = await subdirectories.reduce(async (previous, subdir) => {
-    const children = await previous;
-    const subDirChildren = await loadInstalledPackages(rootPath, path.join(subPath, subdir));
-
-    return [...children, ...subDirChildren];
-  }, Promise.resolve([]));
-
-  return [...packagesAtRoot, ...allChildren];
 };
 
 module.exports = {loadInstalledPackages, getPackageSize};
