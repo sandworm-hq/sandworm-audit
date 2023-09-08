@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.51.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.50.0...audit-v1.51.0) (2023-09-08)
+
+
+### Features
+
+* experimental Composer support ([93c9e4b](https://github.com/sandworm-hq/sandworm-audit/commit/93c9e4be1ddabb4f2d087a5b467b317ec2f73f79))
+
 ## [1.50.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.49.0...audit-v1.50.0) (2023-09-04)
 
 
