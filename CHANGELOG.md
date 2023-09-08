@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.52.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.51.1...audit-v1.52.0) (2023-09-08)
+
+
+### Features
+
+* package type config for multi-package dirs ([4e2828a](https://github.com/sandworm-hq/sandworm-audit/commit/4e2828a41532fe5fdc56bdc0e9fae438ae5effef))
+
 ## [1.51.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.51.0...audit-v1.51.1) (2023-09-08)
 
 
