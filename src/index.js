@@ -12,6 +12,7 @@ const {getRegistryAudit, setupRegistries} = require('./registry');
 
 const getReport = async ({
   appPath,
+  packageType,
   dependencyGraph,
   includeDev = false,
   licensePolicy,
@@ -51,6 +52,7 @@ const getReport = async ({
       loadDataFrom,
       rootIsShell,
       includeDev,
+      packageType,
       onProgress: (progress) => onProgress({type: 'progress', stage: 'graph', progress}),
     }));
   const packageGraph = dGraph.root;

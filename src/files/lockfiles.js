@@ -123,9 +123,15 @@ const loadLockfiles = async (appPath) => {
   return lockfiles;
 };
 
-const loadLockfile = async (appPath) => {
+const loadLockfile = async (appPath, packageType) => {
   const lockfiles = await loadLockfiles(appPath);
 
+  if (packageType === 'npm') {
+    return lockfiles.npm || lockfiles.yarn || lockfiles.pnpm;
+  }
+  if (packageType === 'composer') {
+    return lockfiles.composer;
+  }
   return lockfiles.npm || lockfiles.yarn || lockfiles.pnpm || lockfiles.composer;
 };
 

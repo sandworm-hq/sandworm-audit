@@ -47,6 +47,12 @@ exports.builder = (yargs) =>
       describe: 'The path to the application to audit',
       type: 'string',
     })
+    .option('pt', {
+      alias: 'package-type',
+      demandOption: false,
+      describe: 'The type of package to search for at the given path',
+      type: 'string',
+    })
     .option('md', {
       alias: 'max-depth',
       demandOption: false,
@@ -194,6 +200,7 @@ exports.handler = async (argv) => {
 
     const configuration = {
       appPath,
+      packageType: argv.packageType,
       includeDev:
         typeof fileConfig.includeDev !== 'undefined' ? fileConfig.includeDev : argv.includeDev,
       skipLicenseIssues:

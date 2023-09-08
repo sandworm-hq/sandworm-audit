@@ -10,13 +10,20 @@ const generateComposerGraph = require('./generateComposerGraph');
 
 const generateGraphPromise = async (
   appPath,
-  {packageData, loadDataFrom = false, rootIsShell = false, includeDev = false, onProgress} = {},
+  {
+    packageData,
+    loadDataFrom = false,
+    rootIsShell = false,
+    includeDev = false,
+    packageType,
+    onProgress,
+  } = {},
 ) => {
   const workspace = await loadWorkspace(appPath);
-  let lockfile = await loadLockfile(appPath);
+  let lockfile = await loadLockfile(appPath, packageType);
 
   if (!lockfile && workspace) {
-    lockfile = await loadLockfile(workspace.path);
+    lockfile = await loadLockfile(workspace.path, packageType);
   }
 
   if (!lockfile) {
@@ -89,18 +96,9 @@ const generateGraphPromise = async (
   }
 
   if (loadDataFrom === 'disk') {
-    const managersToPackageType = {
-      npm: 'npm',
-      yarn: 'npm',
-      'yarn-classic': 'npm',
-      pnpm: 'npm',
-      composer: 'composer',
-    };
     const installedPackages = await loadInstalledPackages(workspace?.path || appPath);
     additionalPackageData = additionalPackageData.concat(
-      installedPackages.filter(
-        ({packageType}) => packageType === managersToPackageType[lockfile.manager],
-      ),
+      installedPackages.filter(({packageType: pt}) => packageType === pt),
     );
   }
 
@@ -147,13 +145,20 @@ const generateGraphAsync = (appPath, options, done = () => {}) => {
 
 const generateGraph = (
   appPath,
-  {packageData, loadDataFrom = false, rootIsShell = false, includeDev = false, onProgress} = {},
+  {
+    packageData,
+    loadDataFrom = false,
+    rootIsShell = false,
+    includeDev = false,
+    packageType,
+    onProgress,
+  } = {},
   done = undefined,
 ) => {
   if (typeof done === 'function') {
     return generateGraphAsync(
       appPath,
-      {packageData, loadDataFrom, rootIsShell, includeDev, onProgress},
+      {packageData, loadDataFrom, rootIsShell, includeDev, packageType, onProgress},
       done,
     );
   }
@@ -163,6 +168,7 @@ const generateGraph = (
     loadDataFrom,
     rootIsShell,
     includeDev,
+    packageType,
     onProgress,
   });
 };
