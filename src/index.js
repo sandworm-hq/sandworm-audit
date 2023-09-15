@@ -85,23 +85,17 @@ const getReport = async ({
     errors.push(error);
   }
 
-  if (includeRootVulnerabilities) {
-    if (!packageGraph.name || !packageGraph.version) {
-      errors.push(
-        new Error('Cannot scan root vulnerabilities: root package name and version are required.'),
-      );
-    } else {
-      try {
-        rootVulnerabilities = await getRegistryAudit({
-          packageManager: packageGraph.meta.packageManager,
-          packageName: packageGraph.name,
-          packageVersion: packageGraph.version,
-          packageGraph,
-          includeDev,
-        });
-      } catch (error) {
-        errors.push(error);
-      }
+  if (includeRootVulnerabilities && packageGraph.name && packageGraph.version) {
+    try {
+      rootVulnerabilities = await getRegistryAudit({
+        packageManager: packageGraph.meta.packageManager,
+        packageName: packageGraph.name,
+        packageVersion: packageGraph.version,
+        packageGraph,
+        includeDev,
+      });
+    } catch (error) {
+      errors.push(error);
     }
   }
   onProgress({type: 'end', stage: 'vulnerabilities'});
