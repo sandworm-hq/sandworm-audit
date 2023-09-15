@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.53.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.52.0...audit-v1.53.0) (2023-09-15)
+
+
+### Features
+
+* detect php deprecated packages ([2ef385b](https://github.com/sandworm-hq/sandworm-audit/commit/2ef385bf4dc009b8d7c94aefc738653a9abf0afd))
+
 ## [1.52.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.51.1...audit-v1.52.0) (2023-09-08)
 
 
