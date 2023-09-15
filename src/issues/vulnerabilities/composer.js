@@ -3,19 +3,19 @@ const {reportFromComposerAdvisory} = require('../utils');
 
 const fromComposerRaw = (appPath) =>
   new Promise((resolve, reject) => {
-    exec('composer audit --format=json --locked', {cwd: appPath}, (err, stdout, stderr) => {
-      if (stderr && !stderr.startsWith('Info from')) {
-        reject(new Error(stderr));
-        return;
+    exec('composer audit --format=json --locked', {cwd: appPath}, (err, stdout) => {
+      // composer uses stderr for notifications, ignore it
+      try {
+        const output = JSON.parse(stdout);
+        const allAdvisories = Object.values(output.advisories || {}).reduce(
+          (agg, a) => [...agg, ...(Array.isArray(a) ? a : Object.values(a))],
+          [],
+        );
+
+        resolve(allAdvisories);
+      } catch (error) {
+        reject(error);
       }
-
-      const output = JSON.parse(stdout);
-      const allAdvisories = Object.values(output.advisories || {}).reduce(
-        (agg, a) => [...agg, ...(Array.isArray(a) ? a : Object.values(a))],
-        [],
-      );
-
-      resolve(allAdvisories);
     });
   });
 
