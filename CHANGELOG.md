@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.53.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.53.0...audit-v1.53.1) (2023-09-15)
+
+
+### Bug Fixes
+
+* composer audit issue ([912148f](https://github.com/sandworm-hq/sandworm-audit/commit/912148f41290027b4891f0449161f4c77bfdb068))
+* only scan root vulns when name&version exist ([6d89eee](https://github.com/sandworm-hq/sandworm-audit/commit/6d89eee6cb3306387d78a74c278224378f7fc1a7))
+
 ## [1.53.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.52.0...audit-v1.53.0) (2023-09-15)
 
 
