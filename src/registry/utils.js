@@ -6,6 +6,7 @@ const normalizeComposerManifest = (manifest, latestVersion) => {
     bugs: manifest.support?.issues,
     dependencies: manifest.require,
     devDependencies: manifest['require-dev'],
+    deprecated: manifest.abandoned,
   };
 
   if (latestVersion) {
@@ -17,6 +18,7 @@ const normalizeComposerManifest = (manifest, latestVersion) => {
   delete normalizedManifest.time;
   delete normalizedManifest.require;
   delete normalizedManifest['require-dev'];
+  delete normalizedManifest.abandoned;
 
   return normalizedManifest;
 };
