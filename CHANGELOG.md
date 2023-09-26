@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.54.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.53.1...audit-v1.54.0) (2023-09-26)
+
+
+### Features
+
+* package type target config for resolve cli ([fd651c3](https://github.com/sandworm-hq/sandworm-audit/commit/fd651c30b1f6450c898efdb70d035c09ce20a6e9))
+
+
+### Bug Fixes
+
+* package type selection for mixed directories ([84ce307](https://github.com/sandworm-hq/sandworm-audit/commit/84ce3075fc0a58072782489923f431c29c8c618c))
+
 ## [1.53.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.53.0...audit-v1.53.1) (2023-09-15)
 
 
