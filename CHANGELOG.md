@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.54.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.54.0...audit-v1.54.1) (2023-09-26)
+
+
+### Bug Fixes
+
+* support license string arrays ([f01c7cf](https://github.com/sandworm-hq/sandworm-audit/commit/f01c7cfffa82bbbfa5209081b77db3a9abb38d51))
+
 ## [1.54.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.53.1...audit-v1.54.0) (2023-09-26)
 
 
