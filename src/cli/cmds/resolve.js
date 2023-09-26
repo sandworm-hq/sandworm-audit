@@ -40,6 +40,12 @@ exports.builder = {
     describe: 'The path to the application to audit',
     type: 'string',
   },
+  pt: {
+    alias: 'package-type',
+    demandOption: false,
+    describe: 'The type of package to search for at the given path',
+    type: 'string',
+  },
   o: {
     alias: 'output-path',
     demandOption: false,
@@ -55,7 +61,7 @@ exports.handler = async (argv) => {
   try {
     logger.logCliHeader();
     const {issueId} = argv;
-    const manifest = loadManifest(appPath);
+    const manifest = loadManifest(appPath, argv.pt);
     const fileConfig = loadConfig(appPath)?.audit || {};
     const outputPath = path.join(appPath, fileConfig.outputPath || argv.o);
     const filenames = outputFilenames(manifest.name, manifest.version);
