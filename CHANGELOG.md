@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.55.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.54.1...audit-v1.55.0) (2023-09-26)
+
+
+### Features
+
+* better license expression issue titles ([3f3aad9](https://github.com/sandworm-hq/sandworm-audit/commit/3f3aad9882148d9e5a918c1795f982a526cdd4fc))
+
 ## [1.54.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.54.0...audit-v1.54.1) (2023-09-26)
 
 
