@@ -20,7 +20,7 @@ const loadWorkspace = async (startPath) => {
   }
 
   if (!packagePaths && fs.existsSync(manifestPath)) {
-    const manifest = await loadManifest(resolvedAppPath);
+    const manifest = await loadManifest(resolvedAppPath, 'npm');
 
     if (Array.isArray(manifest.workspaces)) {
       packagePaths = manifest.workspaces;
@@ -39,7 +39,7 @@ const loadWorkspace = async (startPath) => {
     const workspaceProjects = await entries.reduce(async (aggPromise, relativePath) => {
       const agg = await aggPromise;
       const projectPath = path.join(resolvedAppPath, relativePath);
-      const projectManifest = await loadManifest(projectPath);
+      const projectManifest = await loadManifest(projectPath, 'npm');
       agg.push({
         ...projectManifest,
         relativePath,

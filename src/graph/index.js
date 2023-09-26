@@ -34,7 +34,7 @@ const generateGraphPromise = async (
     throw new Error(lockfile.error);
   }
 
-  const manifest = loadManifest(appPath);
+  const manifest = loadManifest(appPath, lockfile.packageType);
 
   if (!manifest) {
     throw new UsageError('Manifest not found at app path');

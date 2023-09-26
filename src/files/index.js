@@ -18,26 +18,31 @@ const outputFilenames = (name, version) => {
   };
 };
 
-const loadManifest = (appPath) => {
-  const javascriptManifestPath = path.join(appPath, 'package.json');
-  const phpManifestPath = path.join(appPath, 'composer.json');
+const loadManifest = (appPath, packageType) => {
+  const npmManifestPath = path.join(appPath, 'package.json');
+  const composerManifestPath = path.join(appPath, 'composer.json');
+  const manifests = {};
 
-  if (fs.existsSync(javascriptManifestPath)) {
-    const manifest = loadJsonFile(javascriptManifestPath);
-    return {
+  if (fs.existsSync(npmManifestPath)) {
+    const manifest = loadJsonFile(npmManifestPath);
+    manifests.npm = {
       ...manifest,
       language: 'javascript',
     };
   }
-  if (fs.existsSync(phpManifestPath)) {
-    const manifest = loadJsonFile(phpManifestPath);
-    return {
+  if (fs.existsSync(composerManifestPath)) {
+    const manifest = loadJsonFile(composerManifestPath);
+    manifests.composer = {
       ...manifest,
       language: 'php',
     };
   }
 
-  return null;
+  if (packageType) {
+    return manifests[packageType] || null;
+  }
+
+  return manifests.npm || manifests.composer || null;
 };
 
 module.exports = {

@@ -28,12 +28,17 @@ const loadLockfiles = async (appPath) => {
       const lockfileData = JSON.parse(lockfileContent);
       lockfiles.npm = {
         manager: 'npm',
+        packageType: 'npm',
         managerVersion: await getCommandVersion('npm'),
         data: lockfileData,
         lockfileVersion: lockfileData.lockfileVersion,
       };
     } catch (err) {
-      lockfiles.npm = {manager: 'npm', error: `Could not parse package-lock.json: ${err.message}`};
+      lockfiles.npm = {
+        manager: 'npm',
+        packageType: 'npm',
+        error: `Could not parse package-lock.json: ${err.message}`,
+      };
     }
     // eslint-disable-next-line no-empty
   } catch {}
@@ -51,15 +56,20 @@ const loadLockfiles = async (appPath) => {
         if (lockfileData.type === 'success') {
           lockfiles.yarn = {
             manager: 'yarn-classic',
+            packageType: 'npm',
             managerVersion: await getCommandVersion('yarn'),
             data: lockfileData.object,
             lockfileVersion: +versionMatch[1],
           };
         } else {
-          lockfiles.yarn = {manager: 'yarn-classic', error: 'Unresolved git conflicts'};
+          lockfiles.yarn = {
+            manager: 'yarn-classic',
+            packageType: 'npm',
+            error: 'Unresolved git conflicts',
+          };
         }
       } catch (err) {
-        lockfiles.yarn = {manager: 'yarn-classic', error: err.message};
+        lockfiles.yarn = {manager: 'yarn-classic', packageType: 'npm', error: err.message};
       }
     }
 
@@ -68,6 +78,7 @@ const loadLockfiles = async (appPath) => {
         const lockfileData = parseSyml(lockfileContent);
         lockfiles.yarn = {
           manager: 'yarn',
+          packageType: 'npm',
           managerVersion: await getCommandVersion('yarn'),
           data: lockfileData,
           // eslint-disable-next-line no-underscore-dangle
@@ -76,6 +87,7 @@ const loadLockfiles = async (appPath) => {
       } catch (err) {
         lockfiles.yarn = {
           manager: 'yarn',
+          packageType: 'npm',
           error: err.message,
         };
       }
@@ -89,12 +101,13 @@ const loadLockfiles = async (appPath) => {
       const lockfileData = await readWantedLockfile(appPath, {});
       lockfiles.pnpm = {
         manager: 'pnpm',
+        packageType: 'npm',
         managerVersion: await getCommandVersion('pnpm'),
         data: lockfileData,
         lockfileVersion: lockfileData.lockfileVersion,
       };
     } catch (error) {
-      lockfiles.pnpm = {manager: 'pnpm', error: error.message};
+      lockfiles.pnpm = {manager: 'pnpm', packageType: 'npm', error: error.message};
     }
   }
 
@@ -107,6 +120,7 @@ const loadLockfiles = async (appPath) => {
       const lockfileData = JSON.parse(lockfileContent);
       lockfiles.composer = {
         manager: 'composer',
+        packageType: 'composer',
         managerVersion: await getCommandVersion('composer'),
         data: lockfileData,
         lockfileVersion: 1,
@@ -114,6 +128,7 @@ const loadLockfiles = async (appPath) => {
     } catch (err) {
       lockfiles.composer = {
         manager: 'composer',
+        packageType: 'composer',
         error: `Could not parse composer.lock: ${err.message}`,
       };
     }
