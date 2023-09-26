@@ -220,7 +220,7 @@ const getLicenseIssues = ({
     } else if (defaultCategory === 'Expression') {
       issues.push({
         severity: 'high',
-        title: `Package uses a custom license expression ("${string}")`,
+        title: `Package uses a custom license expression: \`${string}\``,
         shortTitle: 'Custom license expression',
         recommendation: 'Validate that the license expression complies with your license policy',
         dependencies,
