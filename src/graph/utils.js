@@ -229,22 +229,30 @@ const normalizeLicense = (rawLicense) => {
     // Standard SPDX field
     license = licenseData;
   } else if (Array.isArray(licenseData)) {
-    // Some older packages use an array
+    // Some older npm packages use an array
     //  {
     //   "licenses" : [
     //     {"type": "MIT", "url": "..."},
     //     {"type": "Apache-2.0", "url": "..."}
     //   ]
     // }
+    // Composer packages use string arrays
     if (licenseData.length === 1) {
       const onlyLicense = licenseData[0];
       license =
         typeof onlyLicense === 'string' ? onlyLicense : onlyLicense.type || onlyLicense.name;
     } else {
-      license = `(${licenseData.map(({type, name}) => type || name).join(' OR ')})`;
+      license = `(${licenseData
+        .map((licenseItem) => {
+          if (typeof licenseItem === 'string') {
+            return licenseItem;
+          }
+          return licenseItem.type || licenseItem.name;
+        })
+        .join(' OR ')})`;
     }
   } else if (typeof licenseData === 'object' && licenseData !== null) {
-    // Some older packages use an object
+    // Some older npm packages use an object
     // {
     //   "license" : {
     //     "type" : "ISC",
