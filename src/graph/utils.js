@@ -144,11 +144,22 @@ const processDependenciesForPackage = ({
 };
 
 const processPlaceholders = ({newPackage, placeholders}) => {
+  let newVersion = newPackage.version;
+  if (newVersion.startsWith('v')) {
+    newVersion = newVersion.slice(1);
+  }
   placeholders
-    .filter(
-      ({dependencyName, semverRule}) =>
-        newPackage.name === dependencyName && semverLib.satisfies(newPackage.version, semverRule),
-    )
+    .filter(({dependencyName, semverRule}) => {
+      let placeholderSemverRule = semverRule;
+      if (placeholderSemverRule.startsWith('v')) {
+        placeholderSemverRule = placeholderSemverRule.slice(1);
+      }
+      return (
+        newPackage.name === dependencyName &&
+        (newVersion === placeholderSemverRule ||
+          semverLib.satisfies(newVersion, placeholderSemverRule))
+      );
+    })
     .forEach((placeholder) => {
       // eslint-disable-next-line no-param-reassign
       placeholder.targetPackage[placeholder.dependencyType][newPackage.name] = newPackage;
