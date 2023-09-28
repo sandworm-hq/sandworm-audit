@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.55.2](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.55.1...audit-v1.55.2) (2023-09-28)
+
+
+### Bug Fixes
+
+* graph gen for version-less packages ([bce6293](https://github.com/sandworm-hq/sandworm-audit/commit/bce62933ff0984af28708a9b115c06b4cde9b565))
+
 ## [1.55.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.55.0...audit-v1.55.1) (2023-09-28)
 
 
