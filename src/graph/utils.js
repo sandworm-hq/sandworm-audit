@@ -145,7 +145,7 @@ const processDependenciesForPackage = ({
 
 const processPlaceholders = ({newPackage, placeholders}) => {
   let newVersion = newPackage.version;
-  if (newVersion.startsWith('v')) {
+  if (newVersion && newVersion.startsWith('v')) {
     newVersion = newVersion.slice(1);
   }
   placeholders
