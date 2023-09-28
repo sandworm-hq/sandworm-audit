@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.55.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.55.0...audit-v1.55.1) (2023-09-28)
+
+
+### Bug Fixes
+
+* support `x.y` packagist semver format ([3aefc78](https://github.com/sandworm-hq/sandworm-audit/commit/3aefc781b33bbf7fe73ff369e1e5f4a5c12fd7ea))
+
 ## [1.55.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.54.1...audit-v1.55.0) (2023-09-26)
 
 
