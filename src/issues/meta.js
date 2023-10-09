@@ -1,10 +1,22 @@
 const {getFindings, makeSandwormIssueId, isWorkspaceProject} = require('./utils');
 
-const INSTALL_SCRIPT_NAME = ['preinstall', 'install', 'postinstall'];
-
 module.exports = {
   getMetaIssues: ({dependencies = [], packageGraph, workspace, includeDev}) => {
     const issues = [];
+    const INSTALL_SCRIPT_NAME = {
+      npm: ['preinstall', 'install', 'postinstall'],
+      composer: [
+        'pre-install-cmd',
+        'post-install-cmd',
+        'pre-update-cmd',
+        'post-update-cmd',
+        'post-root-package-install',
+        'pre-package-install',
+        'post-package-install',
+        'pre-package-update',
+        'post-package-update',
+      ],
+    };
 
     dependencies.forEach((dep) => {
       if (dep.deprecated) {
@@ -17,7 +29,7 @@ module.exports = {
         });
       }
 
-      const installScripts = INSTALL_SCRIPT_NAME.reduce(
+      const installScripts = (INSTALL_SCRIPT_NAME[packageGraph.meta.packageType] || []).reduce(
         (agg, scriptName) => ({
           ...agg,
           ...(dep.scripts?.[scriptName] && {[scriptName]: dep.scripts?.[scriptName]}),

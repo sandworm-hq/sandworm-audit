@@ -125,6 +125,7 @@ const generateGraphPromise = async (
       meta: {
         lockfileVersion: lockfile.lockfileVersion,
         packageManager: lockfile.manager,
+        packageType: lockfile.packageType,
         packageManagerVersion: lockfile.managerVersion,
       },
     }),
