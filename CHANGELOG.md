@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.56.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.55.2...audit-v1.56.0) (2023-10-09)
+
+
+### Features
+
+* composer install script detection ([c814178](https://github.com/sandworm-hq/sandworm-audit/commit/c814178d077f890da45c1881c4ff18bca0b17fdb))
+
 ## [1.55.2](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.55.1...audit-v1.55.2) (2023-09-28)
 
 
