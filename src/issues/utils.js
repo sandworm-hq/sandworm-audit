@@ -6,7 +6,7 @@ const fromGitHub = require('./vulnerabilities/github');
 
 const getPathsForPackage = (packageGraph, packageName, semver, includeDev) => {
   const parse = (node, currentPath = [], depth = 0, seenNodes = []) => {
-    if (seenNodes.includes(node)) {
+    if (seenNodes.includes(node) || depth > 9) {
       return [];
     }
 
