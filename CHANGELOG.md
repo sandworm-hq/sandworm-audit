@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.56.1](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.56.0...audit-v1.56.1) (2023-10-24)
+
+
+### Bug Fixes
+
+* crash when skipping tree svg output ([c4097d5](https://github.com/sandworm-hq/sandworm-audit/commit/c4097d5ba244521a695de9ae1428bc8d480d774f))
+* limit pathfinding to depth 9 ([a7fecbc](https://github.com/sandworm-hq/sandworm-audit/commit/a7fecbceb09534415755c16e0aadb06a83972bb9))
+
 ## [1.56.0](https://github.com/sandworm-hq/sandworm-audit/compare/audit-v1.55.2...audit-v1.56.0) (2023-10-09)
 
 
