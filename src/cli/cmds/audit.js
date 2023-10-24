@@ -276,8 +276,10 @@ exports.handler = async (argv) => {
     await Object.keys(svgs).reduce(async (agg, chartType) => {
       await agg;
 
-      const chartPath = path.join(outputPath, filenames[chartType]);
-      await fs.writeFile(chartPath, svgs[chartType]);
+      if (svgs[chartType]) {
+        const chartPath = path.join(outputPath, filenames[chartType]);
+        await fs.writeFile(chartPath, svgs[chartType]);
+      }
     }, Promise.resolve());
 
     // Write CSV
